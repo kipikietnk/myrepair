@@ -3,213 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Danh mục iPhone & Phần cứng — Demo</title>
-  <style>
-    :root{--accent:#0070f3;--bg:#f6f8fb;--card:#fff}
-    *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; background:var(--bg); color:#0b1220}
-    header{background:linear-gradient(90deg,rgba(0,112,243,0.95),#0059c6); color:white; padding:18px 16px}
-    .container{max-width:900px;margin:20px auto;padding:0 16px}
-    h1{margin:0 0 6px;font-size:20px}
-    p.lead{margin:0;color:rgba(255,255,255,0.9);font-size:13px}
-
-    /* Tab bar (top) visual */
-    .tabs{display:flex;gap:8px;margin-top:12px}
-    .tab{background:rgba(255,255,255,0.12);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
-    .tab.active{background:rgba(255,255,255,0.22)}
-
-    /* Card */
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(10,20,40,0.06);margin-top:18px}
-    label{display:block;font-size:13px;margin-bottom:8px}
-    select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eefc;background:white;font-size:15px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .row .full{grid-column:1/-1}
-
-    /* Result */
-    .result{margin-top:14px;padding:12px;border-radius:8px;background:#f3f9ff;border:1px solid #e1f0ff}
-
-    /* Bottom tab bar */
-    .bottombar{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center}
-    .bottombar .bar{width:96%;max-width:900px;background:linear-gradient(180deg,white, #fbfdff);border-radius:16px;padding:8px 12px;display:flex;justify-content:space-around;box-shadow:0 8px 24px rgba(8,20,60,0.08)}
-    .bar a{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:#334155;font-size:13px}
-    .icon{font-size:18px}
-
-    @media(max-width:600px){.row{grid-template-columns:1fr}.tabs{overflow:auto}}
-  </style>
+  <title>iPhone Parts Viewer — Demo</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Danh mục iPhone — Demo</h1>
-      <p class="lead">Chọn đời iPhone ở tabbar (mô phỏng) và sau đó chọn bộ phận phần cứng.</p>
-      <div class="tabs" id="tabs">
-        <!-- JS sẽ tạo tab ở đây -->
-      </div>
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <img src="logo.png" alt="Logo" id="logoBtn" class="logo" title="Bấm để ẩn/hiện thanh tùy chọn">
+      <h2>Thiết lập</h2>
     </div>
-  </header>
 
-  <main class="container">
-    <div class="card">
-      <div class="row">
-        <div class="full">
-          <label for="modelSelect">Chọn đời iPhone</label>
-          <select id="modelSelect">
-            <option value="">-- Chọn đời máy --</option>
-          </select>
+    <div class="sidebar-content">
+      <label for="modelSelect">📱 Chọn Model</label>
+      <select id="modelSelect">
+        <option value="">-- Chọn Model --</option>
+      </select>
+
+      <label for="partSelect">🔧 Chọn Linh kiện</label>
+      <select id="partSelect" disabled>
+        <option value="">-- Chọn Linh kiện --</option>
+      </select>
+
+      <div class="controls">
+        <div class="control-row">
+          <button id="rotateLeft" title="Xoay trái">⟲ Xoay trái</button>
+          <button id="rotateRight" title="Xoay phải">⟳ Xoay phải</button>
         </div>
-
-        <div>
-          <label for="partSelect">Chọn phần cứng</label>
-          <select id="partSelect" disabled>
-            <option value="">-- Chọn phần cứng --</option>
-          </select>
-        </div>
-
-        <div>
-          <label>&nbsp;</label>
-          <button id="clearBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:var(--accent);color:white;font-weight:600;cursor:pointer">Xóa chọn</button>
+        <div class="control-row">
+          <button id="resetView" title="Đặt lại vị trí & góc & zoom">↺ Reset</button>
+          <button id="fitView" title="Phù hợp (fit to container)">⤢ Fit</button>
         </div>
       </div>
 
-      <div class="result" id="result">Kết quả sẽ hiển thị ở đây khi bạn chọn đời máy và phần cứng.</div>
+      <p class="hint">🔎 Dùng chuột/2 ngón để zoom & kéo. Xoay bằng nút hoặc cử chỉ xoay (touch).</p>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main id="main">
+    <div id="imageStage">
+      <div id="imageWrapper" class="image-wrapper" aria-live="polite">
+        <img id="partImage" src="" alt="Linh kiện" draggable="false" />
+      </div>
     </div>
   </main>
 
-  <div class="bottombar" aria-hidden>
-    <nav class="bar">
-      <a href="#"><div class="icon">🏠</div>Trang chủ</a>
-      <a href="#"><div class="icon">📱</div>iPhone</a>
-      <a href="#"><div class="icon">🔧</div>Phụ kiện</a>
-      <a href="#"><div class="icon">📞</div>Liên hệ</a>
-    </nav>
-  </div>
-
-  <script>
-    // Dữ liệu mẫu: danh sách đời iPhone và phần cứng gợi ý
-    const data = {
-      "iPhone 6": ["Camera sau","Camera trước","Pin","Màn hình","Nút Home"],
-      "iPhone 7": ["Camera sau","Camera trước","Pin","Màn hình","Jack tai nghe (không)","Nút Home"] ,
-      "iPhone 8": ["Camera sau","Camera trước","Pin","Màn hình","Nút Home","Sạc Lightning"],
-      "iPhone X": ["Camera sau","Camera trước (Face ID)","Pin","Màn hình OLED","Face ID module","Sạc Lightning"],
-      "iPhone 11": ["Camera sau (Wide)","Camera góc rộng","Camera trước (TrueDepth)","Pin","Màn hình LCD","Sạc Lightning"],
-      "iPhone 12": ["Camera sau","Camera trước","Pin","Màn hình OLED","Sạc MagSafe","Sạc Lightning"],
-      "iPhone 13": ["Camera sau","Camera trước","Pin","Màn hình OLED","Sạc MagSafe","Face ID"],
-      "iPhone 14": ["Camera sau","Camera trước","Pin","Màn hình OLED","Sạc MagSafe","Face ID"],
-      "iPhone 15": ["Camera sau","Camera trước","Pin","Màn hình OLED","Sạc USB-C","Face ID"]
-    };
-
-    const modelSelect = document.getElementById('modelSelect');
-    const partSelect = document.getElementById('partSelect');
-    const result = document.getElementById('result');
-    const tabs = document.getElementById('tabs');
-    const clearBtn = document.getElementById('clearBtn');
-
-    // Tạo tùy chọn model và tabbar
-    function init(){
-      Object.keys(data).forEach((model, i)=>{
-        // option
-        const opt = document.createElement('option');
-        opt.value = model;
-        opt.textContent = model;
-        modelSelect.appendChild(opt);
-
-        // tab button
-        const t = document.createElement('div');
-        t.className = 'tab' + (i===0? ' active':'');
-        t.textContent = model;
-        t.addEventListener('click', ()=>{selectModel(model); highlightTab(t)});
-        tabs.appendChild(t);
-      });
-
-      // event
-      modelSelect.addEventListener('change', ()=>selectModel(modelSelect.value));
-      partSelect.addEventListener('change', updateResult);
-      clearBtn.addEventListener('click', clearSelection);
-
-      // init with first model selected
-      const first = Object.keys(data)[0];
-      if(first) selectModel(first);
-    }
-
-    function highlightTab(activeEl){
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-      activeEl.classList.add('active');
-      // sync select
-      modelSelect.value = activeEl.textContent;
-    }
-
-    function selectModel(model){
-      if(!model || !data[model]){
-        partSelect.innerHTML = '<option value="">-- Chọn phần cứng --</option>';
-        partSelect.disabled = true;
-        result.textContent = 'Hãy chọn đời iPhone.';
-        return;
-      }
-
-      // điền phần cứng
-      partSelect.disabled = false;
-      partSelect.innerHTML = '<option value="">-- Chọn phần cứng --</option>';
-      data[model].forEach(p=>{
-        const o = document.createElement('option'); o.value = p; o.textContent = p; partSelect.appendChild(o);
-      });
-
-      result.textContent = `Bạn đã chọn: ${model} — (chưa chọn phần cứng)`;
-
-      // highlight tab
-      document.querySelectorAll('.tab').forEach(t=>{
-        if(t.textContent === model) t.classList.add('active'); else t.classList.remove('active');
-      });
-    }
-
-    function updateResult(){
-      const model = modelSelect.value;
-      const part = partSelect.value;
-      if(!model) { result.textContent = 'Hãy chọn đời iPhone.'; return; }
-      if(!part) { result.textContent = `Bạn đã chọn: ${model} — (chưa chọn phần cứng)`; return; }
-      result.innerHTML = `<strong>Chọn của bạn:</strong><br>${model} — <em>${part}</em>`;
-    }
-
-    function clearSelection(){
-      modelSelect.value = '';
-      partSelect.innerHTML = '<option value="">-- Chọn phần cứng --</option>';
-      partSelect.disabled = true;
-      result.textContent = 'Đã xóa chọn.';
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    }
-
-    init();
-  </script>
-
-  <!--
-    HƯỚNG DẪN PUBLIC LÊN GITHUB PAGES (MỘT SỐ BƯỚC CHÍNH) — có trong file để bạn theo dõi:
-
-    1) Tạo tài khoản GitHub (nếu chưa có): https://github.com
-    2) Tạo repository mới (ví dụ: "iphone-list-demo") và để public.
-    3) Thêm file này vào repository với tên EXACT: index.html
-       - Cách nhanh (web): vào repo -> Add file -> Upload files -> chọn file -> Commit
-       - Cách dùng Git (máy của bạn):
-
-         git init
-         git add index.html
-         git commit -m "Add index.html"
-         git branch -M main
-         git remote add origin https://github.com/USERNAME/REPO.git
-         git push -u origin main
-
-    4) Bật GitHub Pages:
-       - Vào Settings của repository -> Pages
-       - Chọn Branch: 'main' và thư mục '/ (root)'
-       - Lưu -> GitHub sẽ cấp URL ở dạng: https://USERNAME.github.io/REPO/
-       - Chờ vài phút (thường < 5 phút) để site được build.
-
-    5) Nếu bạn muốn deploy từ nhánh gh-pages thay vì main, có thể dùng "gh-pages" hoặc tool như "npm run deploy" với gh-pages package.
-
-    6) Lưu ý:
-       - File tên là index.html ở thư mục gốc sẽ hiển thị tự động.
-       - Repo phải public để xem miễn phí.
-       - Bạn có thể cập nhật file và commit -> push để cập nhật trang.
-
-    Nếu muốn, mình có thể tạo cho bạn thêm hướng dẫn dòng lệnh chi tiết hơn hoặc cung cấp file ZIP để tải lên.
-  -->
+  <!-- Thư viện: Panzoom + Hammer.js -->
+  <script src="https://unpkg.com/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
