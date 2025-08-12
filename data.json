@@ -1,4 +1,7 @@
 {
+  "iPhone 13 Pro": [
+    { "type": "camera-test", "path": "images/13pro_backcam.png" }
+  ],
   "iPhone 14": [
     { "type": "camera_rear", "path": "images/icon.webp" },
     { "type": "camera_front", "path": "images/iphone15_camera_front.jpg" }
