@@ -1,0 +1,6 @@
+{
+  "iPhone 14": [
+    { "type": "camera_rear", "path": "images/iphone15_camera_rear.jpg" },
+    { "type": "camera_front", "path": "images/iphone15_camera_front.jpg" }
+  ]
+}
