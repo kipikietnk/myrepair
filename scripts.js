@@ -1,3 +1,5 @@
+// import data from "./data";
+
 let data = {};
 
 // Elements
@@ -17,12 +19,12 @@ let hammerManager = null;
 let panzoomInstance = null;
 
 // Toggle sidebar by logo
-logoBtn.addEventListener('click', () => sidebar.classList.toggle('hidden'));
+// logoBtn.addEventListener('click', () => sidebar.classList.toggle('hidden'));
 
 // Load data and populate models
 async function loadData() {
   try {
-    const response = await fetch('data.json');
+    const response = await fetch('./data.json');
     data = await response.json();
     populateModels();
   } catch (error) {
@@ -81,7 +83,7 @@ function onPartChange() {
     fitToContainer();
   };
   partImage.onerror = () => {
-    alert('Không thể tải hình ảnh!');
+    //alert('Không thể tải hình ảnh!');
     partImage.src = '';
   };
 }
