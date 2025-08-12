@@ -1,57 +1,68 @@
 <!doctype html>
 <html lang="vi">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>iPhone Parts Viewer — Demo</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <img src="logo.png" alt="Logo" id="logoBtn" class="logo" title="Bấm để ẩn/hiện thanh tùy chọn">
-      <h2>Thiết lập</h2>
-    </div>
+  <!-- Top Navigation Bar -->
+  <nav class="topbar">
+    <div class="logo" id="logoBtn" title="iPhone Parts Viewer">📱</div>
 
-    <div class="sidebar-content">
-      <label for="modelSelect">📱 Chọn Model</label>
-      <select id="modelSelect">
-        <option value="">-- Chọn Model --</option>
-      </select>
-
-      <label for="partSelect">🔧 Chọn Linh kiện</label>
-      <select id="partSelect" disabled>
-        <option value="">-- Chọn Linh kiện --</option>
-      </select>
-
-      <div class="controls">
-        <div class="control-row">
-          <button id="rotateLeft" title="Xoay trái">⟲ Xoay trái</button>
-          <button id="rotateRight" title="Xoay phải">⟳ Xoay phải</button>
+    <div class="controls-section">
+      <div class="select-group">
+        <div class="select-wrapper">
+          <select id="modelSelect" class="modern-select">
+            <option value="">Chọn Model iPhone</option>
+          </select>
         </div>
-        <div class="control-row">
-          <button id="resetView" title="Đặt lại vị trí & góc & zoom">↺ Reset</button>
-          <button id="fitView" title="Phù hợp (fit to container)">⤢ Fit</button>
+
+        <div class="select-wrapper hidden" id="partSelectWrapper">
+          <select id="partSelect" class="modern-select" disabled>
+            <option value="">Chọn Linh kiện</option>
+          </select>
         </div>
       </div>
 
-      <p class="hint">🔎 Dùng chuột/2 ngón để zoom & kéo. Xoay bằng nút hoặc cử chỉ xoay (touch).</p>
+      <div class="control-buttons" id="controlButtons">
+        <button id="rotateLeft" class="control-btn" title="Xoay trái">↶</button>
+        <button id="rotateRight" class="control-btn" title="Xoay phải">↷</button>
+        <button id="resetView" class="control-btn primary" title="Đặt lại">⌂</button>
+        <button id="fitView" class="control-btn secondary" title="Vừa khít">⤢</button>
+      </div>
     </div>
-  </aside>
+  </nav>
 
-  <!-- Main -->
-  <main id="main">
-    <div id="imageStage">
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="image-stage">
       <div id="imageWrapper" class="image-wrapper" aria-live="polite">
-        <img id="partImage" src="" alt="Linh kiện" draggable="false" />
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <span>Đang tải...</span>
+        </div>
+        <div class="placeholder" id="placeholder">
+          <div class="placeholder-icon">📱</div>
+          <div>Chọn model và linh kiện để xem</div>
+        </div>
+        <div id="panzoomContainer" style="display:flex; align-items:center; justify-content:center;">
+          <div id="rotationContainer" style="display:flex; align-items:center; justify-content:center;">
+            <img id="partImage" src="" alt="Linh kiện" draggable="false"
+              style="display: none; max-width:none; max-height:none;" />
+          </div>
+        </div>
       </div>
     </div>
   </main>
 
-  <!-- Thư viện: Panzoom + Hammer.js -->
+  <!-- Libraries -->
   <script src="https://unpkg.com/@panzoom/panzoom@4.6.0/dist/panzoom.min.js"></script>
   <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
   <script src="scripts.js"></script>
 </body>
+
 </html>
