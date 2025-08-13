@@ -204,11 +204,11 @@ body {
 
 .image-wrapper {
   position: fixed;
-  top: calc(var(--topbar-height) + (20% / 2));
+  top: calc(var(--topbar-height) + 3);
   left: 50%;
   transform: translate(-50%, 0);
-  width: 95vw;
-  height: calc(85vh - var(--topbar-height));
+  width: 99vw;
+  height: calc(92vh - var(--topbar-height));
   display: flex;
   align-items: center;
   justify-content: center;
