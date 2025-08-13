@@ -207,8 +207,8 @@ body {
   top: calc(var(--topbar-height) + (20% / 2));
   left: 50%;
   transform: translate(-50%, 0);
-  width: 90vw;
-  height: calc(80vh - var(--topbar-height));
+  width: 95vw;
+  height: calc(85vh - var(--topbar-height));
   display: flex;
   align-items: center;
   justify-content: center;
