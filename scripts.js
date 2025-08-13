@@ -27,7 +27,7 @@ let panzoomInstance = null;
 let resetClickCount = 0;
 let resetClickTimer = null;
 const CLICK_THRESHOLD = 5;
-const CLICK_WINDOW = 2000;
+const CLICK_WINDOW = 3000;
 
 const funnyMessages = [
   "Come on! 😤", "Shut up! 🤐", "Chill guy! 😎",
@@ -47,13 +47,12 @@ async function loadData() {
     const response = await fetch('./data.json');
     if (response.ok) {
       data = await response.json();
-      console.log('✅ Data loaded from data.json');
     } else {
       throw new Error(`HTTP ${response.status}`);
     }
     populateDevices();
   } catch (error) {
-    console.error('❌ Error loading data:', error);
+    console.error('Error loading data:', error);
   }
 }
 
@@ -66,7 +65,7 @@ function populateDevices() {
     option.textContent = device;
     deviceSelect.appendChild(option);
   });
-  console.log(`🖥️ Loaded ${Object.keys(data).length} device types`);
+
   setupEventListeners();
   initPanzoom();
   initHammer();
@@ -125,7 +124,6 @@ function onPartChange() {
     return;
   }
   const part = data[selectedDevice][selectedModel][partIndex];
-  console.log(`🔧 Part changed to: ${part.type}`);
   if (part.images && part.images.length > 0) {
     loadPartImage(part.images[0]);
   } else {
@@ -150,7 +148,7 @@ function loadPartImage(imagePath) {
     hideLoading();
     showPlaceholder();
     hideControls();
-    showErrorMessage('Không thể tải hình ảnh');
+    showErrorMessage('Tải hình ảnh thất bại');
   };
   img.src = imagePath;
 }
@@ -303,26 +301,7 @@ function setupEventListeners() {
   resetViewBtn.addEventListener('click', resetTransforms);
   fitViewBtn.addEventListener('click', fitToContainer);
   logoBtn.addEventListener('click', handleLogoResetClick);
-  document.addEventListener('keydown', handleKeyboardShortcuts);
   window.addEventListener('resize', debounce(handleWindowResize, 250));
-}
-function handleKeyboardShortcuts(e) {
-  if (!panzoomInstance || partImage.style.display === 'none') return;
-  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
-  const step = e.shiftKey ? 50 : 20;
-  switch (e.key.toLowerCase()) {
-    case 'arrowleft': e.preventDefault(); panzoomInstance.moveBy(-step, 0, { animate: true }); break;
-    case 'arrowright': e.preventDefault(); panzoomInstance.moveBy(step, 0, { animate: true }); break;
-    case 'arrowup': e.preventDefault(); panzoomInstance.moveBy(0, -step, { animate: true }); break;
-    case 'arrowdown': e.preventDefault(); panzoomInstance.moveBy(0, step, { animate: true }); break;
-    case '+': case '=': e.preventDefault(); panzoomInstance.zoomIn(); break;
-    case '-': e.preventDefault(); panzoomInstance.zoomOut(); break;
-    case 'r': e.preventDefault(); (e.ctrlKey || e.metaKey) ? handleLogoResetClick() : resetTransforms(); break;
-    case 'f': e.preventDefault(); fitToContainer(); break;
-    case 'q': e.preventDefault(); rotateImage(-90); break;
-    case 'e': e.preventDefault(); rotateImage(90); break;
-    case '0': e.preventDefault(); setImageRotation(0, true); break;
-  }
 }
 function handleWindowResize() {
   if (partImage && partImage.style.display !== 'none') {
