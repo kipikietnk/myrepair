@@ -54,10 +54,9 @@ body {
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: var(--radius-sm);
-  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +68,8 @@ body {
 }
 
 .logo:hover {
-  background: var(--primary-dark);
+  background: rgba(125, 125, 125, 0.5);
+  backdrop-filter: blur(10px);
   transform: scale(1.05);
 }
 
