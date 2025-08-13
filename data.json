@@ -1,14 +1,29 @@
 {
   "iPhone": {
     "iPhone 13 Pro Max": [
-      { "type": "Taildock", "images": [ "images/13promax_taildock.png" ] }
+      {
+        "type": "Taildock",
+        "images": [
+          "images/13promax_taildock.png"
+        ]
+      }
     ],
     "iPhone 13 Pro": [
-      { "type": "BackCam", "images": [ "images/13pro_backcam.png" ] }
+      {
+        "type": "BackCam",
+        "images": [
+          "images/13pro_bac"
+        ]
+      }
     ],
     "iPhone 12 Pro Max": [
-     { "type": "Taildock", "images": [ "images/12promax_taildock.png" ] }
-   ]
+      {
+        "type": "Taildock",
+        "images": [
+          "images/12promax_taildock.png"
+        ]
+      }
+    ]
   },
   "iPad": {},
   "watch": {}
