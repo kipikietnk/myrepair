@@ -21,6 +21,40 @@ let currentRotation = 0;
 let hammerManager = null;
 let panzoomInstance = null;
 
+// Logo button spam detection (main reset button)
+let resetClickCount = 0;
+let resetClickTimer = null;
+const CLICK_THRESHOLD = 5; // Số lần click để kích hoạt
+const CLICK_WINDOW = 2000; // Thời gian window (ms)
+
+const funnyMessages = [
+    "Come on! 😤",
+    "Shut up! 🤐", 
+    "Chill guy! 😎",
+    "Seriously? 🙄",
+    "Stop it! ✋",
+    "Bruh... 😒",
+    "Again? 🤦‍♂️",
+    "You're killing me! 💀",
+    "Enough! 😠",
+    "Why tho? 🤷‍♂️",
+    "I'm tired! 😴",
+    "Please stop! 🙏",
+    "Not again! 😫",
+    "Give me a break! 😵‍💫",
+    "You monster! 👹",
+    "I quit! 🏃‍♂️💨",
+    "This is madness! 🤯",
+    "Have mercy! 😭",
+    "I'm done! ✅",
+    "Leave me alone! 😤",
+    "What's wrong with you? 🤨",
+    "Really? REALLY? 😡",
+    "I can't even... 🤷‍♀️",
+    "You're crazy! 🤪",
+    "STOP THE MADNESS! 🛑"
+];
+
 // Load data and populate models
 async function loadData() {
   try {
@@ -77,6 +111,138 @@ function populateModels() {
   initHammer();
 }
 
+// Handle logo reset button click với spam detection
+function handleLogoResetClick() {
+    resetClickCount++;
+    
+    // Clear existing timer
+    if (resetClickTimer) {
+        clearTimeout(resetClickTimer);
+    }
+    
+    // Always perform reset function
+    resetApplication();
+    
+    // Check if spam clicking
+    if (resetClickCount >= CLICK_THRESHOLD) {
+        showFunnyMessage();
+        resetClickCount = 0; // Reset counter after showing message
+    }
+    
+    // Reset counter after time window
+    resetClickTimer = setTimeout(() => {
+        resetClickCount = 0;
+    }, CLICK_WINDOW);
+}
+
+// Show funny message từ logo button (góc trên trái)
+function showFunnyMessage() {
+    const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+    
+    // Get logo button position
+    const btnRect = logoBtn.getBoundingClientRect();
+    
+    // Create message bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'funny-message';
+    bubble.textContent = randomMessage;
+    
+    // Position for top-left corner button (bubble appears to the right and slightly down)
+    bubble.style.cssText = `
+        position: fixed;
+        left: ${btnRect.right + 15}px;
+        top: ${btnRect.top + btnRect.height / 2}px;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 18px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        white-space: nowrap;
+        z-index: 10000;
+        pointer-events: none;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        animation: bubbleSlideIn 3s ease-out forwards;
+        min-width: 120px;
+        text-align: center;
+    `;
+    
+    // Add CSS animations if not exists
+    if (!document.getElementById('funny-bubble-styles')) {
+        const style = document.createElement('style');
+        style.id = 'funny-bubble-styles';
+        style.textContent = `
+            @keyframes bubbleSlideIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-50%) translateX(-20px) scale(0.8);
+                }
+                15% {
+                    opacity: 1;
+                    transform: translateY(-50%) translateX(0) scale(1.05);
+                }
+                20% {
+                    transform: translateY(-50%) translateX(0) scale(1);
+                }
+                85% {
+                    opacity: 1;
+                    transform: translateY(-50%) translateX(0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-50%) translateX(10px) scale(0.9);
+                }
+            }
+            
+            .funny-message::before {
+                content: '';
+                position: absolute;
+                left: -12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 0;
+                height: 0;
+                border-top: 12px solid transparent;
+                border-bottom: 12px solid transparent;
+                border-right: 12px solid #667eea;
+            }
+            
+            @keyframes logoShake {
+                0%, 100% { transform: translateX(0) translateY(0); }
+                10% { transform: translateX(-3px) translateY(-2px); }
+                20% { transform: translateX(3px) translateY(2px); }
+                30% { transform: translateX(-3px) translateY(-1px); }
+                40% { transform: translateX(3px) translateY(1px); }
+                50% { transform: translateX(-2px) translateY(-2px); }
+                60% { transform: translateX(2px) translateY(2px); }
+                70% { transform: translateX(-2px) translateY(-1px); }
+                80% { transform: translateX(2px) translateY(1px); }
+                90% { transform: translateX(-1px) translateY(-1px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(bubble);
+    
+    // Add shake effect to logo button
+    logoBtn.style.animation = 'logoShake 0.8s ease-in-out';
+    setTimeout(() => {
+        logoBtn.style.animation = '';
+    }, 800);
+    
+    // Remove bubble after animation
+    setTimeout(() => {
+        if (bubble.parentNode) {
+            bubble.remove();
+        }
+    }, 3000);
+
+    // Console log for fun
+    console.log(`🎭 Logo button says: ${randomMessage}`);
+}
+
 // Setup all event listeners
 function setupEventListeners() {
   modelSelect.addEventListener('change', onModelChange);
@@ -88,8 +254,8 @@ function setupEventListeners() {
   resetViewBtn.addEventListener('click', resetTransforms);
   fitViewBtn.addEventListener('click', fitToContainer);
   
-  // Logo button - reset everything
-  logoBtn.addEventListener('click', resetApplication);
+  // Logo button - reset everything với funny spam detection
+  logoBtn.addEventListener('click', handleLogoResetClick);
   
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboardShortcuts);
@@ -339,6 +505,7 @@ function fitToContainer() {
   currentRotation = 0;
   rotationContainer.style.rotate = '0deg';
 }
+
 // Application reset
 function resetApplication() {
   console.log('🔄 Resetting application');
@@ -408,7 +575,7 @@ function handleKeyboardShortcuts(e) {
     case 'r':
       e.preventDefault();
       if (e.ctrlKey || e.metaKey) {
-        resetApplication();
+        handleLogoResetClick(); // Sử dụng funny reset cho Ctrl+R
       } else {
         resetTransforms();
       }
@@ -495,7 +662,7 @@ if (document.readyState === 'loading') {
 
 // Export for potential external use
 window.iPhonePartsViewer = {
-  resetApplication,
+  resetApplication: handleLogoResetClick, // Export funny reset version
   fitToContainer,
   rotateImage,
   data
