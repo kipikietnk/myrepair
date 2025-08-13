@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="./styles/main.css">
 </head>
-
 <body>
   <!-- Top Navigation Bar -->
   <nav class="topbar">
@@ -14,17 +12,28 @@
 
     <div class="controls-section">
       <div class="select-group">
-        <div class="select-wrapper">
-          <select id="modelSelect" class="modern-select">
-            <option value="">Chọn Model iPhone</option>
+
+        <!-- Chọn loại thiết bị -->
+        <div class="select-wrapper" id="deviceSelectWrapper">
+          <select id="deviceSelect" class="modern-select">
+            <option value="">Chọn loại máy</option>
           </select>
         </div>
 
+        <!-- Chọn Model -->
+        <div class="select-wrapper hidden" id="modelSelectWrapper">
+          <select id="modelSelect" class="modern-select">
+            <option value="">Chọn Model</option>
+          </select>
+        </div>
+
+        <!-- Chọn Linh kiện -->
         <div class="select-wrapper hidden" id="partSelectWrapper">
           <select id="partSelect" class="modern-select" disabled>
             <option value="">Chọn Linh kiện</option>
           </select>
         </div>
+
       </div>
 
       <div class="control-buttons" id="controlButtons">
@@ -46,7 +55,7 @@
         </div>
         <div class="placeholder" id="placeholder">
           <div class="placeholder-icon">📱</div>
-          <div>Chọn model và linh kiện để xem</div>
+          <div>Chọn loại máy, model và linh kiện để xem</div>
         </div>
         <div id="panzoomContainer" style="display:flex; align-items:center; justify-content:center;">
           <div id="rotationContainer" style="display:flex; align-items:center; justify-content:center;">
@@ -56,12 +65,11 @@
         </div>
       </div>
     </div>
-</main>
+  </main>
 
   <!-- Libraries -->
   <script src="https://unpkg.com/@panzoom/panzoom@4.6.0/dist/panzoom.min.js"></script>
   <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
   <script src="scripts.js"></script>
 </body>
-
 </html>

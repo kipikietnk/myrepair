@@ -50,7 +50,6 @@ body {
   gap: 16px;
   z-index: 1000;
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
 }
 
 .logo {
@@ -349,18 +348,26 @@ body {
   
   .controls-section {
     width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column; /* Quan trọng: Xếp dọc trên mobile */
+    align-items: stretch;
     gap: 8px;
   }
   
   .select-group {
-    flex: 1;
-    min-width: 200px;
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   
   .modern-select {
     flex: 1;
+  }
+
+  .control-buttons {
+    width: 100%;
+    justify-content: center;
+    order: 2; /* để xuống dưới cùng */
   }
 }
 

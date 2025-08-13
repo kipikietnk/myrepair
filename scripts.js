@@ -4,9 +4,11 @@ let data = {};
 const rotationContainer = document.getElementById('rotationContainer');
 const panzoomContainer = document.getElementById('panzoomContainer');
 const logoBtn = document.getElementById('logoBtn');
+const deviceSelect = document.getElementById('deviceSelect');
 const modelSelect = document.getElementById('modelSelect');
 const partSelect = document.getElementById('partSelect');
 const partSelectWrapper = document.getElementById('partSelectWrapper');
+const modelSelectWrapper = document.getElementById('modelSelectWrapper');
 const partImage = document.getElementById('partImage');
 const imageWrapper = document.getElementById('imageWrapper');
 const controlButtons = document.getElementById('controlButtons');
@@ -21,401 +23,186 @@ let currentRotation = 0;
 let hammerManager = null;
 let panzoomInstance = null;
 
-// Logo button spam detection (main reset button)
+// Funny reset variables
 let resetClickCount = 0;
 let resetClickTimer = null;
-const CLICK_THRESHOLD = 5; // Số lần click để kích hoạt
-const CLICK_WINDOW = 2000; // Thời gian window (ms)
+const CLICK_THRESHOLD = 5;
+const CLICK_WINDOW = 2000;
 
 const funnyMessages = [
-    "Come on! 😤",
-    "Shut up! 🤐", 
-    "Chill guy! 😎",
-    "Seriously? 🙄",
-    "Stop it! ✋",
-    "Bruh... 😒",
-    "Again? 🤦‍♂️",
-    "You're killing me! 💀",
-    "Enough! 😠",
-    "Why tho? 🤷‍♂️",
-    "I'm tired! 😴",
-    "Please stop! 🙏",
-    "Not again! 😫",
-    "Give me a break! 😵‍💫",
-    "You monster! 👹",
-    "I quit! 🏃‍♂️💨",
-    "This is madness! 🤯",
-    "Have mercy! 😭",
-    "I'm done! ✅",
-    "Leave me alone! 😤",
-    "What's wrong with you? 🤨",
-    "Really? REALLY? 😡",
-    "I can't even... 🤷‍♀️",
-    "You're crazy! 🤪",
-    "STOP THE MADNESS! 🛑"
+  "Come on! 😤", "Shut up! 🤐", "Chill guy! 😎",
+  "Seriously? 🙄", "Stop it! ✋", "Bruh... 😒",
+  "Again? 🤦‍♂️", "You're killing me! 💀", "Enough! 😠",
+  "Why tho? 🤷‍♂️", "I'm tired! 😴", "Please stop! 🙏",
+  "Not again! 😫", "Give me a break! 😵‍💫", "You monster! 👹",
+  "I quit! 🏃‍♂️💨", "This is madness! 🤯", "Have mercy! 😭",
+  "I'm done! ✅", "Leave me alone! 😤", "What's wrong with you? 🤨",
+  "Really? REALLY? 😡", "I can't even... 🤷‍♀️", "You're crazy! 🤪",
+  "STOP THE MADNESS! 🛑"
 ];
 
-// Load data and populate models
+// Load data
 async function loadData() {
   try {
-    // Sample data as fallback
-    const sampleData = {};
-
-    try {
-      const response = await fetch('./data.json');
-      if (response.ok) {
-        data = await response.json();
-        console.log('✅ Data loaded from data.json');
-      } else {
-        throw new Error(`HTTP ${response.status}`);
-      }
-    } catch (error) {
-      console.warn('⚠️ Could not load data.json, using sample data:', error.message);
-      data = sampleData;
+    const response = await fetch('./data.json');
+    if (response.ok) {
+      data = await response.json();
+      console.log('✅ Data loaded from data.json');
+    } else {
+      throw new Error(`HTTP ${response.status}`);
     }
-    
-    populateModels();
+    populateDevices();
   } catch (error) {
     console.error('❌ Error loading data:', error);
-    // Use sample data as ultimate fallback
-    data = {
-      'iPhone 15 Pro Max': [
-        { type: '🖥️ Màn hình', path: 'https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=800&h=600&fit=crop' },
-        { type: '🔋 Pin', path: 'https://images.unsplash.com/photo-1609592806444-5b9d956b6d9c?w=800&h=600&fit=crop' }
-      ]
-    };
-    populateModels();
   }
 }
 
-// Populate model select dropdown
-function populateModels() {
-  // Clear existing options except the first placeholder
-  modelSelect.innerHTML = '<option value="">Chọn Model iPhone</option>';
-  
-  // Add models from data
-  Object.keys(data).forEach(model => {
+// Populate device dropdown
+function populateDevices() {
+  deviceSelect.innerHTML = '<option value="">Chọn loại máy</option>';
+  Object.keys(data).forEach(device => {
+    const option = document.createElement('option');
+    option.value = device;
+    option.textContent = device;
+    deviceSelect.appendChild(option);
+  });
+  console.log(`🖥️ Loaded ${Object.keys(data).length} device types`);
+  setupEventListeners();
+  initPanzoom();
+  initHammer();
+}
+
+// Device change → show models
+function onDeviceChange() {
+  const selectedDevice = deviceSelect.value;
+  modelSelect.innerHTML = '<option value="">Chọn Model</option>';
+  if (!selectedDevice) {
+    modelSelectWrapper.classList.add('hidden');
+    hidePartSelector();
+    return;
+  }
+  Object.keys(data[selectedDevice]).forEach(model => {
     const option = document.createElement('option');
     option.value = model;
     option.textContent = model;
     modelSelect.appendChild(option);
   });
-  
-  console.log(`📱 Loaded ${Object.keys(data).length} iPhone models`);
-  
-  // Set up event listeners
-  setupEventListeners();
-  
-  // Initialize pan/zoom and touch gestures
-  initPanzoom();
-  initHammer();
+  modelSelectWrapper.classList.remove('hidden');
+  hidePartSelector();
 }
 
-// Handle logo reset button click với spam detection
-function handleLogoResetClick() {
-    resetClickCount++;
-    
-    // Clear existing timer
-    if (resetClickTimer) {
-        clearTimeout(resetClickTimer);
-    }
-    
-    // Always perform reset function
-    resetApplication();
-    
-    // Check if spam clicking
-    if (resetClickCount >= CLICK_THRESHOLD) {
-        showFunnyMessage();
-        resetClickCount = 0; // Reset counter after showing message
-    }
-    
-    // Reset counter after time window
-    resetClickTimer = setTimeout(() => {
-        resetClickCount = 0;
-    }, CLICK_WINDOW);
-}
-
-// Show funny message từ logo button (góc trên trái)
-function showFunnyMessage() {
-    const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
-    
-    // Get logo button position
-    const btnRect = logoBtn.getBoundingClientRect();
-    
-    // Create message bubble
-    const bubble = document.createElement('div');
-    bubble.className = 'funny-message';
-    bubble.textContent = randomMessage;
-    
-    // Position for top-left corner button (bubble appears to the right and slightly down)
-    bubble.style.cssText = `
-        position: fixed;
-        left: ${btnRect.right + 15}px;
-        top: ${btnRect.top + btnRect.height / 2}px;
-        transform: translateY(-50%);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 12px 18px;
-        border-radius: 25px;
-        font-size: 16px;
-        font-weight: 600;
-        white-space: nowrap;
-        z-index: 10000;
-        pointer-events: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        animation: bubbleSlideIn 3s ease-out forwards;
-        min-width: 120px;
-        text-align: center;
-    `;
-    
-    // Add CSS animations if not exists
-    if (!document.getElementById('funny-bubble-styles')) {
-        const style = document.createElement('style');
-        style.id = 'funny-bubble-styles';
-        style.textContent = `
-            @keyframes bubbleSlideIn {
-                0% {
-                    opacity: 0;
-                    transform: translateY(-50%) translateX(-20px) scale(0.8);
-                }
-                15% {
-                    opacity: 1;
-                    transform: translateY(-50%) translateX(0) scale(1.05);
-                }
-                20% {
-                    transform: translateY(-50%) translateX(0) scale(1);
-                }
-                85% {
-                    opacity: 1;
-                    transform: translateY(-50%) translateX(0) scale(1);
-                }
-                100% {
-                    opacity: 0;
-                    transform: translateY(-50%) translateX(10px) scale(0.9);
-                }
-            }
-            
-            .funny-message::before {
-                content: '';
-                position: absolute;
-                left: -12px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 0;
-                height: 0;
-                border-top: 12px solid transparent;
-                border-bottom: 12px solid transparent;
-                border-right: 12px solid #667eea;
-            }
-            
-            @keyframes logoShake {
-                0%, 100% { transform: translateX(0) translateY(0); }
-                10% { transform: translateX(-3px) translateY(-2px); }
-                20% { transform: translateX(3px) translateY(2px); }
-                30% { transform: translateX(-3px) translateY(-1px); }
-                40% { transform: translateX(3px) translateY(1px); }
-                50% { transform: translateX(-2px) translateY(-2px); }
-                60% { transform: translateX(2px) translateY(2px); }
-                70% { transform: translateX(-2px) translateY(-1px); }
-                80% { transform: translateX(2px) translateY(1px); }
-                90% { transform: translateX(-1px) translateY(-1px); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    document.body.appendChild(bubble);
-    
-    // Add shake effect to logo button
-    logoBtn.style.animation = 'logoShake 0.8s ease-in-out';
-    setTimeout(() => {
-        logoBtn.style.animation = '';
-    }, 800);
-    
-    // Remove bubble after animation
-    setTimeout(() => {
-        if (bubble.parentNode) {
-            bubble.remove();
-        }
-    }, 3000);
-
-    // Console log for fun
-    console.log(`🎭 Logo button says: ${randomMessage}`);
-}
-
-// Setup all event listeners
-function setupEventListeners() {
-  modelSelect.addEventListener('change', onModelChange);
-  partSelect.addEventListener('change', onPartChange);
-  
-  // Control button listeners
-  rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
-  rotateRightBtn.addEventListener('click', () => rotateImage(90));
-  resetViewBtn.addEventListener('click', resetTransforms);
-  fitViewBtn.addEventListener('click', fitToContainer);
-  
-  // Logo button - reset everything với funny spam detection
-  logoBtn.addEventListener('click', handleLogoResetClick);
-  
-  // Keyboard shortcuts
-  document.addEventListener('keydown', handleKeyboardShortcuts);
-  
-  // Window resize handler
-  window.addEventListener('resize', debounce(handleWindowResize, 250));
-}
-
-// Handle model selection change
+// Model change → show parts
 function onModelChange() {
+  const selectedDevice = deviceSelect.value;
   const selectedModel = modelSelect.value;
-  
-  // Clear part selector
   partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
-  
-  if (!selectedModel) {
+  if (!selectedModel || !selectedDevice) {
     hidePartSelector();
     hideControls();
     showPlaceholder();
     return;
   }
-  
-  console.log(`🔄 Model changed to: ${selectedModel}`);
-  
-  // Show part selector
-  showPartSelector();
-  
-  // Populate parts for selected model
-  const modelParts = data[selectedModel] || [];
-  modelParts.forEach(part => {
+  const modelParts = data[selectedDevice][selectedModel] || [];
+  modelParts.forEach((part, index) => {
     const option = document.createElement('option');
-    option.value = part.path;
+    option.value = index;
     option.textContent = part.type;
     partSelect.appendChild(option);
   });
-  
-  console.log(`📦 Loaded ${modelParts.length} parts for ${selectedModel}`);
-  
-  // Reset view state
+  showPartSelector();
   hideControls();
   showPlaceholder();
 }
 
-// Handle part selection change
+// Part change → load first image
 function onPartChange() {
-  const selectedPartPath = partSelect.value;
-  
-  if (!selectedPartPath) {
+  const selectedDevice = deviceSelect.value;
+  const selectedModel = modelSelect.value;
+  const partIndex = partSelect.value;
+  if (partIndex === "" || !selectedDevice || !selectedModel) {
     hideControls();
     showPlaceholder();
     return;
   }
-  
-  const selectedPartText = partSelect.options[partSelect.selectedIndex].textContent;
-  console.log(`🔧 Part changed to: ${selectedPartText}`);
-  
-  loadPartImage(selectedPartPath);
+  const part = data[selectedDevice][selectedModel][partIndex];
+  console.log(`🔧 Part changed to: ${part.type}`);
+  if (part.images && part.images.length > 0) {
+    loadPartImage(part.images[0]);
+  } else {
+    showErrorMessage("Không có ảnh cho linh kiện này");
+  }
 }
 
-// Load and display part image
+// Load image
 function loadPartImage(imagePath) {
   showLoading();
-  
-  // Preload image
   const img = new Image();
-  
   img.onload = () => {
-    console.log('✅ Image loaded successfully');
     partImage.src = imagePath;
     partImage.alt = partSelect.options[partSelect.selectedIndex].textContent;
-    
     hideLoading();
     showImage();
     showControls();
     resetTransforms();
-    
-    // Auto-fit after a short delay to ensure proper rendering
-    setTimeout(() => {
-      fitToContainer();
-    }, 100);
+    setTimeout(() => fitToContainer(), 100);
   };
-  
   img.onerror = () => {
-    console.error('❌ Failed to load image:', imagePath);
     hideLoading();
     showPlaceholder();
     hideControls();
     showErrorMessage('Không thể tải hình ảnh');
   };
-  
   img.src = imagePath;
 }
 
-// UI State Management Functions
+// UI helpers
 function showPartSelector() {
   partSelectWrapper.classList.remove('hidden');
   partSelect.disabled = false;
 }
-
 function hidePartSelector() {
   partSelectWrapper.classList.add('hidden');
   partSelect.disabled = true;
 }
-
 function showPlaceholder() {
   placeholder.style.display = 'flex';
   partImage.style.display = 'none';
-  partImage.style.pointerEvents = 'none';
 }
-
 function showImage() {
   placeholder.style.display = 'none';
   partImage.style.display = 'block';
-  partImage.style.pointerEvents = 'auto';
 }
-
 function showLoading() {
   loading.style.display = 'flex';
   placeholder.style.display = 'none';
   partImage.style.display = 'none';
 }
-
 function hideLoading() {
   loading.style.display = 'none';
 }
-
 function showControls() {
   controlButtons.classList.add('visible');
 }
-
 function hideControls() {
   controlButtons.classList.remove('visible');
 }
-
 function showErrorMessage(message) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error-message';
   errorDiv.style.cssText = `
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--danger);
-    color: white;
-    padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    z-index: 1001;
-    animation: slideIn 0.3s ease;
+    position: absolute;top: 20px;right: 20px;background: var(--danger);
+    color: white;padding: 12px 16px;border-radius: var(--radius-sm);
+    font-size: 14px;z-index: 1001;animation: slideIn 0.3s ease;
   `;
   errorDiv.textContent = message;
-  
   document.body.appendChild(errorDiv);
-  
   setTimeout(() => {
     errorDiv.style.opacity = '0';
     setTimeout(() => errorDiv.remove(), 300);
   }, 3000);
 }
 
-// Initialize Panzoom for pan and zoom functionality
+// Init Panzoom with native touch gestures
 function initPanzoom() {
   panzoomInstance = Panzoom(panzoomContainer, {
     maxScale: Infinity,
@@ -423,7 +210,8 @@ function initPanzoom() {
     step: 0.3,
     contain: 'none',
     bounds: false,
-    cursor: 'grab'
+    cursor: 'grab',
+    touchAction: 'none'
   });
 
   imageWrapper.addEventListener('wheel', (e) => {
@@ -434,68 +222,40 @@ function initPanzoom() {
   imageWrapper.addEventListener('dblclick', resetTransforms);
 }
 
-// Initialize Hammer.js for touch gestures
+// Init Hammer (only rotate / pan if needed)
 function initHammer() {
   if (!window.Hammer) return;
-
   hammerManager = new Hammer.Manager(panzoomContainer, {
     inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput,
     recognizers: [
       [Hammer.Rotate, { enable: true }],
-      [Hammer.Pinch, { enable: true }, ['rotate']],
       [Hammer.Pan, { enable: true, pointers: 1 }]
     ]
   });
-
-  let initialScale = 1;
-
-  hammerManager.on('pinchstart', (ev) => {
-    initialScale = panzoomInstance.getScale();
-  });
-
-  hammerManager.on('pinchmove', (ev) => {
-    if (!panzoomInstance) return;
-    const newScale = Math.max(0.2, initialScale * ev.scale);
-    panzoomInstance.zoom(newScale / panzoomInstance.getScale(), {
-      animate: false,
-      focal: { clientX: ev.center.x, clientY: ev.center.y }
-    });
-  });
 }
 
-// Rotation management
+// Rotate
 function setImageRotation(deg) {
   currentRotation = deg % 360;
   rotationContainer.style.rotate = `${currentRotation}deg`;
 }
-
 function rotateImage(degrees) {
   setImageRotation(currentRotation + degrees, true);
-  console.log(`🔄 Rotated to ${currentRotation}°`);
 }
-
-// Transform management
 function resetTransforms() {
-  if (panzoomInstance) {
-    panzoomInstance.reset({ animate: true });
-  }
+  if (panzoomInstance) panzoomInstance.reset({ animate: true });
   currentRotation = 0;
   rotationContainer.style.rotate = '0deg';
 }
-
 function fitToContainer() {
   if (!partImage || !panzoomInstance || partImage.style.display === 'none') return;
-
   const imgW = partImage.naturalWidth || partImage.width;
   const imgH = partImage.naturalHeight || partImage.height;
   const wrapRect = imageWrapper.getBoundingClientRect();
-
   if (!imgW || !imgH || !wrapRect.width) return;
-
   const scaleX = (wrapRect.width * 0.9) / imgW;
   const scaleY = (wrapRect.height * 0.9) / imgH;
   const targetScale = Math.min(scaleX, scaleY, 1);
-
   panzoomInstance.reset({ animate: true });
   if (targetScale < 1) {
     setTimeout(() => {
@@ -506,164 +266,81 @@ function fitToContainer() {
   rotationContainer.style.rotate = '0deg';
 }
 
-// Application reset
+// Reset app
 function resetApplication() {
-  console.log('🔄 Resetting application');
-  
-  // Reset selects
+  deviceSelect.value = '';
   modelSelect.value = '';
   partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
-  
-  // Hide UI elements
+  modelSelectWrapper.classList.add('hidden');
   hidePartSelector();
   hideControls();
   showPlaceholder();
-  
-  // Reset transforms
-  if (panzoomInstance) {
-    panzoomInstance.reset({ animate: false });
-  }
+  if (panzoomInstance) panzoomInstance.reset({ animate: false });
   setImageRotation(0, false);
 }
+function handleLogoResetClick() {
+  resetClickCount++;
+  resetApplication();
+  if (resetClickCount >= CLICK_THRESHOLD) {
+    showFunnyMessage();
+    resetClickCount = 0;
+  }
+  if (resetClickTimer) clearTimeout(resetClickTimer);
+  resetClickTimer = setTimeout(() => resetClickCount = 0, CLICK_WINDOW);
+}
+function showFunnyMessage() {
+  const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+  console.log(`🎭 Logo button says: ${randomMessage}`);
+}
 
-// Keyboard shortcuts handler
+// Event listeners
+function setupEventListeners() {
+  deviceSelect.addEventListener('change', onDeviceChange);
+  modelSelect.addEventListener('change', onModelChange);
+  partSelect.addEventListener('change', onPartChange);
+  rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
+  rotateRightBtn.addEventListener('click', () => rotateImage(90));
+  resetViewBtn.addEventListener('click', resetTransforms);
+  fitViewBtn.addEventListener('click', fitToContainer);
+  logoBtn.addEventListener('click', handleLogoResetClick);
+  document.addEventListener('keydown', handleKeyboardShortcuts);
+  window.addEventListener('resize', debounce(handleWindowResize, 250));
+}
 function handleKeyboardShortcuts(e) {
-  // Only handle shortcuts when image is visible
-  if (!panzoomInstance || partImage.style.display === 'none') {
-    return;
-  }
-  
-  // Don't interfere with form inputs
-  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') {
-    return;
-  }
-  
-  const step = e.shiftKey ? 50 : 20; // Larger steps with Shift
-  
+  if (!panzoomInstance || partImage.style.display === 'none') return;
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  const step = e.shiftKey ? 50 : 20;
   switch (e.key.toLowerCase()) {
-    case 'arrowleft':
-      e.preventDefault();
-      panzoomInstance.moveBy(-step, 0, { animate: true });
-      break;
-      
-    case 'arrowright':
-      e.preventDefault();
-      panzoomInstance.moveBy(step, 0, { animate: true });
-      break;
-      
-    case 'arrowup':
-      e.preventDefault();
-      panzoomInstance.moveBy(0, -step, { animate: true });
-      break;
-      
-    case 'arrowdown':
-      e.preventDefault();
-      panzoomInstance.moveBy(0, step, { animate: true });
-      break;
-      
-    case '+':
-    case '=':
-      e.preventDefault();
-      panzoomInstance.zoomIn();
-      break;
-      
-    case '-':
-      e.preventDefault();
-      panzoomInstance.zoomOut();
-      break;
-      
-    case 'r':
-      e.preventDefault();
-      if (e.ctrlKey || e.metaKey) {
-        handleLogoResetClick(); // Sử dụng funny reset cho Ctrl+R
-      } else {
-        resetTransforms();
-      }
-      break;
-      
-    case 'f':
-      e.preventDefault();
-      fitToContainer();
-      break;
-      
-    case 'q':
-      e.preventDefault();
-      rotateImage(-90);
-      break;
-      
-    case 'e':
-      e.preventDefault();
-      rotateImage(90);
-      break;
-      
-    case '0':
-      e.preventDefault();
-      setImageRotation(0, true);
-      break;
+    case 'arrowleft': e.preventDefault(); panzoomInstance.moveBy(-step, 0, { animate: true }); break;
+    case 'arrowright': e.preventDefault(); panzoomInstance.moveBy(step, 0, { animate: true }); break;
+    case 'arrowup': e.preventDefault(); panzoomInstance.moveBy(0, -step, { animate: true }); break;
+    case 'arrowdown': e.preventDefault(); panzoomInstance.moveBy(0, step, { animate: true }); break;
+    case '+': case '=': e.preventDefault(); panzoomInstance.zoomIn(); break;
+    case '-': e.preventDefault(); panzoomInstance.zoomOut(); break;
+    case 'r': e.preventDefault(); (e.ctrlKey || e.metaKey) ? handleLogoResetClick() : resetTransforms(); break;
+    case 'f': e.preventDefault(); fitToContainer(); break;
+    case 'q': e.preventDefault(); rotateImage(-90); break;
+    case 'e': e.preventDefault(); rotateImage(90); break;
+    case '0': e.preventDefault(); setImageRotation(0, true); break;
   }
 }
-
-// Window resize handler
 function handleWindowResize() {
-  console.log('📐 Window resized');
-  
   if (partImage && partImage.style.display !== 'none') {
-    // Small delay to ensure layout has stabilized
-    setTimeout(() => {
-      fitToContainer();
-    }, 100);
+    setTimeout(() => fitToContainer(), 100);
   }
 }
-
-// Utility function for debouncing
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
+    const later = () => { clearTimeout(timeout); func(...args); };
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
 }
 
-// Performance optimization: Preload next images
-function preloadAdjacentImages() {
-  if (!partSelect.value) return;
-  
-  const currentIndex = Array.from(partSelect.options).findIndex(opt => opt.value === partSelect.value);
-  const options = Array.from(partSelect.options).slice(1); // Skip placeholder
-  
-  // Preload next and previous images
-  [currentIndex - 1, currentIndex + 1].forEach(index => {
-    if (index >= 0 && index < options.length) {
-      const img = new Image();
-      img.src = options[index].value;
-    }
-  });
-}
-
-// Error handling for global errors
-window.addEventListener('error', (e) => {
-  console.error('🚨 Global error:', e.error);
-});
-
-window.addEventListener('unhandledrejection', (e) => {
-  console.error('🚨 Unhandled promise rejection:', e.reason);
-});
-
-// Initialize the application when DOM is ready
+// Init
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadData);
 } else {
   loadData();
 }
-
-// Export for potential external use
-window.iPhonePartsViewer = {
-  resetApplication: handleLogoResetClick, // Export funny reset version
-  fitToContainer,
-  rotateImage,
-  data
-};
