@@ -4,7 +4,7 @@
       {
         "type": "Taildock",
         "images": [
-          "images/13promax_taildock.png"
+          "images/iphone/13PM/taildock.png"
         ]
       }
     ],
@@ -12,7 +12,7 @@
       {
         "type": "BackCam",
         "images": [
-          "images/13pro_bac"
+          "images/iphone/13P/backcam.png"
         ]
       }
     ],
@@ -20,11 +20,12 @@
       {
         "type": "Taildock",
         "images": [
-          "images/12promax_taildock.png"
+          "images/iphone/13PM/taildock.png"
         ]
       }
     ]
   },
   "iPad": {},
-  "watch": {}
+  "watch": {},
+  "Mac": {}
 }
