@@ -1199,7 +1199,6 @@ function initPanzoom() {
   }
 
   try {
-    // Hủy instance cũ nếu tồn tại
     if (state.panzoomInstance) {
       state.panzoomInstance.dispose();
     }
