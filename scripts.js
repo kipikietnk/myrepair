@@ -31,7 +31,9 @@ const state = {
   isImageLoaded: false,
   lastSelectedDevice: '',
   lastSelectedModel: '',
-  lastSelectedPart: ''
+  lastSelectedPart: '',
+  controlsVisible: true,
+  isMobile: window.innerWidth <= 768
 };
 
 // Constants
@@ -143,6 +145,10 @@ const utils = {
       img.onerror = reject;
       img.src = src;
     });
+  },
+
+  isMobileDevice() {
+    return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 };
 
@@ -201,9 +207,17 @@ const ui = {
     elements.loading.style.display = 'none';
   },
 
+  // Enhanced controls visibility with mobile optimization
   showControls() {
-    elements.controlButtons.classList.add('visible');
-    elements.controlButtons.style.pointerEvents = 'auto';
+    if (state.controlsVisible) {
+      elements.controlButtons.classList.add('visible');
+      elements.controlButtons.style.pointerEvents = 'auto';
+      
+      // On mobile, add special mobile class for compact layout
+      if (state.isMobile) {
+        elements.controlButtons.classList.add('mobile-compact');
+      }
+    }
   },
 
   hideControls() {
@@ -211,11 +225,64 @@ const ui = {
     elements.controlButtons.style.pointerEvents = 'none';
   },
 
+  // Toggle topbar visibility
+  toggleTopbar() {
+    state.controlsVisible = !state.controlsVisible;
+    
+    const topbar = document.querySelector('.topbar') || document.querySelector('header') || document.querySelector('.header');
+    if (!topbar) {
+      // If no topbar element found, try to find the container with selects
+      const selectContainer = elements.deviceSelect.closest('.container') || 
+                            elements.deviceSelect.parentElement.parentElement ||
+                            document.querySelector('.form-container');
+      if (selectContainer) {
+        this.toggleElement(selectContainer);
+      }
+      return;
+    }
+    
+    this.toggleElement(topbar);
+  },
+
+  toggleElement(element) {
+    if (state.controlsVisible) {
+      element.classList.remove('topbar-hidden');
+      element.classList.add('topbar-visible');
+      elements.logoBtn.classList.remove('controls-hidden');
+      elements.logoBtn.title = 'Ẩn thanh điều khiển';
+    } else {
+      element.classList.remove('topbar-visible');
+      element.classList.add('topbar-hidden');
+      elements.logoBtn.classList.add('controls-hidden');
+      elements.logoBtn.title = 'Hiện thanh điều khiển';
+    }
+    
+    // Add animation class to logo
+    elements.logoBtn.classList.add('logo-toggle');
+    setTimeout(() => {
+      elements.logoBtn.classList.remove('logo-toggle');
+    }, 300);
+  },
+
   updateControlsState() {
     const hasImage = state.isImageLoaded;
     elements.controlButtons.querySelectorAll('button').forEach(btn => {
       btn.disabled = !hasImage;
     });
+  },
+
+  // Update mobile state on resize
+  updateMobileState() {
+    const wasMobile = state.isMobile;
+    state.isMobile = utils.isMobileDevice();
+    
+    if (wasMobile !== state.isMobile) {
+      if (state.isMobile) {
+        elements.controlButtons.classList.add('mobile-compact');
+      } else {
+        elements.controlButtons.classList.remove('mobile-compact');
+      }
+    }
   }
 };
 
@@ -280,9 +347,7 @@ function populateDevices() {
 function onDeviceChange() {
   const selectedDevice = elements.deviceSelect.value;
   
-  // Store selection for potential restoration
   state.lastSelectedDevice = selectedDevice;
-  
   elements.modelSelect.innerHTML = '<option value="">Chọn Model</option>';
   
   if (!selectedDevice) {
@@ -383,7 +448,6 @@ async function onPartChange() {
     return;
   }
   
-  // Validate image URL
   const imagePath = part.images[0];
   if (!utils.isValidImageUrl(imagePath)) {
     utils.showErrorMessage("Định dạng ảnh không hợp lệ");
@@ -434,18 +498,16 @@ function initPanzoom() {
 
     state.panzoomInstance = panzoom(elements.panzoomContainer, {
       ...CONFIG.PANZOOM_SETTINGS,
-      beforeWheel: () => !state.isImageLoaded,       // Chặn zoom nếu ảnh chưa load
-      beforeMouseDown: () => !state.isImageLoaded    // Chặn pan nếu ảnh chưa load
+      beforeWheel: () => !state.isImageLoaded,
+      beforeMouseDown: () => !state.isImageLoaded
     });
 
-    // Zoom bằng con lăn chuột
     elements.imageWrapper.addEventListener('wheel', utils.throttle((e) => {
       if (!state.isImageLoaded) return;
       e.preventDefault();
       state.panzoomInstance.zoomWithWheel(e);
     }, 16), { passive: false });
 
-    // Double click để reset hoặc fit ảnh
     elements.imageWrapper.addEventListener('dblclick', utils.throttle((e) => {
       if (!state.isImageLoaded) return;
       e.preventDefault();
@@ -457,7 +519,6 @@ function initPanzoom() {
       }
     }, 300));
 
-    // Hỗ trợ cảm ứng nếu không có Hammer.js
     if (!window.Hammer) {
       elements.imageWrapper.addEventListener('touchstart', (e) => {
         if (!state.isImageLoaded) return;
@@ -469,7 +530,6 @@ function initPanzoom() {
   }
 }
 
-
 // Enhanced hammer initialization
 function initHammer() {
   if (!window.Hammer) {
@@ -478,7 +538,6 @@ function initHammer() {
   }
   
   try {
-    // Dispose existing manager if present
     if (state.hammerManager) {
       state.hammerManager.destroy();
     }
@@ -493,7 +552,6 @@ function initHammer() {
       ]
     });
     
-    // Add gesture handlers
     state.hammerManager.on('doubletap', () => {
       if (state.isImageLoaded) {
         fitToContainer();
@@ -506,7 +564,7 @@ function initHammer() {
 
 // Enhanced rotation functions
 function setImageRotation(deg) {
-  state.currentRotation = ((deg % 360) + 360) % 360; // Normalize to 0-359
+  state.currentRotation = ((deg % 360) + 360) % 360;
   elements.rotationContainer.style.transform = `rotate(${state.currentRotation}deg)`;
 }
 
@@ -518,7 +576,6 @@ function rotateImage(degrees) {
   
   setImageRotation(state.currentRotation + degrees);
   
-  // Adjust view after rotation to keep image centered
   setTimeout(() => {
     if (state.panzoomInstance) {
       const transform = state.panzoomInstance.getTransform();
@@ -533,11 +590,8 @@ function rotateImage(degrees) {
 function resetTransforms() {
   if (state.panzoomInstance && state.isImageLoaded) {
     try {
-      // Reset to original position and scale
       state.panzoomInstance.moveTo(0, 0);
       state.panzoomInstance.zoomTo(0, 0, 1);
-      
-      // Reset rotation
       setImageRotation(0);
     } catch (error) {
       console.error('Error resetting panzoom:', error);
@@ -559,23 +613,20 @@ function fitToContainer() {
     console.log('Invalid dimensions for fit calculation');
     return;
   }
+
   try {
-    // Reset position first
     state.panzoomInstance.moveTo(0, 0);
     
-    // Calculate optimal scale with padding (account for rotation)
-    const padding = 0.95; // Use 95% of container size for better fit
+    const padding = 0.95;
     const isRotated = (state.currentRotation % 180) !== 0;
     const effectiveImgW = isRotated ? imgH : imgW;
     const effectiveImgH = isRotated ? imgW : imgH;
     
-    // Calculate scale for both dimensions
     const scaleX = (wrapRect.width * padding) / effectiveImgW;
     const scaleY = (wrapRect.height * padding) / effectiveImgH;
     
-    // Use the smaller scale to ensure image fits completely
-    // Remove the Math.min(..., 1) limitation to allow zoom out beyond 100%
     const targetScale = Math.min(scaleX, scaleY);
+    
     setTimeout(() => {
       if (state.panzoomInstance) {
         state.panzoomInstance.zoomTo(0, 0, targetScale);
@@ -587,22 +638,19 @@ function fitToContainer() {
   }
 }
 
-// Enhanced reset functions
+// Enhanced reset functions - Logo now only toggles controls
 function resetApplication() {
-  // Reset form state
   elements.deviceSelect.value = '';
   elements.modelSelect.value = '';
   elements.modelSelect.innerHTML = '<option value="">Chọn Model</option>';
   elements.partSelect.value = '';
   elements.partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
   
-  // Reset UI state
   ui.hideModelSelector();
   ui.hidePartSelector();
   ui.hideControls();
   ui.showPlaceholder();
   
-  // Reset transforms
   if (state.panzoomInstance) {
     try {
       state.panzoomInstance.moveTo(0, 0);
@@ -614,16 +662,36 @@ function resetApplication() {
   
   setImageRotation(0);
   
-  // Reset state
   state.lastSelectedDevice = '';
   state.lastSelectedModel = '';
   state.lastSelectedPart = '';
   state.isImageLoaded = false;
 }
 
+// Modified logo click handler - now toggles topbar instead of controls
+function handleLogoClick(e) {
+  e.preventDefault();
+  
+  // If no image is loaded, do a full reset
+  if (!state.isImageLoaded) {
+    handleLogoResetClick(e);
+    return;
+  }
+  
+  // Otherwise, toggle topbar visibility
+  ui.toggleTopbar();
+  
+  // Add visual feedback
+  elements.logoBtn.classList.add('logo-pulse');
+  setTimeout(() => {
+    elements.logoBtn.classList.remove('logo-pulse');
+  }, 300);
+}
+
+// Keep the old reset functionality for when there's no image
 function handleLogoResetClick(e) {
   e.preventDefault();
-  // Add enhanced shake animation
+  
   elements.logoBtn.classList.add('logo-shake');
   setTimeout(() => {
     elements.logoBtn.classList.remove('logo-shake');
@@ -632,13 +700,11 @@ function handleLogoResetClick(e) {
   state.resetClickCount++;
   resetApplication();
   
-  // Show funny message after threshold
   if (state.resetClickCount >= CONFIG.CLICK_THRESHOLD) {
     showFunnyMessage();
     state.resetClickCount = 0;
   }
   
-  // Reset click counter after window
   if (state.resetClickTimer) {
     clearTimeout(state.resetClickTimer);
   }
@@ -650,7 +716,6 @@ function handleLogoResetClick(e) {
 
 function showFunnyMessage() {
   const randomMessage = utils.getRandomMessage();
-  // Remove existing funny message
   const existingMessage = document.querySelector('.funny-message');
   if (existingMessage) {
     existingMessage.remove();
@@ -680,7 +745,6 @@ function showFunnyMessage() {
   `;
   messageDiv.textContent = randomMessage;
   
-  // Add speech bubble tail
   const tail = document.createElement('div');
   tail.style.cssText = `
     position: absolute;
@@ -697,7 +761,6 @@ function showFunnyMessage() {
   
   document.body.appendChild(messageDiv);
   
-  // Auto remove with animation
   setTimeout(() => {
     messageDiv.style.animation = 'messagePopIn 0.4s ease-in forwards';
     setTimeout(() => {
@@ -742,12 +805,10 @@ function addRippleEffect(button, event) {
 
 // Enhanced event listener setup
 function setupEventListeners() {
-  // Dropdown events
   elements.deviceSelect.addEventListener('change', onDeviceChange);
   elements.modelSelect.addEventListener('change', onModelChange);
   elements.partSelect.addEventListener('change', onPartChange);
   
-  // Control button events with ripple effects
   elements.rotateLeftBtn.addEventListener('click', (e) => {
     e.preventDefault();
     addRippleEffect(elements.rotateLeftBtn, e);
@@ -773,8 +834,17 @@ function setupEventListeners() {
     addRippleEffect(elements.fitViewBtn, e);
     fitToContainer();
   });
-    // Logo button - FIXED
-  elements.logoBtn.addEventListener('click', handleLogoResetClick);
+
+  // Modified logo button event listener
+  elements.logoBtn.addEventListener('click', handleLogoClick);
+  
+  // Window resize handler
+  window.addEventListener('resize', utils.debounce(() => {
+    ui.updateMobileState();
+    if (state.isImageLoaded && state.panzoomInstance) {
+      setTimeout(() => fitToContainer(), 100);
+    }
+  }, CONFIG.RESIZE_DEBOUNCE));
 }
 
 // Initialization
@@ -784,6 +854,9 @@ function initialize() {
     console.error('Missing DOM elements:', missingElements.map(([key]) => key));
     return;
   }
+  
+  // Initialize mobile state
+  state.isMobile = utils.isMobileDevice();
   
   loadData();
 }
@@ -795,11 +868,12 @@ if (document.readyState === 'loading') {
   initialize();
 }
 
-// Add CSS for animations if not present
+// Add enhanced CSS for animations and mobile optimization
 if (!document.querySelector('#dynamic-styles')) {
   const style = document.createElement('style');
   style.id = 'dynamic-styles';
   style.textContent = `
+    /* Existing animations */
     @keyframes bounce {
       0%, 20%, 60%, 100% { transform: translate(-50%, -50%) translateY(0); }
       40% { transform: translate(-50%, -50%) translateY(-10px); }
@@ -842,109 +916,472 @@ if (!document.querySelector('#dynamic-styles')) {
       }
     }
     
+    /* New animations for logo toggle and mobile optimization */
+    @keyframes logo-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes logo-toggle {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(0.9) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+    
+    @keyframes controlsSlideIn {
+      0% { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+    
+    @keyframes controlsSlideOut {
+      0% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+      100% { 
+        opacity: 0; 
+        transform: translateY(-20px) scale(0.95); 
+      }
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    
+    /* Logo button enhanced styling */
+    #logoBtn {
+      position: fixed !important;
+      top: 20px;
+      left: 20px;
+      z-index: 10000;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      color: white;
+      font-size: 24px;
+      title: 'Ẩn/hiện thanh điều khiển';
+    }
+    
+    #logoBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+    
+    #logoBtn.controls-hidden {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+    
+    #logoBtn.controls-hidden:hover {
+      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+    }
+    
+    /* Topbar hide/show animations */
+    .topbar,
+    .header,
+    header,
+    .form-container,
+    .container {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: top center;
+    }
+    
+    .topbar-hidden {
+      opacity: 0;
+      transform: translateY(-100%) scale(0.95);
+      pointer-events: none;
+    }
+    
+    .topbar-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    
+    /* Mobile optimization for topbar */
+    @media (max-width: 768px) {
+      .topbar-hidden {
+        transform: translateY(-120%) scale(0.9);
+      }
+      
+      /* Adjust main content when topbar is hidden */
+      .topbar-hidden ~ .main-content,
+      .topbar-hidden ~ main,
+      .topbar-hidden + * {
+        margin-top: -60px;
+        transition: margin-top 0.4s ease;
+      }
+      
+      /* Compact topbar on mobile */
+      .topbar,
+      .header,
+      header,
+      .form-container {
+        padding: 10px 15px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Stack selects vertically on small screens */
+      .form-container select,
+      .topbar select {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 12px 15px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background: white;
+      }
+      
+      /* Compact logo on mobile */
+      #logoBtn {
+        top: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+    }
+    
+    /* Tablet optimization */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .topbar,
+      .header,
+      .form-container {
+        padding: 15px 20px;
+      }
+      
+      .form-container select {
+        padding: 10px 15px;
+        margin-right: 10px;
+        font-size: 14px;
+      }
+    }
+    
     .logo-shake {
       animation: logo-shake 0.6s ease-in-out;
     }
     
-    .funny-message {
+    .logo-pulse {
+      animation: logo-pulse 0.3s ease-out;
+    }
+    
+    .logo-toggle {
+      animation: logo-toggle 0.3s ease-out;
+    }
+    
+    /* Enhanced control buttons - keep original functionality */
+    #controlButtons {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
       pointer-events: none;
+    }
+    
+    #controlButtons.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      animation: controlsSlideIn 0.4s ease-out;
+    }
+    
+    /* Mobile optimization for control buttons */
+    @media (max-width: 768px) {
+      #logoBtn {
+        top: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+      
+      #controlButtons.mobile-compact {
+        position: fixed !important;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 10px 15px;
+        display: flex !important;
+        flex-direction: row;
+        gap: 8px;
+        max-width: calc(100vw - 40px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      #controlButtons.mobile-compact.visible {
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      
+      #controlButtons.mobile-compact button {
+        min-width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        font-size: 18px;
+        padding: 0;
+        margin: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      #controlButtons.mobile-compact button:hover,
+      #controlButtons.mobile-compact button:active {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+      
+      #controlButtons.mobile-compact button:disabled {
+        opacity: 0.4;
+        transform: none;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      
+      /* Compact button icons for mobile */
+      #controlButtons.mobile-compact #rotateLeft::before {
+        content: '↺';
+      }
+      
+      #controlButtons.mobile-compact #rotateRight::before {
+        content: '↻';
+      }
+      
+      #controlButtons.mobile-compact #resetView::before {
+        content: '⌂';
+      }
+      
+      #controlButtons.mobile-compact #fitView::before {
+        content: '⛶';
+      }
+      
+      /* Hide text content on mobile, show only icons */
+      #controlButtons.mobile-compact button {
+        text-indent: -9999px;
+        overflow: hidden;
+      }
+      
+      #controlButtons.mobile-compact button::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-indent: 0;
+        font-size: 18px;
+        line-height: 1;
+      }
+    }
+    
+    /* Tablet optimization */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #controlButtons {
+        padding: 15px;
+      }
+      
+      #controlButtons button {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+    }
+    
+    /* Enhanced ripple effect */
+    .control-btn {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    
+    /* Smooth transitions for all interactive elements */
+    select, button, input {
+      transition: all 0.2s ease;
+    }
+    
+    /* Enhanced dropdown animations */
+    .slide-in {
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .slide-out {
+      animation: slideOut 0.3s ease-in;
+    }
+    
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(-100%); opacity: 0; }
+    }
+    
+    /* Loading and placeholder improvements for mobile */
+    @media (max-width: 768px) {
+      #loading {
+        font-size: 14px;
+      }
+      
+      #placeholder {
+        padding: 20px;
+        font-size: 16px;
+      }
+      
+      /* Adjust form elements for mobile */
+      select {
+        padding: 12px 15px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 8px;
+      }
+      
+      /* Better touch targets */
+      button {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      #logoBtn {
+        border: 2px solid currentColor;
+      }
+      
+      #controlButtons.mobile-compact button {
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      
+      #logoBtn {
+        transition: none;
+      }
+    }
+    
+    /* Dark mode optimization */
+    @media (prefers-color-scheme: dark) {
+      #controlButtons.mobile-compact {
+        background: rgba(20, 20, 20, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      
+      #controlButtons.mobile-compact button {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+    }
+    
+    /* Focus styles for accessibility */
+    button:focus-visible,
+    select:focus-visible {
+      outline: 2px solid #667eea;
+      outline-offset: 2px;
+    }
+    
+    #logoBtn:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.8);
+      outline-offset: 3px;
     }
   `;
   document.head.appendChild(style);
 }
 
 // Enhanced dropdown animation functions
-    function showDropdown(element, fromElement = null) {
-      element.classList.remove('hidden', 'slide-out');
-      element.classList.add('slide-in');
-      
-      // Optional: animate from previous element position
-      if (fromElement) {
-        const fromRect = fromElement.getBoundingClientRect();
-        const toRect = element.getBoundingClientRect();
-        
-        element.style.setProperty('--slide-from-x', `${fromRect.left - toRect.left}px`);
-      }
-      
-      // Remove animation class after animation completes
-      setTimeout(() => {
-        element.classList.remove('slide-in');
-      }, 500);
-    }
-    
-    function hideDropdown(element) {
-      element.classList.remove('slide-in');
-      element.classList.add('slide-out');
-      
-      setTimeout(() => {
-        element.classList.add('hidden');
-        element.classList.remove('slide-out');
-      }, 300);
-    }
-    
-    // Enhanced control buttons visibility
-    function showControlButtons() {
-      const controlButtons = document.getElementById('controlButtons');
-      controlButtons.classList.add('visible');
-    }
-    
-    function hideControlButtons() {
-      const controlButtons = document.getElementById('controlButtons');
-      controlButtons.classList.remove('visible');
-    }
-    
-    // Logo click handler with animation
-    document.getElementById('logoBtn').addEventListener('click', function() {
-      this.style.transform = 'scale(1.2) rotate(360deg)';
-      setTimeout(() => {
-        this.style.transform = '';
-      }, 600);
-    });
-    
-    // Add ripple effect to buttons
-    document.querySelectorAll('.control-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const ripple = document.createElement('span');
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.cssText = `
-          position: absolute;
-          width: ${size}px;
-          height: ${size}px;
-          left: ${x}px;
-          top: ${y}px;
-          background: rgba(255, 255, 255, 0.6);
-          border-radius: 50%;
-          transform: scale(0);
-          animation: ripple 0.6s linear;
-          pointer-events: none;
-        `;
-        
-        this.appendChild(ripple);
-        
-        setTimeout(() => {
-          ripple.remove();
-        }, 600);
-      });
-    });
-    
-    // Add CSS animation for ripple effect
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes ripple {
-        to {
-          transform: scale(4);
-          opacity: 0;
-        }
-      }
-      
-      .control-btn {
-        position: relative;
-        overflow: hidden;
-      }
-    `;
-    document.head.appendChild(style);
+function showDropdown(element, fromElement = null) {
+  element.classList.remove('hidden', 'slide-out');
+  element.classList.add('slide-in');
   
+  if (fromElement) {
+    const fromRect = fromElement.getBoundingClientRect();
+    const toRect = element.getBoundingClientRect();
+    element.style.setProperty('--slide-from-x', `${fromRect.left - toRect.left}px`);
+  }
+  
+  setTimeout(() => {
+    element.classList.remove('slide-in');
+  }, 500);
+}
+
+function hideDropdown(element) {
+  element.classList.remove('slide-in');
+  element.classList.add('slide-out');
+  
+  setTimeout(() => {
+    element.classList.add('hidden');
+    element.classList.remove('slide-out');
+  }, 300);
+}
+
+// Enhanced control buttons visibility with mobile support
+function showControlButtons() {
+  const controlButtons = document.getElementById('controlButtons');
+  if (state.controlsVisible) {
+    controlButtons.classList.add('visible');
+    if (state.isMobile) {
+      controlButtons.classList.add('mobile-compact');
+    }
+  }
+}
+
+function hideControlButtons() {
+  const controlButtons = document.getElementById('controlButtons');
+  controlButtons.classList.remove('visible');
+}
+
+// Enhanced button click handlers with mobile optimization
+document.querySelectorAll('.control-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const ripple = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    `;
+    
+    this.appendChild(ripple);
+    
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  });
+});
