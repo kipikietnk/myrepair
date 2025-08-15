@@ -1,752 +1,4 @@
-// let data = {};
-
-// // Elements - Cache DOM elements once
-// const elements = {
-//   rotationContainer: document.getElementById('rotationContainer'),
-//   panzoomContainer: document.getElementById('panzoomContainer'),
-//   logoBtn: document.getElementById('logoBtn'),
-//   deviceSelect: document.getElementById('deviceSelect'),
-//   modelSelect: document.getElementById('modelSelect'),
-//   partSelect: document.getElementById('partSelect'),
-//   partSelectWrapper: document.getElementById('partSelectWrapper'),
-//   modelSelectWrapper: document.getElementById('modelSelectWrapper'),
-//   partImage: document.getElementById('partImage'),
-//   imageWrapper: document.getElementById('imageWrapper'),
-//   controlButtons: document.getElementById('controlButtons'),
-//   placeholder: document.getElementById('placeholder'),
-//   loading: document.getElementById('loading'),
-//   rotateLeftBtn: document.getElementById('rotateLeft'),
-//   rotateRightBtn: document.getElementById('rotateRight'),
-//   resetViewBtn: document.getElementById('resetView'),
-//   fitViewBtn: document.getElementById('fitView')
-// };
-
-// // State management
-// const state = {
-//   currentRotation: 0,
-//   hammerManager: null,
-//   panzoomInstance: null,
-//   resetClickCount: 0,
-//   resetClickTimer: null
-// };
-
-// // Constants
-// const CONFIG = {
-//   CLICK_THRESHOLD: 5,
-//   CLICK_WINDOW: 2000,
-//   PANZOOM_SETTINGS: {
-//     maxScale: Infinity,
-//     minScale: 0.2,
-//     step: 0.3,
-//     contain: 'none',
-//     bounds: false,
-//     cursor: 'grab',
-//     touchAction: 'none'
-//   },
-//   ANIMATION_DELAY: 100,
-//   ERROR_DISPLAY_TIME: 3000,
-//   RESIZE_DEBOUNCE: 250
-// };
-
-// const FUNNY_MESSAGES = [
-//   "Come on! 😤", "Shut up! 🤐", "Chill guy! 😎",
-//   "Seriously? 🙄", "Stop it! ✋", "Bruh... 😒",
-//   "Again? 🤦‍♂️", "You're killing me! 💀", "Enough! 😠",
-//   "Why tho? 🤷‍♂️", "I'm tired! 😴", "Please stop! 🙏",
-//   "Not again! 😫", "Give me a break! 😵‍💫", "You monster! 👹",
-//   "I quit! 🏃‍♂️💨", "This is madness! 🤯", "Have mercy! 😭",
-//   "I'm done! ✅", "Leave me alone! 😤", "What's wrong with you? 🤨",
-//   "Really? REALLY? 😡", "I can't even... 🤷‍♀️", "You're crazy! 🤪",
-//   "STOP THE MADNESS! 🛑"
-// ];
-
-// // Utility functions
-// const utils = {
-//   debounce(func, wait) {
-//     let timeout;
-//     return function executedFunction(...args) {
-//       const later = () => {
-//         clearTimeout(timeout);
-//         func(...args);
-//       };
-//       clearTimeout(timeout);
-//       timeout = setTimeout(later, wait);
-//     };
-//   },
-
-//   showErrorMessage(message) {
-//     const errorDiv = document.createElement('div');
-//     errorDiv.className = 'error-message';
-//     errorDiv.style.cssText = `
-//       position: absolute; top: 20px; right: 20px; background: var(--danger);
-//       color: white; padding: 12px 16px; border-radius: var(--radius-sm);
-//       font-size: 14px; z-index: 1001; animation: slideIn 0.3s ease;
-//     `;
-//     errorDiv.textContent = message;
-//     document.body.appendChild(errorDiv);
-    
-//     setTimeout(() => {
-//       errorDiv.style.opacity = '0';
-//       setTimeout(() => errorDiv.remove(), 300);
-//     }, CONFIG.ERROR_DISPLAY_TIME);
-//   },
-
-//   getRandomMessage() {
-//     return FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)];
-//   }
-// };
-
-// // UI Control functions
-// const ui = {
-//   showPartSelector() {
-//     elements.partSelectWrapper.classList.remove('hidden');
-//     elements.partSelect.disabled = false;
-//   },
-
-//   hidePartSelector() {
-//     elements.partSelectWrapper.classList.add('hidden');
-//     elements.partSelect.disabled = true;
-//   },
-
-//   showPlaceholder() {
-//     elements.placeholder.style.display = 'flex';
-//     elements.partImage.style.display = 'none';
-//   },
-
-//   showImage() {
-//     elements.placeholder.style.display = 'none';
-//     elements.partImage.style.display = 'block';
-//   },
-
-//   showLoading() {
-//     elements.loading.style.display = 'flex';
-//     elements.placeholder.style.display = 'none';
-//     elements.partImage.style.display = 'none';
-//   },
-
-//   hideLoading() {
-//     elements.loading.style.display = 'none';
-//   },
-
-//   showControls() {
-//     elements.controlButtons.classList.add('visible');
-//   },
-
-//   hideControls() {
-//     elements.controlButtons.classList.remove('visible');
-//   }
-// };
-
-// // Data loading
-// async function loadData() {
-//   try {
-//     const response = await fetch('./data.json');
-//     if (!response.ok) {
-//       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-//     }
-//     data = await response.json();
-//     console.log('✅ Data loaded from data.json');
-//     populateDevices();
-//   } catch (error) {
-//     console.error('❌ Error loading data:', error);
-//     utils.showErrorMessage('Không thể tải dữ liệu. Vui lòng thử lại.');
-//   }
-// }
-
-// // Populate device dropdown
-// function populateDevices() {
-//   elements.deviceSelect.innerHTML = '<option value="">Chọn loại máy</option>';
-  
-//   Object.keys(data).forEach(device => {
-//     const option = document.createElement('option');
-//     option.value = device;
-//     option.textContent = device;
-//     elements.deviceSelect.appendChild(option);
-//   });
-  
-//   console.log(`🖥️ Loaded ${Object.keys(data).length} device types`);
-//   setupEventListeners();
-//   initPanzoom();
-//   initHammer();
-// }
-
-// // Event handlers
-// function onDeviceChange() {
-//   const selectedDevice = elements.deviceSelect.value;
-//   elements.modelSelect.innerHTML = '<option value="">Chọn Model</option>';
-  
-//   if (!selectedDevice) {
-//     elements.modelSelectWrapper.classList.add('hidden');
-//     ui.hidePartSelector();
-//     ui.hideControls();
-//     ui.showPlaceholder();
-//     // Reset transforms when device is cleared
-//     if (state.panzoomInstance) {
-//       state.panzoomInstance.moveTo(0, 0);
-//       state.panzoomInstance.zoomTo(0, 0, 1);
-//     }
-//     setImageRotation(0);
-//     return;
-//   }
-  
-//   const models = data[selectedDevice];
-//   if (models) {
-//     Object.keys(models).forEach(model => {
-//       const option = document.createElement('option');
-//       option.value = model;
-//       option.textContent = model;
-//       elements.modelSelect.appendChild(option);
-//     });
-//     elements.modelSelectWrapper.classList.remove('hidden');
-//   }
-  
-//   ui.hidePartSelector();
-//   ui.hideControls();
-//   ui.showPlaceholder();
-// }
-
-// function onModelChange() {
-//   const selectedDevice = elements.deviceSelect.value;
-//   const selectedModel = elements.modelSelect.value;
-//   elements.partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
-  
-//   if (!selectedModel || !selectedDevice) {
-//     ui.hidePartSelector();
-//     ui.hideControls();
-//     ui.showPlaceholder();
-//     return;
-//   }
-  
-//   const modelParts = data[selectedDevice]?.[selectedModel] || [];
-//   modelParts.forEach((part, index) => {
-//     const option = document.createElement('option');
-//     option.value = index;
-//     option.textContent = part.type;
-//     elements.partSelect.appendChild(option);
-//   });
-  
-//   ui.showPartSelector();
-//   ui.hideControls();
-//   ui.showPlaceholder();
-// }
-
-// function onPartChange() {
-//   const selectedDevice = elements.deviceSelect.value;
-//   const selectedModel = elements.modelSelect.value;
-//   const partIndex = elements.partSelect.value;
-  
-//   if (partIndex === "" || !selectedDevice || !selectedModel) {
-//     ui.hideControls();
-//     ui.showPlaceholder();
-//     return;
-//   }
-  
-//   const part = data[selectedDevice]?.[selectedModel]?.[partIndex];
-//   if (!part) {
-//     utils.showErrorMessage("Không tìm thấy linh kiện");
-//     return;
-//   }
-  
-//   console.log(`🔧 Part changed to: ${part.type}`);
-  
-//   if (part.images && part.images.length > 0) {
-//     loadPartImage(part.images[0]);
-//   } else {
-//     utils.showErrorMessage("Không có ảnh cho linh kiện này");
-//     ui.hideControls();
-//     ui.showPlaceholder();
-//   }
-// }
-
-// // Image loading
-// function loadPartImage(imagePath) {
-//   ui.showLoading();
-  
-//   const img = new Image();
-//   img.onload = () => {
-//     elements.partImage.src = imagePath;
-//     elements.partImage.alt = elements.partSelect.options[elements.partSelect.selectedIndex].textContent;
-//     ui.hideLoading();
-//     ui.showImage();
-//     ui.showControls();
-//     resetTransforms();
-//     setTimeout(() => fitToContainer(), CONFIG.ANIMATION_DELAY);
-//   };
-  
-//   img.onerror = () => {
-//     ui.hideLoading();
-//     ui.showPlaceholder();
-//     ui.hideControls();
-//     utils.showErrorMessage('Không thể tải hình ảnh');
-//   };
-  
-//   img.src = imagePath;
-// }
-
-// // Panzoom initialization
-// function initPanzoom() {
-//   if (!window.panzoom) {
-//     console.error('❌ Panzoom library not found');
-//     return;
-//   }
-  
-//   try {
-//     state.panzoomInstance = panzoom(elements.panzoomContainer, CONFIG.PANZOOM_SETTINGS);
-    
-//     // Add wheel zoom support
-//     elements.imageWrapper.addEventListener('wheel', (e) => {
-//       e.preventDefault();
-//       if (state.panzoomInstance) {
-//         state.panzoomInstance.zoomWithWheel(e);
-//       }
-//     });
-    
-//     // Add double-click reset
-//     elements.imageWrapper.addEventListener('dblclick', (e) => {
-//       e.preventDefault();
-//       resetTransforms();
-//     });
-    
-//     console.log('✅ Panzoom initialized successfully');
-//   } catch (error) {
-//     console.error('❌ Error initializing panzoom:', error);
-//   }
-// }
-
-// // Hammer initialization
-// function initHammer() {
-//   if (!window.Hammer) {
-//     console.log('⚠️ Hammer.js not found - touch gestures disabled');
-//     return;
-//   }
-  
-//   try {
-//     state.hammerManager = new Hammer.Manager(elements.panzoomContainer, {
-//       inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput,
-//       recognizers: [
-//         [Hammer.Rotate, { enable: true }],
-//         [Hammer.Pan, { enable: true, pointers: 1 }]
-//       ]
-//     });
-//     console.log('✅ Hammer.js initialized successfully');
-//   } catch (error) {
-//     console.error('❌ Error initializing Hammer.js:', error);
-//   }
-// }
-
-// // Rotation functions
-// function setImageRotation(deg) {
-//   state.currentRotation = deg % 360;
-//   elements.rotationContainer.style.transform = `rotate(${state.currentRotation}deg)`;
-// }
-
-// function rotateImage(degrees) {
-//   setImageRotation(state.currentRotation + degrees);
-// }
-
-// // Transform functions - FIXED
-// function resetTransforms() {
-//   console.log('🔄 Resetting transforms');
-  
-//   if (state.panzoomInstance) {
-//     try {
-//       // Reset pan/zoom to original position and scale
-//       state.panzoomInstance.moveTo(0, 0);
-//       state.panzoomInstance.zoomTo(0, 0, 1);
-//       console.log('✅ Panzoom reset successful');
-//     } catch (error) {
-//       console.error('❌ Error resetting panzoom:', error);
-//     }
-//   }
-  
-//   state.currentRotation = 0;
-//   elements.rotationContainer.style.transform = 'rotate(0deg)';
-// }
-
-// function fitToContainer() {
-//   console.log('📐 Fitting image to container');
-  
-//   if (!elements.partImage || !state.panzoomInstance || elements.partImage.style.display === 'none') {
-//     console.log('⚠️ Cannot fit to container - missing elements or hidden image');
-//     return;
-//   }
-  
-//   const imgW = elements.partImage.naturalWidth || elements.partImage.width;
-//   const imgH = elements.partImage.naturalHeight || elements.partImage.height;
-//   const wrapRect = elements.imageWrapper.getBoundingClientRect();
-  
-//   if (!imgW || !imgH || !wrapRect.width || !wrapRect.height) {
-//     console.log('⚠️ Invalid dimensions for fit calculation');
-//     return;
-//   }
-  
-//   console.log(`📊 Image: ${imgW}x${imgH}, Container: ${wrapRect.width}x${wrapRect.height}`);
-  
-//   try {
-//     // Reset position and zoom first
-//     state.panzoomInstance.moveTo(0, 0);
-//     state.panzoomInstance.zoomTo(0, 0, 1);
-    
-//     // Calculate scale
-//     const scaleX = (wrapRect.width * 0.9) / imgW;
-//     const scaleY = (wrapRect.height * 0.9) / imgH;
-//     const targetScale = Math.min(scaleX, scaleY, 1);
-    
-//     console.log(`🎯 Target scale: ${targetScale}`);
-    
-//     if (targetScale < 1) {
-//       setTimeout(() => {
-//         if (state.panzoomInstance) {
-//           state.panzoomInstance.zoomTo(0, 0, targetScale);
-//         }
-//       }, CONFIG.ANIMATION_DELAY);
-//     }
-    
-//     // Reset rotation
-//     state.currentRotation = 0;
-//     elements.rotationContainer.style.transform = 'rotate(0deg)';
-    
-//     console.log('✅ Fit to container completed');
-//   } catch (error) {
-//     console.error('❌ Error fitting to container:', error);
-//   }
-// }
-
-// // Reset functions - FIXED
-// function resetApplication() {
-//   console.log('🔄 Resetting application');
-  
-//   elements.deviceSelect.value = '';
-//   elements.modelSelect.value = '';
-//   elements.partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
-//   elements.modelSelectWrapper.classList.add('hidden');
-//   ui.hidePartSelector();
-//   ui.hideControls();
-//   ui.showPlaceholder();
-  
-//   if (state.panzoomInstance) {
-//     try {
-//       state.panzoomInstance.moveTo(0, 0);
-//       state.panzoomInstance.zoomTo(0, 0, 1);
-//     } catch (error) {
-//       console.error('❌ Error resetting panzoom in app reset:', error);
-//     }
-//   }
-  
-//   setImageRotation(0);
-//   console.log('✅ Application reset completed');
-// }
-
-// function handleLogoResetClick(e) {
-//   e.preventDefault();
-//   console.log('🎭 Logo clicked - resetting application');
-  
-//   // Add shake animation to logo
-//   elements.logoBtn.classList.add('logo-shake');
-//   setTimeout(() => {
-//     elements.logoBtn.classList.remove('logo-shake');
-//   }, 600);
-  
-//   state.resetClickCount++;
-//   resetApplication();
-  
-//   if (state.resetClickCount >= CONFIG.CLICK_THRESHOLD) {
-//     showFunnyMessage();
-//     state.resetClickCount = 0;
-//   }
-  
-//   if (state.resetClickTimer) {
-//     clearTimeout(state.resetClickTimer);
-//   }
-  
-//   state.resetClickTimer = setTimeout(() => {
-//     state.resetClickCount = 0;
-//   }, CONFIG.CLICK_WINDOW);
-// }
-
-// function showFunnyMessage() {
-//   const randomMessage = utils.getRandomMessage();
-//   console.log(`🎭 Logo button says: ${randomMessage}`);
-  
-//   // Get logo position for message placement
-//   const logoRect = elements.logoBtn.getBoundingClientRect();
-  
-//   // Create visual funny message that appears from logo
-//   const messageDiv = document.createElement('div');
-//   messageDiv.className = 'funny-message';
-//   messageDiv.style.cssText = `
-//     position: fixed; 
-//     left: ${logoRect.right + 10}px; 
-//     top: ${logoRect.top}px;
-//     background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-//     color: white; 
-//     padding: 12px 20px;
-//     border-radius: 25px; 
-//     font-size: 16px; 
-//     z-index: 9999;
-//     font-weight: bold;
-//     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-//     animation: messagePopOut 0.6s ease-out forwards;
-//     transform-origin: left center;
-//     white-space: nowrap;
-//   `;
-//   messageDiv.textContent = randomMessage;
-  
-//   // Add speech bubble tail
-//   const tail = document.createElement('div');
-//   tail.style.cssText = `
-//     position: absolute;
-//     left: -10px;
-//     top: 50%;
-//     transform: translateY(-50%);
-//     width: 0;
-//     height: 0;
-//     border-style: solid;
-//     border-width: 8px 10px 8px 0;
-//     border-color: transparent #ff6b6b transparent transparent;
-//   `;
-//   messageDiv.appendChild(tail);
-  
-//   document.body.appendChild(messageDiv);
-  
-//   // Remove message after delay
-//   setTimeout(() => {
-//     messageDiv.style.animation = 'messagePopIn 0.4s ease-in forwards';
-//     setTimeout(() => messageDiv.remove(), 400);
-//   }, 2500);
-// }
-
-// // Window resize handler
-// function handleWindowResize() {
-//   console.log('📱 Window resized');
-//   if (elements.partImage && elements.partImage.style.display !== 'none') {
-//     setTimeout(() => fitToContainer(), CONFIG.ANIMATION_DELAY);
-//   }
-// }
-
-// // Event listener setup - FIXED
-// function setupEventListeners() {
-//   console.log('🔗 Setting up event listeners');
-  
-//   // Dropdown events
-//   elements.deviceSelect.addEventListener('change', onDeviceChange);
-//   elements.modelSelect.addEventListener('change', onModelChange);
-//   elements.partSelect.addEventListener('change', onPartChange);
-  
-//   // Control button events - FIXED
-//   elements.rotateLeftBtn.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     console.log('↺ Rotating left');
-//     rotateImage(-90);
-//   });
-  
-//   elements.rotateRightBtn.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     console.log('↻ Rotating right');
-//     rotateImage(90);
-//   });
-  
-//   elements.resetViewBtn.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     console.log('🔄 Reset view button clicked');
-//     resetTransforms();
-//   });
-  
-//   elements.fitViewBtn.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     console.log('📐 Fit view button clicked');
-//     fitToContainer();
-//   });
-  
-//   // Logo button - FIXED
-//   elements.logoBtn.addEventListener('click', handleLogoResetClick);
-  
-//   // Window events
-//   window.addEventListener('resize', utils.debounce(handleWindowResize, CONFIG.RESIZE_DEBOUNCE));
-  
-//   console.log('✅ Event listeners setup completed');
-// }
-
-// // Initialization
-// function initialize() {
-//   console.log('🚀 Initializing application');
-  
-//   // Check required elements
-//   const missingElements = Object.entries(elements).filter(([key, element]) => !element);
-//   if (missingElements.length > 0) {
-//     console.error('❌ Missing DOM elements:', missingElements.map(([key]) => key));
-//     return;
-//   }
-  
-//   loadData();
-// }
-
-// // Start the application
-// if (document.readyState === 'loading') {
-//   document.addEventListener('DOMContentLoaded', initialize);
-// } else {
-//   initialize();
-// }
-
-// // Add CSS for animations if not present
-// if (!document.querySelector('#dynamic-styles')) {
-//   const style = document.createElement('style');
-//   style.id = 'dynamic-styles';
-//   style.textContent = `
-//     @keyframes bounce {
-//       0%, 20%, 60%, 100% { transform: translate(-50%, -50%) translateY(0); }
-//       40% { transform: translate(-50%, -50%) translateY(-10px); }
-//       80% { transform: translate(-50%, -50%) translateY(-5px); }
-//     }
-    
-//     @keyframes slideIn {
-//       from { transform: translateX(100%); opacity: 0; }
-//       to { transform: translateX(0); opacity: 1; }
-//     }
-    
-//     @keyframes logo-shake {
-//       0%, 100% { transform: translateX(0); }
-//       10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-//       20%, 40%, 60%, 80% { transform: translateX(3px); }
-//     }
-    
-//     @keyframes messagePopOut {
-//       0% { 
-//         opacity: 0; 
-//         transform: scale(0.3) translateX(-20px); 
-//       }
-//       70% { 
-//         transform: scale(1.1) translateX(0); 
-//       }
-//       100% { 
-//         opacity: 1; 
-//         transform: scale(1) translateX(0); 
-//       }
-//     }
-    
-//     @keyframes messagePopIn {
-//       0% { 
-//         opacity: 1; 
-//         transform: scale(1) translateX(0); 
-//       }
-//       100% { 
-//         opacity: 0; 
-//         transform: scale(0.8) translateX(-20px); 
-//       }
-//     }
-    
-//     .logo-shake {
-//       animation: logo-shake 0.6s ease-in-out;
-//     }
-    
-//     .funny-message {
-//       pointer-events: none;
-//     }
-//   `;
-//   document.head.appendChild(style);
-// }
-
-// // Enhanced dropdown animation functions
-//     function showDropdown(element, fromElement = null) {
-//       element.classList.remove('hidden', 'slide-out');
-//       element.classList.add('slide-in');
-      
-//       // Optional: animate from previous element position
-//       if (fromElement) {
-//         const fromRect = fromElement.getBoundingClientRect();
-//         const toRect = element.getBoundingClientRect();
-        
-//         element.style.setProperty('--slide-from-x', `${fromRect.left - toRect.left}px`);
-//       }
-      
-//       // Remove animation class after animation completes
-//       setTimeout(() => {
-//         element.classList.remove('slide-in');
-//       }, 500);
-//     }
-    
-//     function hideDropdown(element) {
-//       element.classList.remove('slide-in');
-//       element.classList.add('slide-out');
-      
-//       setTimeout(() => {
-//         element.classList.add('hidden');
-//         element.classList.remove('slide-out');
-//       }, 300);
-//     }
-    
-//     // Enhanced control buttons visibility
-//     function showControlButtons() {
-//       const controlButtons = document.getElementById('controlButtons');
-//       controlButtons.classList.add('visible');
-//     }
-    
-//     function hideControlButtons() {
-//       const controlButtons = document.getElementById('controlButtons');
-//       controlButtons.classList.remove('visible');
-//     }
-    
-//     // Logo click handler with animation
-//     document.getElementById('logoBtn').addEventListener('click', function() {
-//       this.style.transform = 'scale(1.2) rotate(360deg)';
-//       setTimeout(() => {
-//         this.style.transform = '';
-//       }, 600);
-//     });
-    
-//     // Add ripple effect to buttons
-//     document.querySelectorAll('.control-btn').forEach(btn => {
-//       btn.addEventListener('click', function(e) {
-//         const ripple = document.createElement('span');
-//         const rect = this.getBoundingClientRect();
-//         const size = Math.max(rect.width, rect.height);
-//         const x = e.clientX - rect.left - size / 2;
-//         const y = e.clientY - rect.top - size / 2;
-        
-//         ripple.style.cssText = `
-//           position: absolute;
-//           width: ${size}px;
-//           height: ${size}px;
-//           left: ${x}px;
-//           top: ${y}px;
-//           background: rgba(255, 255, 255, 0.6);
-//           border-radius: 50%;
-//           transform: scale(0);
-//           animation: ripple 0.6s linear;
-//           pointer-events: none;
-//         `;
-        
-//         this.appendChild(ripple);
-        
-//         setTimeout(() => {
-//           ripple.remove();
-//         }, 600);
-//       });
-//     });
-    
-//     // Add CSS animation for ripple effect
-//     const style = document.createElement('style');
-//     style.textContent = `
-//       @keyframes ripple {
-//         to {
-//           transform: scale(4);
-//           opacity: 0;
-//         }
-//       }
-      
-//       .control-btn {
-//         position: relative;
-//         overflow: hidden;
-//       }
-//     `;
-//     document.head.appendChild(style);
-    
-//     // Placeholder for your existing JavaScript
-//     // Add your original scripts.js functionality here
-    
-//     console.log('Enhanced UI loaded with animations');
-
-    let data = {};
+let data = {};
 
 // Elements - Cache DOM elements once
 const elements = {
@@ -784,6 +36,7 @@ const state = {
 
 // Constants
 const CONFIG = {
+  IMAGE_FORMAT: /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i,
   CLICK_THRESHOLD: 5,
   CLICK_WINDOW: 2000,
   PANZOOM_SETTINGS: {
@@ -854,13 +107,6 @@ const utils = {
 
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
-    errorDiv.style.cssText = `
-      position: fixed; top: 20px; right: 20px; background: var(--danger, #dc3545);
-      color: white; padding: 12px 16px; border-radius: 8px;
-      font-size: 14px; z-index: 1001; animation: slideIn 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      max-width: 300px; word-wrap: break-word;
-    `;
     errorDiv.textContent = message;
     document.body.appendChild(errorDiv);
     
@@ -873,12 +119,6 @@ const utils = {
   showSuccessMessage(message) {
     const successDiv = document.createElement('div');
     successDiv.className = 'success-message';
-    successDiv.style.cssText = `
-      position: fixed; top: 20px; right: 20px; background: var(--success, #28a745);
-      color: white; padding: 12px 16px; border-radius: 8px;
-      font-size: 14px; z-index: 1001; animation: slideIn 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
     successDiv.textContent = message;
     document.body.appendChild(successDiv);
     
@@ -893,7 +133,7 @@ const utils = {
   },
 
   isValidImageUrl(url) {
-    return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url);
+    return CONFIG.IMAGE_FORMAT.test(url);
   },
 
   preloadImage(src) {
@@ -1002,10 +242,7 @@ async function loadData() {
     utils.showSuccessMessage('Dữ liệu đã được tải thành công');
     populateDevices();
   } catch (error) {
-    console.error('❌ Error loading data:', error);
-    utils.showErrorMessage(`Không thể tải dữ liệu: ${error.message}`);
-    
-    // Try to load fallback data or show offline message
+    console.error('Error loading data:', error);
     showOfflineMessage();
   }
 }
@@ -1034,7 +271,6 @@ function populateDevices() {
     }
   });
   
-  console.log(`🖥️ Loaded ${Object.keys(data).length} device types`);
   setupEventListeners();
   initPanzoom();
   initHammer();
@@ -1083,7 +319,7 @@ function onDeviceChange() {
   ui.showPlaceholder();
   resetTransforms();
   
-  console.log(`📱 Device changed to: ${selectedDevice} (${modelKeys.length} models)`);
+  console.log(`Device changed to: ${selectedDevice} (${modelKeys.length} models)`);
 }
 
 function onModelChange() {
@@ -1119,8 +355,6 @@ function onModelChange() {
   ui.showPartSelector();
   ui.hideControls();
   ui.showPlaceholder();
-  
-  console.log(`🔧 Model changed to: ${selectedModel} (${modelParts.length} parts)`);
 }
 
 async function onPartChange() {
@@ -1141,8 +375,6 @@ async function onPartChange() {
     utils.showErrorMessage("Không tìm thấy linh kiện");
     return;
   }
-  
-  console.log(`🔧 Part changed to: ${part.type}`);
   
   if (!part.images || !Array.isArray(part.images) || part.images.length === 0) {
     utils.showErrorMessage("Không có ảnh cho linh kiện này");
@@ -1179,10 +411,8 @@ async function loadPartImage(imagePath) {
     resetTransforms();
     setTimeout(() => fitToContainer(), CONFIG.ANIMATION_DELAY);
     
-    console.log(`✅ Image loaded successfully: ${imagePath}`);
-    
   } catch (error) {
-    console.error('❌ Error loading image:', error);
+    console.error('Error loading image:', error);
     ui.hideLoading();
     ui.showPlaceholder();
     ui.hideControls();
@@ -1193,8 +423,7 @@ async function loadPartImage(imagePath) {
 // Enhanced panzoom initialization
 function initPanzoom() {
   if (!window.panzoom) {
-    console.error('❌ Panzoom library not found');
-    utils.showErrorMessage('Thư viện panzoom không được tải');
+    console.error('Panzoom library not found');
     return;
   }
 
@@ -1235,11 +464,8 @@ function initPanzoom() {
         e.preventDefault();
       }, { passive: false });
     }
-
-    console.log('✅ Panzoom initialized successfully (with fixed zoom/pan)');
   } catch (error) {
-    console.error('❌ Error initializing panzoom:', error);
-    utils.showErrorMessage('Lỗi khởi tạo zoom/pan');
+    console.error('Error initializing panzoom:', error);
   }
 }
 
@@ -1247,7 +473,7 @@ function initPanzoom() {
 // Enhanced hammer initialization
 function initHammer() {
   if (!window.Hammer) {
-    console.log('⚠️ Hammer.js not found - touch gestures disabled');
+    console.log('Hammer.js not found - touch gestures disabled');
     return;
   }
   
@@ -1273,10 +499,8 @@ function initHammer() {
         fitToContainer();
       }
     });
-    
-    console.log('✅ Hammer.js initialized successfully');
   } catch (error) {
-    console.error('❌ Error initializing Hammer.js:', error);
+    console.error('Error initializing Hammer.js:', error);
   }
 }
 
@@ -1284,8 +508,6 @@ function initHammer() {
 function setImageRotation(deg) {
   state.currentRotation = ((deg % 360) + 360) % 360; // Normalize to 0-359
   elements.rotationContainer.style.transform = `rotate(${state.currentRotation}deg)`;
-  
-  console.log(`🔄 Rotation set to: ${state.currentRotation}°`);
 }
 
 function rotateImage(degrees) {
@@ -1309,8 +531,6 @@ function rotateImage(degrees) {
 
 // Enhanced transform functions
 function resetTransforms() {
-  console.log('🔄 Resetting transforms');
-  
   if (state.panzoomInstance && state.isImageLoaded) {
     try {
       // Reset to original position and scale
@@ -1320,15 +540,14 @@ function resetTransforms() {
       // Reset rotation
       setImageRotation(0);
     } catch (error) {
-      console.error('❌ Error resetting panzoom:', error);
+      console.error('Error resetting panzoom:', error);
     }
   }
 }
 
 function fitToContainer() {
   if (!elements.partImage || !state.panzoomInstance || !state.isImageLoaded) {
-    console.log('⚠️ Cannot fit to container - missing elements or no image');
-    utils.showErrorMessage('Không có ảnh để fit');
+    console.log('Cannot fit to container - missing elements or no image');
     return;
   }
   
@@ -1337,13 +556,9 @@ function fitToContainer() {
   const wrapRect = elements.imageWrapper.getBoundingClientRect();
   
   if (!imgW || !imgH || !wrapRect.width || !wrapRect.height) {
-    console.log('⚠️ Invalid dimensions for fit calculation');
-    utils.showErrorMessage('Không thể tính toán kích thước');
+    console.log('Invalid dimensions for fit calculation');
     return;
   }
-  
-  console.log(`📊 Image: ${imgW}x${imgH}, Container: ${wrapRect.width}x${wrapRect.height}`);
-  
   try {
     // Reset position first
     state.panzoomInstance.moveTo(0, 0);
@@ -1361,10 +576,6 @@ function fitToContainer() {
     // Use the smaller scale to ensure image fits completely
     // Remove the Math.min(..., 1) limitation to allow zoom out beyond 100%
     const targetScale = Math.min(scaleX, scaleY);
-    
-    console.log(`🎯 Scale calculations - X: ${scaleX.toFixed(3)}, Y: ${scaleY.toFixed(3)}, Target: ${targetScale.toFixed(3)} (rotated: ${isRotated})`);
-    
-    // Apply the scale with smooth animation
     setTimeout(() => {
       if (state.panzoomInstance) {
         state.panzoomInstance.zoomTo(0, 0, targetScale);
@@ -1372,15 +583,12 @@ function fitToContainer() {
     }, CONFIG.ANIMATION_DELAY);
     
   } catch (error) {
-    console.error('❌ Error fitting to container:', error);
-    utils.showErrorMessage('Lỗi khi fit ảnh');
+    console.error('Error fitting to container:', error);
   }
 }
 
 // Enhanced reset functions
 function resetApplication() {
-  console.log('🔄 Resetting application');
-  
   // Reset form state
   elements.deviceSelect.value = '';
   elements.modelSelect.value = '';
@@ -1400,7 +608,7 @@ function resetApplication() {
       state.panzoomInstance.moveTo(0, 0);
       state.panzoomInstance.zoomTo(0, 0, 1);
     } catch (error) {
-      console.error('❌ Error resetting panzoom in app reset:', error);
+      console.error('Error resetting panzoom in app reset:', error);
     }
   }
   
@@ -1411,14 +619,10 @@ function resetApplication() {
   state.lastSelectedModel = '';
   state.lastSelectedPart = '';
   state.isImageLoaded = false;
-  
-  console.log('✅ Application reset completed');
 }
 
 function handleLogoResetClick(e) {
   e.preventDefault();
-  console.log('🎭 Logo clicked - resetting application');
-  
   // Add enhanced shake animation
   elements.logoBtn.classList.add('logo-shake');
   setTimeout(() => {
@@ -1446,8 +650,6 @@ function handleLogoResetClick(e) {
 
 function showFunnyMessage() {
   const randomMessage = utils.getRandomMessage();
-  console.log(`🎭 Logo button says: ${randomMessage}`);
-  
   // Remove existing funny message
   const existingMessage = document.querySelector('.funny-message');
   if (existingMessage) {
@@ -1745,9 +947,4 @@ if (!document.querySelector('#dynamic-styles')) {
       }
     `;
     document.head.appendChild(style);
-    
-    // Placeholder for your existing JavaScript
-    // Add your original scripts.js functionality here
-    
-    console.log('Enhanced UI loaded with animations');
   
