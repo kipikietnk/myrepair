@@ -106,6 +106,7 @@ body::before {
   z-index: 1000;
   box-shadow: 0 8px 32px var(--shadow);
   animation: slideDown 0.8s var(--ease-spring);
+  width: auto;
 }
 
 @keyframes slideDown {
