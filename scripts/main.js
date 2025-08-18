@@ -281,6 +281,15 @@ function setupEventListeners() {
   });
 
   elements.logoBtn.addEventListener('click', handleLogoClick);
+
+  // Windowa resize
+  window.addEventListener('resize', utils.debounce(() => {
+    ui.updateMobileState();
+
+    if (state.isImageLoaded && state.panzoomInstance) {
+      setTimeout(fitToContainer, CONFIG.ANIMATION_DELAY)
+    }
+  }))
 }
 
 // Initialization
@@ -530,6 +539,12 @@ let dragManager;
 document.addEventListener('DOMContentLoaded', () => {
   dragManager = new FollowCursorDrag();
 });
+
+ document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.body.style.overflow = 'auto'; // Enable scrolling after loading
+            }, 4800);
+        });
 
 // Ngăn context menu trên nút
 document.addEventListener('contextmenu', e => {

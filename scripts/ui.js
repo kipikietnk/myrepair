@@ -113,5 +113,18 @@ export default {
     elements.controlButtons.querySelectorAll('button').forEach(btn => {
       btn.disabled = !hasImage;
     });
+  },
+
+  updateMobileState() {
+    const wasMobile = state.isMobile;
+    state.isMobile = utils.isMobileDevice();
+    
+    if (wasMobile !== state.isMobile) {
+      if (state.isMobile) {
+        elements.controlButtons.classList.add('mobile-compact');
+      } else {
+        elements.controlButtons.classList.remove('mobile-compact');
+      }
+    }
   }
 };

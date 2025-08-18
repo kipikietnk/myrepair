@@ -11,7 +11,7 @@ export default {
   imageWrapper: document.getElementById('imageWrapper'),
   controlButtons: document.getElementById('controlButtons'),
   placeholder: document.getElementById('placeholder'),
-  loading: document.getElementById('loading'),
+  loading: document.getElementById('loading-img'),
   rotateLeftBtn: document.getElementById('rotateLeft'),
   rotateRightBtn: document.getElementById('rotateRight'),
   resetViewBtn: document.getElementById('resetView'),

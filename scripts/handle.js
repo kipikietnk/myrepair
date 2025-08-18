@@ -74,35 +74,6 @@ function fitToContainer() {
   }
 }
 
-function resetApplication() {
-  elements.deviceSelect.value = '';
-  elements.modelSelect.value = '';
-  elements.modelSelect.innerHTML = '<option value="">Chọn Model</option>';
-  elements.partSelect.value = '';
-  elements.partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
-  
-  ui.hideModelSelector();
-  ui.hidePartSelector();
-  ui.hideControls();
-  ui.showPlaceholder();
-  
-  if (state.panzoomInstance) {
-    try {
-      state.panzoomInstance.moveTo(0, 0);
-      state.panzoomInstance.zoomTo(0, 0, 1);
-    } catch (error) {
-      console.error('Error resetting panzoom in app reset:', error);
-    }
-  }
-  
-  setImageRotation(0);
-  
-  state.lastSelectedDevice = '';
-  state.lastSelectedModel = '';
-  state.lastSelectedPart = '';
-  state.isImageLoaded = false;
-}
-
 // Modified logo click handler - now toggles topbar instead of controls
 function handleLogoClick(e) {
   e.preventDefault();
@@ -115,4 +86,4 @@ function setImageRotation(deg) {
   elements.rotationContainer.style.transform = `rotate(${state.currentRotation}deg)`;
 }
 
-export { rotateImage, resetTransforms, fitToContainer, resetApplication, handleLogoClick };
+export { rotateImage, resetTransforms, fitToContainer, handleLogoClick };
