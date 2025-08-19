@@ -23,7 +23,7 @@ export const state = {
 // Data loading with improved error handling
 async function loadData() {
   try {
-    const response = await fetch('./data.json');
+    const response = await fetch('../data.json');
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -169,7 +169,8 @@ async function onPartChange() {
     return;
   }
 
-  const part = data[selectedDevice]?.[selectedModel]?.[partIndex];
+  let part = data[selectedDevice]?.[selectedModel]?.[partIndex];
+
   if (!part) {
     utils.showErrorMessage("Không tìm thấy linh kiện");
     return;
@@ -183,6 +184,7 @@ async function onPartChange() {
   }
 
   const imagePath = part.images[0];
+
   if (!utils.isValidImageUrl(imagePath)) {
     utils.showErrorMessage("Định dạng ảnh không hợp lệ");
     return;
@@ -256,6 +258,12 @@ function setupEventListeners() {
   elements.modelSelect.addEventListener('change', onModelChange);
   elements.partSelect.addEventListener('change', onPartChange);
 
+  elements.fullScreenToggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    addRippleEffect(elements.fullScreenToggleBtn, e);
+    fullScreenChange();
+  });
+
   elements.rotateLeftBtn.addEventListener('click', (e) => {
     e.preventDefault();
     addRippleEffect(elements.rotateLeftBtn, e);
@@ -274,22 +282,7 @@ function setupEventListeners() {
     resetTransforms();
   });
 
-  elements.fitViewBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    addRippleEffect(elements.fitViewBtn, e);
-    fitToContainer();
-  });
-
   elements.logoBtn.addEventListener('click', handleLogoClick);
-
-  // Windowa resize
-  window.addEventListener('resize', utils.debounce(() => {
-    ui.updateMobileState();
-
-    if (state.isImageLoaded && state.panzoomInstance) {
-      setTimeout(fitToContainer, CONFIG.ANIMATION_DELAY)
-    }
-  }))
 }
 
 // Initialization
@@ -299,10 +292,10 @@ function initialize() {
     console.error('Missing DOM elements:', missingElements.map(([key]) => key));
     return;
   }
-  
+
   // Initialize mobile state
   state.isMobile = utils.isMobileDevice();
-  
+
   loadData();
 }
 
@@ -341,18 +334,27 @@ class FollowCursorDrag {
         const dx = e.clientX - this.pointerStart.x;
         const dy = e.clientY - this.pointerStart.y;
         if (Math.hypot(dx, dy) >= this.DRAG_THRESHOLD) {
-          this.startDrag(e, this.currentElement); 
+          this.startDrag(e, this.currentElement);
         }
       }
-      this.drag(e);
+      // Chỉ drag khi thực sự đang drag
+      if (this.isDragging) {
+        this.drag(e);
+      }
     });
 
     document.addEventListener('mouseup', () => {
-      this.isMouseDown = false;
+      // Kết thúc drag trước khi reset isMouseDown
       this.endDrag();
+      this.isMouseDown = false;
     });
 
-    document.addEventListener('touchmove', (e) => this.drag(e), { passive: false });
+    document.addEventListener('touchmove', (e) => {
+      if (this.isDragging) {
+        this.drag(e);
+      }
+    }, { passive: false });
+    
     document.addEventListener('touchend', () => this.endDrag());
     document.addEventListener('touchcancel', () => this.endDrag());
 
@@ -382,9 +384,11 @@ class FollowCursorDrag {
 
       // 🖱 Chuột
       element.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Ngăn text selection
         this.pointerStart = { x: e.clientX, y: e.clientY };
         this.currentElement = element;
         this.isMouseDown = true;
+        this.dragMoved = false;
       });
 
       // 📱 Cảm ứng
@@ -504,7 +508,12 @@ class FollowCursorDrag {
   }
 
   endDrag() {
-    if (!this.isDragging || !this.currentElement) return;
+    if (!this.isDragging || !this.currentElement) {
+      // Reset các state cần thiết ngay cả khi không drag
+      this.currentElement = null;
+      this.dragMoved = false;
+      return;
+    }
 
     if (this.dragMoved) {
       this.suppressClickFor = this.currentElement;
@@ -534,29 +543,27 @@ class FollowCursorDrag {
   }
 }
 
-// Khởi tạo
-let dragManager;
-document.addEventListener('DOMContentLoaded', () => {
-  dragManager = new FollowCursorDrag();
-});
+// // Khởi tạo
+// let dragManager;
+// document.addEventListener('DOMContentLoaded', () => {
+//   dragManager = new FollowCursorDrag();
+// });
 
- document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                document.body.style.overflow = 'auto'; // Enable scrolling after loading
-            }, 4800);
-        });
+// document.addEventListener('DOMContentLoaded', function () {
+//   setTimeout(() => {
+//     document.body.style.overflow = 'auto'; // Enable scrolling after loading
+//   }, 4800);
+// });
 
-// Ngăn context menu trên nút
-document.addEventListener('contextmenu', e => {
-  if (e.target.classList.contains('draggable')) e.preventDefault();
-});
+// // Ngăn context menu trên nút
+// document.addEventListener('contextmenu', e => {
+//   if (e.target.classList.contains('draggable')) e.preventDefault();
+// });
 
-elements.fullScreenToggleBtn.addEventListener('click', fullScreenChange);
-
-// Ngăn double-tap zoom
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function (event) {
-  const now = Date.now();
-  if (now - lastTouchEnd <= 300) event.preventDefault();
-  lastTouchEnd = now;
-}, false);
+// // Ngăn double-tap zoom
+// let lastTouchEnd = 0;
+// document.addEventListener('touchend', function (event) {
+//   const now = Date.now();
+//   if (now - lastTouchEnd <= 300) event.preventDefault();
+//   lastTouchEnd = now;
+// }, false);

@@ -15,6 +15,5 @@ export default {
   rotateLeftBtn: document.getElementById('rotateLeft'),
   rotateRightBtn: document.getElementById('rotateRight'),
   resetViewBtn: document.getElementById('resetView'),
-  fitViewBtn: document.getElementById('fitView'),
   fullScreenToggleBtn: document.getElementById('full-screen-toggle')
 };

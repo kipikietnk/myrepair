@@ -14,20 +14,8 @@
 </head>
 
 <body>
-   <!-- Loading Overlay -->
-    <div class="loading-overlay">
-        <div class="loading-container">
-            <div class="border-container">
-                <div class="animated-border"></div>
-            </div>
-            <h1 class="loading-text">My Repair</h1>
-        </div>
-        <div class="loading-progress">
-            <div class="progress-bar"></div>
-        </div>
-    </div>
   <!-- Top Navigation Bar -->
-  <img class="logo draggable" id="logoBtn" src="./images/logo.webp" alt="">
+  <img class="logo draggable" id="logoBtn" src="../images/logo.webp" alt="">
 
   <div class="topbar">
     <div class="controls-section">
@@ -54,9 +42,7 @@
         </div>
       </div>
 
-      <button id="full-screen-toggle">Full Screen Toggle</button>
-
-      <div class="control-buttons" id="controlButtons">
+      <div class="control-buttons" id="controlButtons" title="">
         <button id="rotateLeft" class="control-btn" title="Xoay trái" aria-label="Xoay ảnh sang trái">
           <span>↺</span>
         </button>
@@ -66,7 +52,7 @@
         <button id="resetView" class="control-btn" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
           <span>⌂</span>
         </button>
-        <button id="fitView" class="control-btn" title="Vừa màn hình" aria-label="Vừa với màn hình">
+        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình" aria-label="Toàn màn hình">
           <span>⛶</span>
         </button>
       </div>
@@ -101,50 +87,7 @@
   <script src="https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
   <script type="module" src="./scripts/main.js"></script>
+  <script src="./scripts/_.js"></script>
 </body>
 
 </html>
-<!-- 
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Repair Loading Screen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --text: #333;
-            --bg: #ffffff;
-            --primary: #007AFF;
-            --secondary: #FF6B35;
-            --accent: #34C759;
-        }
-
-        
-    </style>
-</head>
-<body>
-   
-
-    <div class="main-content">
-        <h1>Chào mừng đến với My Repair!</h1>
-        <p>Đây là nội dung chính của trang web. Loading screen đã hoàn thành và nội dung đã được hiển thị.</p>
-        <p>Animation loading với hiệu ứng:</p>
-        <ul>
-            <li>Text "My Repair" với hiệu ứng glow</li>
-            <li>Border animation chạy xung quanh text</li>
-            <li>Progress bar hiển thị tiến trình</li>
-            <li>Gradient background động</li>
-            <li>Fade out mượt mà</li>
-            <li>Content fade in sau khi loading hoàn thành</li>
-        </ul>
-    </div>
-
-    <script>
-        // Có thể thêm JavaScript để kiểm soát loading time hoặc events
-       
-    </script>
-</body>
-</html> -->
