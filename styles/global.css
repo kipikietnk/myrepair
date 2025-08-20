@@ -20,35 +20,18 @@
   --shadow-colored: rgba(102, 126, 234, 0.4);
 
   --radius: 16px;
-  --radius-sm: 12px;
-  --radius-lg: 24px;
   --topbar-height: 80px;
 
   /* Animation variables */
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  /* Logo configs */
-  --logo-size: 50px;
-  --logo-offset: 20px;
-  --logo-bg: rgba(255, 255, 255, 0.1);
-  --logo-bg-hover: linear-gradient(
-    to top right,
-    rgba(0, 255, 255, 0.5),
-    rgba(0, 128, 255, 0.7)
-  );
-  --logo-blur: 6px;
-  --logo-radius: 12px;
-  --logo-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  --logo-transition: 0.4s ease;
 }
 
 @media (max-width: 768px) {
   :root {
     --topbar-height: 70px;
     --radius: 12px;
-    --radius-lg: 16px;
   }
 }
 
@@ -57,7 +40,7 @@
     --bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     --surface: rgba(28, 28, 30, 0.95);
     --surface-secondary: rgba(44, 44, 46, 0.8);
-    --surface-glass: rgba(255, 255, 255, 0.05);
+    --surface-glass: rgba(41, 41, 41, 0.05);
     --control-surface-glass: rgba(80, 80, 80, 0.4);
     --text: #FFFFFF;
     --text-secondary: #A1A1AA;

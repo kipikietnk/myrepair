@@ -85,8 +85,8 @@ body::before {
   top: 90px;
   left: 10px;
   z-index: 10000;
-  background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(3px);
+  background: var(--surface-glass);
+  backdrop-filter: blur(5px);
   border: none;
   border-radius: 50%;
   width: 60px;
@@ -97,7 +97,7 @@ body::before {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(255, 189, 33, 0.4);
-  color: white;
+  color: var(--text);
   font-size: 24px;
   overflow: hidden;
 }
@@ -354,7 +354,6 @@ body::before {
   overflow: hidden;
   background: var(--surface);
   backdrop-filter: blur(30px);
-  border-radius: var(--radius-lg);
   box-shadow:
     0 20px 40px var(--shadow-lg),
     0 0 0 1px var(--border);
@@ -407,7 +406,6 @@ body::before {
   transition: all 0.3s var(--ease-smooth);
   will-change: transform;
   pointer-events: auto;
-  border-radius: var(--radius-sm);
   box-shadow: 0 10px 30px var(--shadow);
 }
 
@@ -469,7 +467,6 @@ body::before {
   padding: 30px;
   background: var(--surface-glass);
   backdrop-filter: blur(20px);
-  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
 }
 
@@ -574,7 +571,7 @@ body::before {
     width: calc(100vw - 20px);
     height: calc(100vh - var(--topbar-height) - 20px);
     border-radius: var(--radius);
-    top: calc(var(--topbar-height) + 10px);
+    top: calc(var(--topbar-height) + 4px);
   }
 
   .placeholder {

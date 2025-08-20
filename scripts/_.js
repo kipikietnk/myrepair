@@ -122,15 +122,15 @@ class TrashBinTroll {
                 right: 20px;
                 background: rgba(0,0,0,0.8);
                 color: white;
-                padding: 10px 15px;
+                padding: 20px 25px;
                 border-radius: 20px;
                 font-family: Arial, sans-serif;
-                font-size: 14px;
+                font-size: 18px;
                 opacity: 0;
                 transform: translateY(20px);
                 transition: all 0.3s ease;
                 z-index: 10001;
-                max-width: 250px;
+                max-width: 450px;
             }
 
             .troll-message.show {
