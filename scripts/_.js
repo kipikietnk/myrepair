@@ -276,6 +276,10 @@ class TrashBinTroll {
 
                 const painSound = this.painSounds[Math.floor(Math.random() * this.painSounds.length)];
                 this.showMessage(painSound);
+
+                setTimeout(() => {
+                    if (this.clickCount < 8) this.clickCount = 0;
+                }, 1500)
             } else if (this.clickCount >= 8) {
                 this.runAway();
             }
@@ -339,7 +343,7 @@ class TrashBinTroll {
             element.remove();
 
             if (isLogo) {
-                this.showMessage("You have deleted something important. Press F5 to restore", 6500);
+                this.showMessage("Opps! You have deleted something important. Press F5 to restore", 6500);
             } else {
                 this.showMessage("Deleted! 🗑️", 1500);
             }
