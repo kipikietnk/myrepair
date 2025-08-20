@@ -339,7 +339,7 @@ class TrashBinTroll {
             element.remove();
 
             if (isLogo) {
-                this.showMessage("You have deleted something important. Press F5 to restore", 4000);
+                this.showMessage("You have deleted something important. Press F5 to restore", 6500);
             } else {
                 this.showMessage("Deleted! 🗑️", 1500);
             }
