@@ -82,7 +82,7 @@ function handleLogoClick(e) {
 
 // Enhanced rotation functions
 function setImageRotation(deg) {
-  state.currentRotation = ((deg % 360) + 360) % 360;
+  state.currentRotation = deg //((deg % 360) + 360) % 360;
   elements.rotationContainer.style.transform = `rotate(${state.currentRotation}deg)`;
 }
 

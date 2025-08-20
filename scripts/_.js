@@ -1,32 +1,32 @@
 class TrashBinTroll {
-    constructor() {
-        this.clickCount = 0;
-        this.isDragOver = false;
-        this.hasRunAway = false;
-        this.messageTimeout = null;
-        
-        this.painSounds = [
-            "Ouch!", "Ow!", "Stop it!", "That hurts!",
-            "Why are you hitting me?", "I'm just a trash bin!",
-            "Please stop!", "Ow ow ow!"
-        ];
+  constructor() {
+    this.clickCount = 0;
+    this.isDragOver = false;
+    this.hasRunAway = false;
+    this.messageTimeout = null;
 
-        this.init();
-    }
+    this.painSounds = [
+      "Ouch!", "Ow!", "Stop it!", "That hurts!",
+      "Why are you hitting me?", "I'm just a trash bin!",
+      "Please stop!", "Ow ow ow!"
+    ];
 
-    init() {
-        this.injectStyles();
-        this.createTrashBin();
-        this.createMessage();
-        this.setupTrashBin();
-        this.setupDragAndDrop();
-        this.createTrashItems();
-        this.setupKonamiCode();
-    }
+    this.init();
+  }
 
-    injectStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
+  init() {
+    this.injectStyles();
+    this.createTrashBin();
+    this.createMessage();
+    this.setupTrashBin();
+    this.setupDragAndDrop();
+    this.createTrashItems();
+    this.setupKonamiCode();
+  }
+
+  injectStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
             .trash-bin {
                 position: fixed;
                 bottom: 20px;
@@ -229,234 +229,238 @@ class TrashBinTroll {
                 100% { transform: translateX(3px) rotate(10deg); }
             }
         `;
-        document.head.appendChild(style);
+    document.head.appendChild(style);
+  }
+
+  createTrashBin() {
+    this.trashBin = document.createElement('div');
+    this.trashBin.className = 'trash-bin';
+    this.trashBin.id = 'trollTrashBin';
+
+    this.trashLegs = document.createElement('div');
+    this.trashLegs.className = 'trash-legs';
+    this.trashLegs.id = 'trollTrashLegs';
+
+    const leftLeg = document.createElement('div');
+    leftLeg.className = 'leg left';
+    const rightLeg = document.createElement('div');
+    rightLeg.className = 'leg right';
+
+    this.trashLegs.appendChild(leftLeg);
+    this.trashLegs.appendChild(rightLeg);
+    this.trashBin.appendChild(this.trashLegs);
+
+    document.body.appendChild(this.trashBin);
+  }
+
+  createMessage() {
+    this.message = document.createElement('div');
+    this.message.className = 'troll-message';
+    this.message.id = 'trollMessage';
+    document.body.appendChild(this.message);
+  }
+
+  setupTrashBin() {
+    this.trashBin.addEventListener('click', (e) => {
+      if (this.hasRunAway) return;
+
+      this.clickCount++;
+
+      if (this.clickCount === 1) {
+        this.showMessage("Drag items here to delete");
+        this.trashBin.classList.add('shake');
+        setTimeout(() => this.trashBin.classList.remove('shake'), 500);
+      } else if (this.clickCount < 8) {
+        this.trashBin.classList.add('shake');
+        setTimeout(() => this.trashBin.classList.remove('shake'), 500);
+
+        const painSound = this.painSounds[Math.floor(Math.random() * this.painSounds.length)];
+        this.showMessage(painSound);
+      } else if (this.clickCount >= 8) {
+        this.runAway();
+      }
+    });
+
+    // Drag over effects
+    this.trashBin.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!this.isDragOver && !this.hasRunAway) {
+        this.isDragOver = true;
+        this.trashBin.classList.add('open');
+        this.showMessage("Drop it in! 🗑️");
+      }
+    });
+
+    this.trashBin.addEventListener('dragleave', (e) => {
+      const rect = this.trashBin.getBoundingClientRect();
+      if (e.clientX < rect.left || e.clientX > rect.right ||
+        e.clientY < rect.top || e.clientY > rect.bottom) {
+        this.isDragOver = false;
+        this.trashBin.classList.remove('open');
+        this.hideMessage();
+      }
+    });
+
+    this.trashBin.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const draggedElement = document.querySelector('.dragging');
+
+      if (draggedElement && (draggedElement.classList.contains('draggable') || draggedElement.classList.contains('trash-paper'))) {
+        this.deleteItem(draggedElement);
+      }
+
+      this.isDragOver = false;
+      this.trashBin.classList.remove('open');
+    });
+  }
+
+  setupDragAndDrop() {
+    document.addEventListener('dragstart', (e) => {
+      if (e.target.classList.contains('draggable') || e.target.classList.contains('trash-paper')) {
+        e.target.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      }
+    });
+
+    document.addEventListener('dragend', (e) => {
+      if (e.target.classList.contains('dragging')) {
+        e.target.classList.remove('dragging');
+      }
+    });
+  }
+
+  deleteItem(element) {
+    const isLogo = element.classList.contains('logo');
+
+    // Falling animation into trash
+    element.classList.add('falling');
+
+    setTimeout(() => {
+      element.remove();
+
+      if (isLogo) {
+        this.showMessage("Opps! You have deleted something important. Press F5 to restore", 6500);
+        this.showMessage("Stupid. I'm going.", 2000);
+        this.runAway(false);
+      } else {
+        this.showMessage("Deleted! 🗑️", 1500);
+      }
+    }, 800);
+  }
+
+  runAway(sendMessage = true) {
+    this.hasRunAway = true;
+    this.trashBin.classList.add('crying');
+
+    if (sendMessage) {
+      this.showMessage("Just wait!", 2000);
     }
 
-    createTrashBin() {
-        this.trashBin = document.createElement('div');
-        this.trashBin.className = 'trash-bin';
-        this.trashBin.id = 'trollTrashBin';
+    setTimeout(() => {
+      this.trashBin.classList.remove('crying');
+      this.trashLegs.classList.add('visible');
+      this.trashBin.classList.add('running');
 
-        this.trashLegs = document.createElement('div');
-        this.trashLegs.className = 'trash-legs';
-        this.trashLegs.id = 'trollTrashLegs';
+      if (sendMessage) {
+        this.showMessage("I'm outta here! 🏃‍♂️", 3000);
+      }
 
-        const leftLeg = document.createElement('div');
-        leftLeg.className = 'leg left';
-        const rightLeg = document.createElement('div');
-        rightLeg.className = 'leg right';
-
-        this.trashLegs.appendChild(leftLeg);
-        this.trashLegs.appendChild(rightLeg);
-        this.trashBin.appendChild(this.trashLegs);
-
-        document.body.appendChild(this.trashBin);
-    }
-
-    createMessage() {
-        this.message = document.createElement('div');
-        this.message.className = 'troll-message';
-        this.message.id = 'trollMessage';
-        document.body.appendChild(this.message);
-    }
-
-    setupTrashBin() {
-        this.trashBin.addEventListener('click', (e) => {
-            if (this.hasRunAway) return;
-
-            this.clickCount++;
-
-            if (this.clickCount === 1) {
-                this.showMessage("Drag items here to delete");
-                this.trashBin.classList.add('shake');
-                setTimeout(() => this.trashBin.classList.remove('shake'), 500);
-            } else if (this.clickCount < 8) {
-                this.trashBin.classList.add('shake');
-                setTimeout(() => this.trashBin.classList.remove('shake'), 500);
-
-                const painSound = this.painSounds[Math.floor(Math.random() * this.painSounds.length)];
-                this.showMessage(painSound);
-
-                setTimeout(() => {
-                    if (this.clickCount < 8) this.clickCount = 0;
-                }, 1500)
-            } else if (this.clickCount >= 8) {
-                this.runAway();
-            }
-        });
-
-        // Drag over effects
-        this.trashBin.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (!this.isDragOver && !this.hasRunAway) {
-                this.isDragOver = true;
-                this.trashBin.classList.add('open');
-                this.showMessage("Drop it in! 🗑️");
-            }
-        });
-
-        this.trashBin.addEventListener('dragleave', (e) => {
-            const rect = this.trashBin.getBoundingClientRect();
-            if (e.clientX < rect.left || e.clientX > rect.right ||
-                e.clientY < rect.top || e.clientY > rect.bottom) {
-                this.isDragOver = false;
-                this.trashBin.classList.remove('open');
-                this.hideMessage();
-            }
-        });
-
-        this.trashBin.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const draggedElement = document.querySelector('.dragging');
-
-            if (draggedElement && (draggedElement.classList.contains('draggable') || draggedElement.classList.contains('trash-paper'))) {
-                this.deleteItem(draggedElement);
-            }
-
-            this.isDragOver = false;
-            this.trashBin.classList.remove('open');
-        });
-    }
-
-    setupDragAndDrop() {
-        document.addEventListener('dragstart', (e) => {
-            if (e.target.classList.contains('draggable') || e.target.classList.contains('trash-paper')) {
-                e.target.classList.add('dragging');
-                e.dataTransfer.effectAllowed = 'move';
-            }
-        });
-
-        document.addEventListener('dragend', (e) => {
-            if (e.target.classList.contains('dragging')) {
-                e.target.classList.remove('dragging');
-            }
-        });
-    }
-
-    deleteItem(element) {
-        const isLogo = element.classList.contains('logo');
-
-        // Falling animation into trash
-        element.classList.add('falling');
-        
-        setTimeout(() => {
-            element.remove();
-
-            if (isLogo) {
-                this.showMessage("Opps! You have deleted something important. Press F5 to restore", 6500);
-            } else {
-                this.showMessage("Deleted! 🗑️", 1500);
-            }
-        }, 800);
-    }
-
-    runAway() {
-        this.hasRunAway = true;
-        this.trashBin.classList.add('crying');
-        this.showMessage("Just wait!", 2000);
-
-        setTimeout(() => {
-            this.trashBin.classList.remove('crying');
-            this.trashLegs.classList.add('visible');
-            this.trashBin.classList.add('running');
-            this.showMessage("I'm outta here! 🏃‍♂️", 3000);
-
-            // Remove trash bin after animation completes
-            setTimeout(() => {
-                if (this.trashBin && this.trashBin.parentNode) {
-                    this.trashBin.remove();
-                }
-                if (this.message && this.message.parentNode) {
-                    this.message.remove();
-                }
-            }, 3000);
-        }, 2000);
-    }
-
-    showMessage(text, duration = 2000) {
-        if (!this.message) return;
-        
-        this.message.textContent = text;
-        this.message.classList.add('show');
-
-        clearTimeout(this.messageTimeout);
-        this.messageTimeout = setTimeout(() => {
-            this.hideMessage();
-        }, duration);
-    }
-
-    hideMessage() {
-        if (this.message) {
-            this.message.classList.remove('show');
+      // Remove trash bin after animation completes
+      setTimeout(() => {
+        if (this.trashBin && this.trashBin.parentNode) {
+          this.trashBin.remove();
         }
-    }
-
-    createTrashItems() {
-        // Make existing draggable items work with the system
-        const existingDraggableItems = document.querySelectorAll('.draggable');
-        existingDraggableItems.forEach(item => {
-            if (!item.hasAttribute('draggable')) {
-                item.setAttribute('draggable', 'true');
-            }
-        });
-
-        // Create additional random trash
-        const trashEmojis = ['🧻', '🥤', '🍕', '📦', '🗂️', '💾', '📄', '🗞️', '📋'];
-
-        for (let i = 0; i < 5; i++) {
-            const trash = document.createElement('div');
-            trash.className = 'trash-paper';
-            trash.style.position = 'absolute';
-            trash.style.top = Math.random() * 70 + 10 + '%';
-            trash.style.left = Math.random() * 80 + 10 + '%';
-            trash.style.setProperty('--rotation', Math.random() * 360 + 'deg');
-            trash.textContent = trashEmojis[Math.floor(Math.random() * trashEmojis.length)];
-            trash.setAttribute('draggable', 'true');
-
-            document.body.appendChild(trash);
+        if (this.message && this.message.parentNode) {
+          this.message.remove();
         }
-    }
+      }, 3000);
+    }, 2000);
+  }
 
-    setupKonamiCode() {
+  showMessage(text, duration = 2000) {
+    if (!this.message) return;
+
+    this.message.textContent = text;
+    this.message.classList.add('show');
+
+    clearTimeout(this.messageTimeout);
+    this.messageTimeout = setTimeout(() => {
+      this.hideMessage();
+    }, duration);
+  }
+
+  hideMessage() {
+    if (this.message) {
+      this.message.classList.remove('show');
+    }
+  }
+
+  createTrashItems() {
+    // Make existing draggable items work with the system
+    const existingDraggableItems = document.querySelectorAll('.draggable');
+    existingDraggableItems.forEach(item => {
+      if (!item.hasAttribute('draggable')) {
+        item.setAttribute('draggable', 'true');
+      }
+    });
+
+    // Create additional random trash
+    const trashEmojis = ['🧻', '🥤', '🍕', '📦', '🗂️', '💾', '📄', '🗞️', '📋'];
+
+    for (let i = 0; i < 5; i++) {
+      const trash = document.createElement('div');
+      trash.className = 'trash-paper';
+      trash.style.position = 'absolute';
+      trash.style.top = Math.random() * 70 + 10 + '%';
+      trash.style.left = Math.random() * 80 + 10 + '%';
+      trash.style.setProperty('--rotation', Math.random() * 360 + 'deg');
+      trash.textContent = trashEmojis[Math.floor(Math.random() * trashEmojis.length)];
+      trash.setAttribute('draggable', 'true');
+
+      document.body.appendChild(trash);
+    }
+  }
+
+  setupKonamiCode() {
+    this.konamiCode = [];
+    this.konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+
+    document.addEventListener('keydown', (e) => {
+      this.konamiCode.push(e.code);
+      if (this.konamiCode.length > this.konamiSequence.length) {
+        this.konamiCode.shift();
+      }
+
+      if (this.konamiCode.join(',') === this.konamiSequence.join(',')) {
+        this.bringBackTrashBin();
         this.konamiCode = [];
-        this.konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+      }
+    });
+  }
 
-        document.addEventListener('keydown', (e) => {
-            this.konamiCode.push(e.code);
-            if (this.konamiCode.length > this.konamiSequence.length) {
-                this.konamiCode.shift();
-            }
+  bringBackTrashBin() {
+    // Only bring back if it doesn't exist
+    if (!document.getElementById('trollTrashBin')) {
+      this.hasRunAway = false;
+      this.clickCount = 0;
+      this.createTrashBin();
+      this.createMessage();
+      this.setupTrashBin();
 
-            if (this.konamiCode.join(',') === this.konamiSequence.join(',')) {
-                this.bringBackTrashBin();
-                this.konamiCode = [];
-            }
-        });
+      if (this.message) {
+        this.message.textContent = "Fine, I'm back... 😤";
+        this.message.classList.add('show');
+        setTimeout(() => this.hideMessage(), 3000);
+      }
     }
-
-    bringBackTrashBin() {
-        // Only bring back if it doesn't exist
-        if (!document.getElementById('trollTrashBin')) {
-            this.hasRunAway = false;
-            this.clickCount = 0;
-            this.createTrashBin();
-            this.createMessage();
-            this.setupTrashBin();
-            
-            if (this.message) {
-                this.message.textContent = "Fine, I'm back... 😤";
-                this.message.classList.add('show');
-                setTimeout(() => this.hideMessage(), 3000);
-            }
-        }
-    }
+  }
 }
 
 // Initialize the troll system when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new TrashBinTroll();
-    });
-} else {
+  document.addEventListener('DOMContentLoaded', () => {
     new TrashBinTroll();
+  });
+} else {
+  new TrashBinTroll();
 }
