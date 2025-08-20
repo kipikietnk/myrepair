@@ -1,5 +1,5 @@
 import { initPanzoom, initHammer, fullScreenChange } from "./action.js";
-import { rotateImage, handleLogoClick, resetTransforms, fitToContainer } from "./handle.js";
+import { rotateImage, handleLogoClick, resetTransforms, fitToContainer, canUseFullscreen } from "./handle.js";
 import CONFIG from "./config.js";
 import elements from "./elements.js";
 import ui from "./ui.js";
@@ -23,7 +23,7 @@ export const state = {
 // Data loading with improved error handling
 async function loadData() {
   try {
-    const response = await fetch('../data.json');
+    const response = await fetch('/data.json');
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -38,9 +38,7 @@ async function loadData() {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid data format');
     }
-
-    console.log('✅ Data loaded from data.json', Object.keys(data).length, 'devices');
-    utils.showSuccessMessage('Dữ liệu đã được tải thành công');
+    
     populateDevices();
   } catch (error) {
     console.error('Error loading data:', error);
@@ -286,11 +284,15 @@ function setupEventListeners() {
 }
 
 // Initialization
-function initialize() {
+async function initialize() {
   const missingElements = Object.entries(elements).filter(([key, element]) => !element);
   if (missingElements.length > 0) {
     console.error('Missing DOM elements:', missingElements.map(([key]) => key));
     return;
+  }
+
+  if (await canUseFullscreen()) {
+    elements.fullScreenToggleBtn.remove();
   }
 
   // Initialize mobile state
