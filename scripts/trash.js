@@ -464,3 +464,5 @@ if (document.readyState === 'loading') {
 } else {
   new TrashBinTroll();
 }
+
+export {}
