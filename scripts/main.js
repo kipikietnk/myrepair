@@ -5,7 +5,7 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
-import './_.js';
+import './trash.js';
 
 let data = {};
 export const state = {
