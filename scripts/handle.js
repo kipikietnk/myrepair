@@ -87,17 +87,7 @@ function setImageRotation(deg) {
 }
 
 // User agent
-async function canUseFullscreen() {
-  if (navigator.userAgentData) {
-    const uaData = await navigator.userAgentData.getHighEntropyValues(["platform"]);
-    const platform = uaData.platform || "";
-    
-    if (/iOS|iPadOS/i.test(platform)) return false;
-  } else {
-    const ua = navigator.userAgent;
-    if (/iPhone|iPad|iPod/i.test(ua)) return false;
-  }
-  
+function canUseFullscreen() {
   return !!(
     document.documentElement.requestFullscreen ||
     document.documentElement.webkitRequestFullscreen ||

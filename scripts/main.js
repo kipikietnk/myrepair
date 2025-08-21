@@ -291,7 +291,7 @@ async function initialize() {
     return;
   }
 
-  if (await canUseFullscreen()) {
+  if (!canUseFullscreen()) {
     elements.fullScreenToggleBtn.remove();
   }
 
