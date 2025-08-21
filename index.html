@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,13 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles/global.css">
   <link rel="stylesheet" href="./styles/main.css">
 </head>
+
 <body>
   <!-- Top Navigation Bar -->
-   <img class="logo" id="logoBtn" src="./images/logo.webp" alt="">
-   
-  <nav class="topbar">
+  <img class="logo draggable" id="logoBtn" src="./images/logo.webp" alt="">
+
+  <div class="topbar">
     <div class="controls-section">
       <div class="select-group">
         <!-- Chọn loại thiết bị -->
@@ -38,37 +42,37 @@
         </div>
       </div>
 
-      <div class="control-buttons" id="controlButtons">
+      <div class="control-buttons" id="controlButtons" title="">
         <button id="rotateLeft" class="control-btn" title="Xoay trái" aria-label="Xoay ảnh sang trái">
-          <span>↶</span>
+          <span>↺</span>
         </button>
         <button id="rotateRight" class="control-btn" title="Xoay phải" aria-label="Xoay ảnh sang phải">
-          <span>↷</span>
+          <span>↻</span>
         </button>
-        <button id="resetView" class="control-btn primary" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
+        <button id="resetView" class="control-btn" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
           <span>⌂</span>
         </button>
-        <button id="fitView" class="control-btn secondary" title="Vừa màn hình" aria-label="Vừa với màn hình">
-          <span>⤢</span>
+        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình" aria-label="Toàn màn hình">
+          <span>⛶</span>
         </button>
       </div>
     </div>
-  </nav>
+  </div>
 
   <!-- Main Content -->
   <main class="main-content">
     <div class="image-stage">
       <div id="imageWrapper" class="image-wrapper" aria-live="polite">
-        <div class="loading" id="loading">
+        <div class="loading-img" id="loading-img">
           <div class="spinner"></div>
           <span>Đang tải...</span>
         </div>
-        
+
         <div class="placeholder" id="placeholder">
           <div class="placeholder-icon">📱</div>
           <div>Chọn loại máy, model và linh kiện để xem chi tiết</div>
         </div>
-        
+
         <div id="panzoomContainer" style="display:flex; align-items:center; justify-content:center;">
           <div id="rotationContainer" style="display:flex; align-items:center; justify-content:center;">
             <img id="partImage" src="" alt="Linh kiện" draggable="false"
@@ -81,7 +85,7 @@
 
   <!-- Libraries -->
   <script src="https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"></script>
-  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
-  <script src="./scripts.js"></script>
+  <script type="module" src="./scripts/main.js"></script>
 </body>
+
 </html>
