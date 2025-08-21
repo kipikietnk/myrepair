@@ -5,7 +5,15 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
-import './trash.js';
+import { TrashBinTroll } from './trash.js';
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    new TrashBinTroll();
+  });
+} else {
+  new TrashBinTroll();
+}
 
 let data = {};
 export const state = {

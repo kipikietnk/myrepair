@@ -456,13 +456,4 @@ class TrashBinTroll {
   }
 }
 
-// Initialize the troll system when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new TrashBinTroll();
-  });
-} else {
-  new TrashBinTroll();
-}
-
-export {}
+export { TrashBinTroll }
