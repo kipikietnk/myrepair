@@ -42,38 +42,6 @@ function initPanzoom() {
   }
 }
 
-// Enhanced hammer initialization
-function initHammer() {
-  if (!window.Hammer) {
-    console.log('Hammer.js not found - touch gestures disabled');
-    return;
-  }
-
-  try {
-    if (state.hammerManager) {
-      state.hammerManager.destroy();
-    }
-
-    state.hammerManager = new Hammer.Manager(elements.panzoomContainer, {
-      inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput,
-      recognizers: [
-        [Hammer.Rotate, { enable: true }],
-        [Hammer.Pan, { enable: true, pointers: 1 }],
-        [Hammer.Pinch, { enable: true }],
-        [Hammer.Tap, { taps: 2, enable: true }]
-      ]
-    });
-
-    state.hammerManager.on('doubletap', () => {
-      if (state.isImageLoaded) {
-        fitToContainer();
-      }
-    });
-  } catch (error) {
-    console.error('Error initializing Hammer.js:', error);
-  }
-}
-
 function fullScreenChange() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
@@ -82,4 +50,4 @@ function fullScreenChange() {
   }
 }
 
-export { initPanzoom, initHammer, fullScreenChange };
+export { initPanzoom, fullScreenChange };

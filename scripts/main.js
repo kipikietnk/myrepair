@@ -1,4 +1,4 @@
-import { initPanzoom, initHammer, fullScreenChange } from "./action.js";
+import { initPanzoom, fullScreenChange } from "./action.js";
 import { rotateImage, handleLogoClick, resetTransforms, fitToContainer, canUseFullscreen } from "./handle.js";
 import CONFIG from "./config.js";
 import elements from "./elements.js";
@@ -72,7 +72,6 @@ function populateDevices() {
 
   setupEventListeners();
   initPanzoom();
-  // initHammer();
 }
 
 // Enhanced event handlers

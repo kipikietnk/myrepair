@@ -11,15 +11,6 @@ function rotateImage(degrees) {
   }
   
   setImageRotation(state.currentRotation + degrees);
-  
-  setTimeout(() => {
-    if (state.panzoomInstance) {
-      const transform = state.panzoomInstance.getTransform();
-      if (transform.scale < 0.5) {
-        fitToContainer();
-      }
-    }
-  }, CONFIG.ANIMATION_DELAY);
 }
 
 // Enhanced transform functions
