@@ -23,7 +23,7 @@ export const state = {
 // Data loading with improved error handling
 async function loadData() {
   try {
-    const response = await fetch('../data.json');
+    const response = await fetch('./data.json');
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
