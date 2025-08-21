@@ -5,16 +5,6 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
-import { TrashBinTroll } from './trash.js';
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new TrashBinTroll();
-  });
-} else {
-  new TrashBinTroll();
-}
-
 let data = {};
 export const state = {
   currentRotation: 0,
@@ -555,27 +545,27 @@ class FollowCursorDrag {
   }
 }
 
-// // Khởi tạo
-// let dragManager;
-// document.addEventListener('DOMContentLoaded', () => {
-//   dragManager = new FollowCursorDrag();
-// });
+// Khởi tạo
+let dragManager;
+document.addEventListener('DOMContentLoaded', () => {
+  dragManager = new FollowCursorDrag();
+});
 
-// document.addEventListener('DOMContentLoaded', function () {
-//   setTimeout(() => {
-//     document.body.style.overflow = 'auto'; // Enable scrolling after loading
-//   }, 4800);
-// });
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(() => {
+    document.body.style.overflow = 'auto'; // Enable scrolling after loading
+  }, 4800);
+});
 
-// // Ngăn context menu trên nút
-// document.addEventListener('contextmenu', e => {
-//   if (e.target.classList.contains('draggable')) e.preventDefault();
-// });
+// Ngăn context menu trên nút
+document.addEventListener('contextmenu', e => {
+  if (e.target.classList.contains('draggable')) e.preventDefault();
+});
 
-// // Ngăn double-tap zoom
-// let lastTouchEnd = 0;
-// document.addEventListener('touchend', function (event) {
-//   const now = Date.now();
-//   if (now - lastTouchEnd <= 300) event.preventDefault();
-//   lastTouchEnd = now;
-// }, false);
+// Ngăn double-tap zoom
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) event.preventDefault();
+  lastTouchEnd = now;
+}, false);
