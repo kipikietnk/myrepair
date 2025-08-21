@@ -5,6 +5,8 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
+import './_.js';
+
 let data = {};
 export const state = {
   currentRotation: 0,
