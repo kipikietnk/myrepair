@@ -1,39 +1,28 @@
 {
   "iPhone": {
-    "iPhone 11 Pro": [
-      {
-        "type": "Taildock",
-        "images": [
-          "images/iphone/11P/taildock.png"
-        ]
-      }
-    ],
     "iPhone 13 Pro Max": [
       {
         "type": "Taildock",
-        "images": [
-          "images/iphone/13PM/taildock.png"
-        ]
+        "image": "images/iphone/13PM/taildock.png"
       }
     ],
     "iPhone 13 Pro": [
       {
         "type": "BackCam",
-        "images": [
-          "images/iphone/13P/backcam.png"
-        ]
+        "image": "images/iphone/13P/backcam.png"
       }
     ],
     "iPhone 12 Pro Max": [
       {
         "type": "Taildock",
-        "images": [
-          "images/iphone/12PM/taildock.png"
-        ]
+        "image": "images/iphone/12PM/taildock.png"
+      }
+    ],
+    "iPhone 11 Pro": [
+      {
+        "type": "Taildock",
+        "image": "images/iphone/11P/taildock.png"
       }
     ]
-  },
-  "iPad": {},
-  "watch": {},
-  "Mac": {}
+  }
 }
