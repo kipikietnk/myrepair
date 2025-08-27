@@ -1,5 +1,13 @@
 {
   "iPhone": {
+    "iPhone 11 Pro": [
+      {
+        "type": "Taildock",
+        "images": [
+          "images/iphone/11pro/11pro_taildock.png"
+        ]
+      }
+    ],
     "iPhone 13 Pro Max": [
       {
         "type": "Taildock",
