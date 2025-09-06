@@ -5,6 +5,8 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
+import './l.js'
+
 let data = {};
 let dragManager;
 
