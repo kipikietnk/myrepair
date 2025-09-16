@@ -18,6 +18,12 @@
         "image": "images/iphone/12PM/taildock.png"
       }
     ],
+    "iPhone 11 Pro Max": [
+      {
+        "type": "Taildock",
+        "image": "images/iphone/11PM/taildock.png"
+      }
+    ],
     "iPhone 11 Pro": [
       {
         "type": "Taildock",
