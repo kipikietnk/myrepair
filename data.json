@@ -18,6 +18,12 @@
         "image": "images/iphone/12PM/taildock.png"
       }
     ],
+    "iPhone 12 Pro Max": [
+      {
+        "type": "BackCam",
+        "image": "images/iphone/12PM/12promax_backcam.png"
+      }
+    ],
     "iPhone 11 Pro Max": [
       {
         "type": "Taildock",
