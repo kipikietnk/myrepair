@@ -26,6 +26,7 @@ class GlassLoginUI {
                 align-items: center;
                 justify-content: center;
                 animation: fadeIn 0.5s ease-out;
+                overflow-y: auto;
             }
 
             .glass-login-overlay::before {
@@ -61,6 +62,13 @@ class GlassLoginUI {
                 max-width: 90vw;
                 box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
                 animation: slideIn 0.6s ease-out;
+                margin: 20px;
+            }
+
+            .glass-login-box.expanded {
+                width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
             }
 
             @keyframes slideIn {
@@ -147,6 +155,99 @@ class GlassLoginUI {
                 transform: translateY(-1px);
             }
 
+            .other-methods-btn {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-top: 15px;
+            }
+
+            .other-methods-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: translateY(-2px);
+            }
+
+            .other-methods-container {
+                display: none;
+                margin-top: 30px;
+                padding-top: 30px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideDown 0.5s ease-out;
+            }
+
+            .other-methods-container.show {
+                display: block;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .other-methods-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .absurd-login-btn {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 14px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .absurd-login-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .absurd-login-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .absurd-login-btn:hover::before {
+                left: 100%;
+            }
+
+            .absurd-login-btn .icon {
+                margin-right: 10px;
+                font-size: 18px;
+                min-width: 20px;
+            }
+
             .glass-success-message {
                 position: absolute;
                 top: 50%;
@@ -228,11 +329,24 @@ class GlassLoginUI {
                 }
             }
 
+            @keyframes subtle-pulse {
+                0%, 100% { border-color: rgba(255, 255, 255, 0.2); }
+                50% { border-color: rgba(255, 255, 255, 0.4); }
+            }
+
             @media (max-width: 480px) {
                 .glass-login-box {
                     width: 90%;
                     padding: 30px 25px;
                     margin: 20px;
+                }
+                
+                .glass-login-box.expanded {
+                    width: 95%;
+                }
+                
+                .other-methods-grid {
+                    grid-template-columns: 1fr;
                 }
                 
                 .glass-success-message {
@@ -249,9 +363,47 @@ class GlassLoginUI {
     }
 
     createHTML() {
+        const absurdMethods = [
+            { icon: '🎥', text: 'Login with Youtube' },
+            { icon: '📌', text: 'Login with Pinterest' },
+            { icon: '⚠️', text: 'Login with Caution' },
+            { icon: '👨‍💼', text: 'Login with OnlyFans' },
+            { icon: '🎮', text: 'Login with Roblox' },
+            { icon: '🐝', text: 'Login with Jollibee' },
+            { icon: '🛒', text: 'Login with Shopee' },
+            { icon: '👆', text: 'Login with Fingerprint' },
+            { icon: '🥔', text: 'Login with a Potato' },
+            { icon: '🥘', text: 'Login with Beef Caldereta' },
+            { icon: '⚙️', text: 'Login with Settings' },
+            { icon: '🎂', text: 'Login with your Age' },
+            { icon: '👩', text: 'Login with your Mom' },
+            { icon: '📄', text: 'Login with PDF' },
+            { icon: '🇮🇳', text: 'Login with Pancit Canton' },
+            { icon: '🧮', text: 'Login with Calculator' },
+            { icon: '📋', text: 'Login with Form 137' },
+            { icon: '🏠', text: 'Login with your Address' },
+            { icon: '💳', text: 'Login with Credit Card' },
+            { icon: '🆔', text: 'Login with National ID' },
+            { icon: '🌙', text: 'Login with Moon Phase' },
+            { icon: '🦶', text: 'Login with your Feet' },
+            { icon: '🍕', text: 'Login with Pizza Order' },
+            { icon: '🐱', text: 'Login with Cat Photos' },
+            { icon: '☁️', text: 'Login with Cloud Storage' },
+            { icon: '🎵', text: 'Login with Spotify' },
+            { icon: '🚗', text: 'Login with Car Keys' },
+            { icon: '🔮', text: 'Login with Crystal Ball' }
+        ];
+
+        const methodsHTML = absurdMethods.map(method => 
+            `<div class="absurd-login-btn" data-method="${method.text}">
+                <span class="icon">${method.icon}</span>
+                <span>${method.text}</span>
+            </div>`
+        ).join('');
+
         const html = `
             <div class="glass-login-overlay" id="glassLoginOverlay">
-                <div class="glass-login-box">
+                <div class="glass-login-box" id="glassLoginBox">
                     <h2>Đăng nhập</h2>
                     <form id="glassLoginForm">
                         <div class="glass-input-group">
@@ -263,7 +415,17 @@ class GlassLoginUI {
                             <input type="password" id="glassPassword" name="password" placeholder="Nhập mật khẩu">
                         </div>
                         <button type="submit" class="glass-login-btn">Tiếp tục</button>
+                        <button type="button" class="other-methods-btn" id="otherMethodsBtn">
+                            Other login methods
+                        </button>
                     </form>
+                    
+                    <div class="other-methods-container" id="otherMethodsContainer">
+                        <h3 style="color: white; text-align: center; margin-bottom: 20px; font-weight: 300;">Choose your preferred method</h3>
+                        <div class="other-methods-grid">
+                            ${methodsHTML}
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -274,12 +436,40 @@ class GlassLoginUI {
 
     bindEvents() {
         const form = document.getElementById('glassLoginForm');
+        const otherMethodsBtn = document.getElementById('otherMethodsBtn');
+        const otherMethodsContainer = document.getElementById('otherMethodsContainer');
+        const loginBox = document.getElementById('glassLoginBox');
+
+        // Handle traditional form submit
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleLogin();
         });
 
-        // Thêm hiệu ứng cho inputs
+        // Handle "Other login methods" button
+        otherMethodsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (otherMethodsContainer.classList.contains('show')) {
+                otherMethodsContainer.classList.remove('show');
+                loginBox.classList.remove('expanded');
+                otherMethodsBtn.textContent = 'Other login methods';
+            } else {
+                otherMethodsContainer.classList.add('show');
+                loginBox.classList.add('expanded');
+                otherMethodsBtn.textContent = 'Hide other methods';
+            }
+        });
+
+        // Handle absurd login methods
+        const absurdBtns = this.loginContainer.querySelectorAll('.absurd-login-btn');
+        absurdBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const method = btn.getAttribute('data-method');
+                this.handleAbsurdLogin(method);
+            });
+        });
+
+        // Add effects for inputs
         const inputs = this.loginContainer.querySelectorAll('input');
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
@@ -292,31 +482,37 @@ class GlassLoginUI {
                 }
             });
         });
-
-        // Thêm keyframe cho pulse effect
-        const pulseStyle = document.createElement('style');
-        pulseStyle.textContent = `
-            @keyframes subtle-pulse {
-                0%, 100% { border-color: rgba(255, 255, 255, 0.2); }
-                50% { border-color: rgba(255, 255, 255, 0.4); }
-            }
-        `;
-        document.head.appendChild(pulseStyle);
     }
 
     handleLogin() {
-        // Hiển thị thông báo thành công
+        this.showSuccessMessage("Đăng nhập thành công!", "Chào mừng bạn quay trở lại");
+    }
+
+    handleAbsurdLogin(method) {
+        const messages = [
+            "Authentication successful!",
+            "Welcome to the system!",
+            "Login completed successfully!",
+            "Access granted!",
+            "You're now logged in!"
+        ];
+        
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        this.showSuccessMessage(`${method} worked!`, randomMessage);
+    }
+
+    showSuccessMessage(title, subtitle) {
         const successHTML = `
             <div class="glass-success-message">
                 <div class="glass-checkmark">✓</div>
-                <h3>Đăng nhập thành công!</h3>
-                <p>Chào mừng bạn quay trở lại</p>
+                <h3>${title}</h3>
+                <p>${subtitle}</p>
             </div>
         `;
         
         this.loginContainer.insertAdjacentHTML('beforeend', successHTML);
 
-        // Đóng toàn bộ sau 2 giây
+        // Close everything after 2 seconds
         setTimeout(() => {
             this.close();
         }, 2000);
@@ -338,8 +534,8 @@ class GlassLoginUI {
     }
 }
 
-// Auto-initialize khi import
+// Auto-initialize when imported
 const glassLogin = new GlassLoginUI();
 
-// Export cho trường hợp cần control manual
+// Export for manual control if needed
 export default GlassLoginUI;
