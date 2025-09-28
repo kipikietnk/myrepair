@@ -7,7 +7,7 @@ import utils from "./utils.js";
 
 import './l.js'
 
-let data = {};
+let data = [];
 let dragManager;
 
 export const state = {
@@ -34,7 +34,7 @@ async function loadData() {
     if (!contentType.includes('application/json')) throw new Error('Invalid content type - expected JSON');
 
     data = await response.json();
-    if (!data || typeof data !== 'object') throw new Error('Invalid data format');
+    if (!Array.isArray(data)) throw new Error('Invalid data format - expected Array');
 
     populateDevices();
   } catch (error) {
@@ -50,17 +50,17 @@ function showOfflineMessage() {
 
 // ==== UI Setup ====
 function populateDevices() {
-  if (!data || Object.keys(data).length === 0) {
+  if (!Array.isArray(data) || data.length === 0) {
     return utils.showErrorMessage('Không có dữ liệu thiết bị');
   }
 
   elements.deviceSelect.innerHTML = '<option value="">Chọn loại máy</option>';
   elements.deviceSelect.disabled = false;
 
-  Object.keys(data).forEach(device => {
-    if (data[device] && typeof data[device] === 'object') {
-      elements.deviceSelect.appendChild(new Option(device, device));
-    }
+  // Lấy danh sách product (unique)
+  const products = [...new Set(data.map(item => item.product))];
+  products.forEach(product => {
+    elements.deviceSelect.appendChild(new Option(product, product));
   });
 
   setupEventListeners();
@@ -80,10 +80,10 @@ function onDeviceChange() {
 
   if (!device) return ui.hideModelSelector();
 
-  const models = data[device];
-  if (!models || typeof models !== 'object') return utils.showErrorMessage('Không tìm thấy model cho thiết bị này');
+  const models = data.filter(item => item.product === device).map(item => item.platform);
+  if (!models.length) return utils.showErrorMessage('Không tìm thấy model cho thiết bị này');
 
-  Object.keys(models).forEach(model => {
+  models.forEach(model => {
     elements.modelSelect.appendChild(new Option(model, model));
   });
 
@@ -101,14 +101,14 @@ function onModelChange() {
 
   if (!device || !model) return ui.hidePartSelector();
 
-  const parts = data[device]?.[model];
-  if (!Array.isArray(parts) || parts.length === 0) {
+  const selected = data.find(item => item.product === device && item.platform === model);
+  if (!selected || !Array.isArray(selected.components)) {
     return utils.showErrorMessage('Không có linh kiện nào cho model này');
   }
 
-  parts.forEach((part, index) => {
-    if (part?.type) {
-      elements.partSelect.appendChild(new Option(part.type, index));
+  selected.components.forEach((part, index) => {
+    if (part?.name) {
+      elements.partSelect.appendChild(new Option(part.name, index));
     }
   });
 
@@ -126,15 +126,18 @@ async function onPartChange() {
     return ui.showPlaceholder();
   }
 
-  const part = data[device]?.[model]?.[index];
+  const selected = data.find(item => item.product === device && item.platform === model);
+  if (!selected) return utils.showErrorMessage("Không tìm thấy model");
+
+  const part = selected.components[index];
   if (!part) return utils.showErrorMessage("Không tìm thấy linh kiện");
 
-  const imagePath = part.image;
+  const imagePath = `${selected.folder}/${part.picture}`;
   if (!utils.isValidImageUrl(imagePath)) {
     return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
   }
 
-  await loadPartImage(imagePath, part.type);
+  await loadPartImage(imagePath, part.name);
 }
 
 // ==== Image loading ====
@@ -157,7 +160,7 @@ async function loadPartImage(imagePath, altText) {
     ui.hideLoading();
     ui.showPlaceholder();
     ui.hideControls();
-    utils.showErrorMessage('Không thể tải hình ảnh. Kiểm tra kết nối mạng.');
+    utils.showErrorMessage("Tải ảnh thất bại");
   }
 }
 
@@ -226,12 +229,12 @@ async function initialize() {
   loadData();
 }
 
-// Prevent context menu from appearing on elements with the 'draggable' class
+// Prevent context menu on draggable
 document.addEventListener('contextmenu', e => {
   if (e.target.classList.contains('draggable')) e.preventDefault();
 });
 
-// Prevent double-tap zoom on touch devices
+// Prevent double-tap zoom
 let lastTouchEnd = 0;
 document.addEventListener('touchend', e => {
   const now = Date.now();

@@ -1,40 +1,61 @@
-{
-  "iPhone": {
-    "iPhone 13 Pro Max": [
+[
+  {
+    "product": "iPhone",
+    "platform": "13 Pro Max",
+    "folder": "images/iPhone/13PM",
+    "components": [
       {
-        "type": "Taildock",
-        "image": "images/iphone/13PM/taildock.png"
+        "name": "Taildock",
+        "picture": "taildock.png"
       }
-    ],
-    "iPhone 13 Pro": [
+    ]
+  },
+  {
+    "product": "iPhone",
+    "platform": "13 Pro",
+    "folder": "images/iPhone/13P",
+    "components": [
       {
-        "type": "BackCam",
-        "image": "images/iphone/13P/backcam.png"
+        "name": "BackCam",
+        "picture": "backcam.png"
       }
-    ],
-    "iPhone 12 Pro Max": [
+    ]
+  },
+  {
+    "product": "iPhone",
+    "platform": "12 Pro Max",
+    "folder": "images/iPhone/12PM",
+    "components": [
       {
-        "type": "Taildock",
-        "image": "images/iphone/12PM/taildock.png"
+        "name": "Taildock",
+        "picture": "taildock.png"
+      },
+      {
+        "name": "BackCam",
+        "picture": "backcam.png"
       }
-    ],
-    "iPhone 12 Pro Max": [
+    ]
+  },
+  {
+    "product": "iPhone",
+    "platform": "11 Pro Max",
+    "folder": "images/iPhone/11PM",
+    "components": [
       {
-        "type": "BackCam",
-        "image": "images/iphone/12PM/12promax_backcam.png"
+        "name": "Taildock",
+        "picture": "taildock.png"
       }
-    ],
-    "iPhone 11 Pro Max": [
+    ]
+  },
+  {
+    "product": "iPhone",
+    "platform": "11 Pro",
+    "folder": "images/iPhone/11P",
+    "components": [
       {
-        "type": "Taildock",
-        "image": "images/iphone/11PM/taildock.png"
-      }
-    ],
-    "iPhone 11 Pro": [
-      {
-        "type": "Taildock",
-        "image": "images/iphone/11P/taildock.png"
+        "name": "Taildock",
+        "picture": "taildock.png"
       }
     ]
   }
-}
+]
