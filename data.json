@@ -2,7 +2,7 @@
   {
     "product": "iPhone",
     "platform": "13 Pro Max",
-    "folder": "images/iPhone/13PM",
+    "folder": "images/iphone/13PM",
     "components": [
       {
         "name": "Taildock",
@@ -13,7 +13,7 @@
   {
     "product": "iPhone",
     "platform": "13 Pro",
-    "folder": "images/iPhone/13P",
+    "folder": "images/iphone/13P",
     "components": [
       {
         "name": "BackCam",
@@ -24,7 +24,7 @@
   {
     "product": "iPhone",
     "platform": "12 Pro Max",
-    "folder": "images/iPhone/12PM",
+    "folder": "images/iphone/12PM",
     "components": [
       {
         "name": "Taildock",
@@ -39,7 +39,7 @@
   {
     "product": "iPhone",
     "platform": "11 Pro Max",
-    "folder": "images/iPhone/11PM",
+    "folder": "images/iphone/11PM",
     "components": [
       {
         "name": "Taildock",
@@ -50,7 +50,7 @@
   {
     "product": "iPhone",
     "platform": "11 Pro",
-    "folder": "images/iPhone/11P",
+    "folder": "images/iphone/11P",
     "components": [
       {
         "name": "Taildock",
