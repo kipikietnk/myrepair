@@ -7,6 +7,8 @@ import utils from "./utils.js";
 
 import './l.js'
 
+console.log(window.location.origin, window.location.pathname)
+
 let data = [];
 let dragManager;
 
