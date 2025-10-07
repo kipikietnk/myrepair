@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Repair</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/styles/global.css">
+  <link rel="stylesheet" href="./asset/styles/main.css">
+</head>
+
+<body>
+  <!-- Top Navigation Bar -->
+  <img class="logo draggable" id="logoBtn" src="../../assets/images/logo.webp" alt="">
+
+  <div class="topbar">
+    <div class="controls-section">
+      <div class="select-group">
+        <!-- Chọn loại thiết bị -->
+        <div class="select-wrapper" id="deviceSelectWrapper">
+          <select id="deviceSelect" class="modern-select" aria-label="Chọn loại máy">
+            <option value="">Chọn loại máy</option>
+          </select>
+        </div>
+
+        <!-- Chọn Model -->
+        <div class="select-wrapper hidden" id="modelSelectWrapper">
+          <select id="modelSelect" class="modern-select" aria-label="Chọn Model">
+            <option value="">Chọn Model</option>
+          </select>
+        </div>
+
+        <!-- Chọn Linh kiện -->
+        <div class="select-wrapper hidden" id="partSelectWrapper">
+          <select id="partSelect" class="modern-select" disabled aria-label="Chọn Linh kiện">
+            <option value="">Chọn Linh kiện</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="control-buttons" id="controlButtons" title="">
+        <button id="rotateLeft" class="control-btn" title="Xoay trái" aria-label="Xoay ảnh sang trái">
+          <span>↺</span>
+        </button>
+        <button id="rotateRight" class="control-btn" title="Xoay phải" aria-label="Xoay ảnh sang phải">
+          <span>↻</span>
+        </button>
+        <button id="resetView" class="control-btn" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
+          <span>⌂</span>
+        </button>
+        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình" aria-label="Toàn màn hình">
+          <span>⛶</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="image-stage">
+      <div id="imageWrapper" class="image-wrapper" aria-live="polite">
+        <div class="loading-img" id="loading-img">
+          <div class="spinner"></div>
+          <span>Đang tải...</span>
+        </div>
+
+        <div class="placeholder" id="placeholder">
+          <div class="placeholder-icon">📱</div>
+          <div>Chọn loại máy, model và linh kiện để xem chi tiết</div>
+        </div>
+
+        <div id="panzoomContainer" style="display:flex; align-items:center; justify-content:center;">
+          <div id="rotationContainer" style="display:flex; align-items:center; justify-content:center;">
+            <img id="partImage" src="" alt="Linh kiện" draggable="false"
+              style="display: none; max-width:none; max-height:none;" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"></script>
+  <script type="module" src="./asset/scripts/main.js" defer></script>
+</body>
+
+</html>

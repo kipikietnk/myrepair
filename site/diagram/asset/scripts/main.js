@@ -5,7 +5,7 @@ import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
 
-import './l.js'
+const root = "../../../../";
 
 console.log(window.location.origin, window.location.pathname)
 
@@ -26,10 +26,13 @@ export const state = {
   isMobile: window.innerWidth <= 768
 };
 
+const dataURL = `${root}assets/database/diagram.json`;
+const imageBaseURL = `/images`;
+
 // ==== Data loading ====
 async function loadData() {
   try {
-    const response = await fetch('./data.json');
+    const response = await fetch(dataURL);
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const contentType = response.headers.get('content-type') || '';
@@ -134,7 +137,8 @@ async function onPartChange() {
   const part = selected.components[index];
   if (!part) return utils.showErrorMessage("Không tìm thấy linh kiện");
 
-  const imagePath = `${selected.folder}/${part.picture}`;
+  const imagePath = `${root}assets/${selected.folder}/${part.picture}`;
+
   if (!utils.isValidImageUrl(imagePath)) {
     return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
   }
