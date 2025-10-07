@@ -1,6 +1,17 @@
 [
   {
     "product": "iPhone",
+    "platform": "14 Pro Max",
+    "folder": "images/iphone/14PM",
+    "components": [
+      {
+        "name": "Taildock",
+        "picture": "taildock.png"
+      }
+    ]
+  },
+  {
+    "product": "iPhone",
     "platform": "13 Pro Max",
     "folder": "images/iphone/13PM",
     "components": [
