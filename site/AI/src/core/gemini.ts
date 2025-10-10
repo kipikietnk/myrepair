@@ -1,4 +1,4 @@
-import config from '../config/gemini.js';
+import settings from '../config/settings.js';
 import prompt from '../config/prompt.js';
 import data from '../config/data.js';
 
@@ -33,11 +33,11 @@ class Gemini {
   history: MessageContent[];
   config: GeminiConfig | null;
 
-  constructor(apiKey: string, model: string = config.model) {
+  constructor(apiKey: string, model: string = settings.model) {
     this.#apiKey = apiKey;
     this.history = [];
     this.config = null;
-    this.#URL = `${config.baseURL}/${model}:generateContent?key=${this.#apiKey}`;
+    this.#URL = `${settings.baseURL}/${model}:generateContent?key=${this.#apiKey}`;
   }
 
   async sendMessage(message: string): Promise<MessageContent> {
@@ -80,6 +80,12 @@ class Gemini {
 
       const resObj: GeminiResponse = await response.json();
 
+      const content = resObj?.candidates?.[0]?.content;
+      if (content) {
+        this.addToHistory({ role: 'user', parts: [{ text: message }]});
+        this.addToHistory(content);
+      }
+
       return resObj?.candidates?.[0]?.content || {
         role: 'model',
         parts: [{ text: '[Error] - No response from API' }]
@@ -93,19 +99,14 @@ class Gemini {
   }
 
   addToHistory(content: MessageContent): void {
+    if (this.history.length >= settings.maxHistory) {
+      this.history.shift();
+    }
     this.history.push(content);
   }
 
   clearHistory(): void {
     this.history = [];
-  }
-
-  getHistory(): MessageContent[] {
-    return [...this.history];
-  }
-
-  setConfig(newConfig: Partial<GeminiConfig>): void {
-    this.config = { ...config, ...newConfig };
   }
 }
 
