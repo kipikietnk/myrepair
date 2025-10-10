@@ -4,349 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Repair Phone AI</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #212121;
-            color: #ececec;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .header {
-            background: #212121;
-            border-bottom: 1px solid #424242;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ececec;
-        }
-
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .message-wrapper {
-            padding: 24px 0;
-        }
-
-        .message-wrapper.user {
-            background: #212121;
-        }
-
-        .message-wrapper.assistant {
-            background: #2f2f2f;
-        }
-
-        .message-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            gap: 24px;
-        }
-
-        .avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .avatar.user {
-            background: #5e5e5e;
-        }
-
-        .avatar.assistant {
-            background: #10a37f;
-        }
-
-        .message-text {
-            flex: 1;
-            line-height: 1.7;
-            font-size: 16px;
-            padding-top: 2px;
-        }
-
-        .file-attachment {
-            margin-top: 12px;
-            padding: 12px 16px;
-            background: #3e3e3e;
-            border: 1px solid #565656;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-
-        .input-area {
-            padding: 20px;
-            background: #212121;
-            border-top: 1px solid #424242;
-        }
-
-        .input-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .file-preview {
-            display: none;
-            background: #2f2f2f;
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #424242;
-        }
-
-        .file-preview.active {
-            display: flex;
-        }
-
-        .file-preview-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-
-        .remove-file-btn {
-            background: none;
-            border: none;
-            color: #999;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 0 5px;
-            transition: color 0.2s;
-        }
-
-        .remove-file-btn:hover {
-            color: #ececec;
-        }
-
-        .input-wrapper {
-            background: #2f2f2f;
-            border: 1px solid #424242;
-            border-radius: 12px;
-            display: flex;
-            align-items: flex-end;
-            padding: 12px;
-            gap: 8px;
-            transition: border-color 0.2s;
-        }
-
-        .input-wrapper:focus-within {
-            border-color: #565656;
-        }
-
-        .attach-btn {
-            background: none;
-            border: none;
-            color: #999;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s;
-            flex-shrink: 0;
-        }
-
-        .attach-btn:hover {
-            color: #ececec;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        #messageInput {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #ececec;
-            font-size: 16px;
-            outline: none;
-            resize: none;
-            max-height: 200px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        #messageInput::placeholder {
-            color: #6e6e6e;
-        }
-
-        .send-btn {
-            background: #ececec;
-            border: none;
-            color: #212121;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            background: #d9d9d9;
-        }
-
-        .send-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .messages-area::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .messages-area::-webkit-scrollbar-track {
-            background: #212121;
-        }
-
-        .messages-area::-webkit-scrollbar-thumb {
-            background: #424242;
-            border-radius: 4px;
-        }
-
-        .messages-area::-webkit-scrollbar-thumb:hover {
-            background: #565656;
-        }
-
-        .typing-indicator {
-            display: none;
-            padding: 24px 0;
-            background: #2f2f2f;
-        }
-
-        .typing-indicator.active {
-            display: block;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            background: #6e6e6e;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                opacity: 0.4;
-                transform: translateY(0);
-            }
-            30% {
-                opacity: 1;
-                transform: translateY(-10px);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/main.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-title">ChatGPT</div>
-    </div>
-
-    <div class="chat-container">
-        <div class="messages-area" id="messagesArea">
-            <div class="message-wrapper assistant">
-                <div class="message-content">
-                    <div class="avatar assistant">🤖</div>
-                    <div class="message-text">
-                        Xin chào! Tôi là trợ lý AI. Tôi có thể giúp gì cho bạn hôm nay?
-                    </div>
-                </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔧</div>
+            <div class="header-info">
+                <h1>Repair Phone AI</h1>
+                <p>Trợ lý sửa chữa điện thoại thông minh của bạn</p>
             </div>
+            <div class="status-indicator"></div>
         </div>
 
-        <div class="typing-indicator" id="typingIndicator">
-            <div class="message-content">
-                <div class="avatar assistant">🤖</div>
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+        <div class="chat-area" id="chatArea">
+            <div class="message ai">
+                <div class="message-icon">🤖</div>
+                <div class="message-content">
+                    Xin chào! Tôi có thể giúp gì cho bạn hôm nay?
                 </div>
             </div>
         </div>
 
         <div class="input-area">
+            <div id="filePreview"></div>
             <div class="input-container">
-                <div class="file-preview" id="filePreview">
-                    <div class="file-preview-info">
-                        <span>📎</span>
-                        <span id="fileName"></span>
-                    </div>
-                    <button class="remove-file-btn">×</button>
-                </div>
-
-                <div class="input-wrapper">
-                    <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
-                        📎
-                    </button>
-                    <input type="file" id="fileInput">
-                    
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="Gửi tin nhắn..." 
-                        rows="1"
-                    ></textarea>
-                    
-                    <button class="send-btn" id="sendBtn" disabled>
-                        ↑
-                    </button>
-                </div>
+                <label for="fileInput" class="file-input-label" title="Đính kèm file">
+                    📎
+                </label>
+                <input type="file" id="fileInput" accept=".ips" multiple>
+                <input type="text" id="messageInput" placeholder="Nhập tin nhắn của bạn...">
+                <button id="sendButton">➤</button>
             </div>
         </div>
     </div>
