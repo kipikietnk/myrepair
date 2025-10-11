@@ -26,13 +26,10 @@ export const state = {
   isMobile: window.innerWidth <= 768
 };
 
-const dataURL = `${root}assets/database/diagram.json`;
-const imageBaseURL = `/images`;
-
 // ==== Data loading ====
 async function loadData() {
   try {
-    const response = await fetch(dataURL);
+    const response = await fetch("./assets/diagram.json");
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const contentType = response.headers.get('content-type') || '';
@@ -137,7 +134,7 @@ async function onPartChange() {
   const part = selected.components[index];
   if (!part) return utils.showErrorMessage("Không tìm thấy linh kiện");
 
-  const imagePath = `${root}assets/${selected.folder}/${part.picture}`;
+  const imagePath = `./assets/${selected.folder}/${part.picture}`;
 
   if (!utils.isValidImageUrl(imagePath)) {
     return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
