@@ -29,7 +29,7 @@ export const state = {
 // ==== Data loading ====
 async function loadData() {
   try {
-    const response = await fetch("../assets/diagram.json");
+    const response = await fetch("./assets/diagram.json");
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const contentType = response.headers.get('content-type') || '';
