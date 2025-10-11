@@ -20,5 +20,14 @@ export default `
 - Kiểm tra: IC Aduio (U3101)
 - Sửa chữa: Nếu các chân IC còn tốt thì cạo lớp sơn từ chân C12 đến R1103 và bồi thêm chì vào đường dẫn. Sau đó phủ keo UV kín chân C12 và đường vừa bồi chì. Sau đó cạo lớp keo UV tại chân C12 rồi đóng lại IC.
 - Hiếm gặp: Nếu đã làm hết nhưng vẫn bị thì thay IC Audio (U3101). Nếu đã thay vẫn lỗi thì thay thế IC Chuông trên (U3301) nằm trên CPU.
- 
+
+## iPhone X
+- Tình trạng: Cấm sạc, báo sạc nhưng không vào pin
+- Kiểm tra: Kiểm tra L3340 và L3341 ở gần IC sạc (U3300)
+- Sữa chữa: Thay L3340 và L3341
+
+## iPhone 12 Pro Max
+- Tình trạng: Kẹp nguồn dòng nhúng rất nhanh. Dòng cứ nhảy từ 0A lên 0.020A liên tục.
+- Kiểm tra: Đo các đường xung quanh ổ cứng.
+- Sữa chữa: Nếu chạm tụ thì gỡ bỏ tụ và thử lại. Nếu không chạm thì thử gỡ U2 (U9300) ra và kiểm tra lại.
 `
