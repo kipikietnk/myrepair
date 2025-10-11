@@ -136,6 +136,8 @@ async function onPartChange() {
 
   const imagePath = `./assets/${selected.folder}/${part.picture}`;
 
+  console.log(imagePath);
+
   if (!utils.isValidImageUrl(imagePath)) {
     return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
   }
