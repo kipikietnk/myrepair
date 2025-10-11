@@ -150,7 +150,6 @@ function addMessage(text, isUser, files = []) {
     // Format tin nhắn nếu là AI, giữ nguyên nếu là user
     const formattedText = isUser ? text : formatMessage(text);
     messageDiv.innerHTML = `
-    <div class="message-icon">${isUser ? '👤' : '🤖'}</div>
     <div class="message-content">
       ${formattedText}
       ${fileHTML}
@@ -165,7 +164,6 @@ function showTypingIndicator() {
     indicator.className = 'message ai';
     indicator.id = 'typingIndicator';
     indicator.innerHTML = `
-    <div class="message-icon">🤖</div>
     <div class="message-content typing-indicator active">
       <div class="dot"></div>
       <div class="dot"></div>

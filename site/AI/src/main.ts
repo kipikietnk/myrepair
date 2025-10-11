@@ -196,7 +196,6 @@ function addMessage(text: string, isUser?: boolean, files: File[] = []): void {
   const formattedText = isUser ? text : formatMessage(text);
 
   messageDiv.innerHTML = `
-    <div class="message-icon">${isUser ? '👤' : '🤖'}</div>
     <div class="message-content">
       ${formattedText}
       ${fileHTML}
@@ -213,7 +212,6 @@ function showTypingIndicator(): void {
   indicator.className = 'message ai';
   indicator.id = 'typingIndicator';
   indicator.innerHTML = `
-    <div class="message-icon">🤖</div>
     <div class="message-content typing-indicator active">
       <div class="dot"></div>
       <div class="dot"></div>
