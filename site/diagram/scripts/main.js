@@ -134,7 +134,7 @@ async function onPartChange() {
   const part = selected.components[index];
   if (!part) return utils.showErrorMessage("Không tìm thấy linh kiện");
 
-  const imagePath = `../assets/${selected.folder}/${part.picture}`;
+  const imagePath = `${selected.folder}/${part.picture}`;
 
   console.log(imagePath);
 
