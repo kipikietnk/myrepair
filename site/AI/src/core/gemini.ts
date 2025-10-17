@@ -1,6 +1,7 @@
 import settings from '../config/settings.js';
 import prompt from '../config/prompt.js';
 import data from '../config/data.js';
+import { declareFunction, diagramData } from './functionDeclarations.js';
 
 // Types
 interface GeminiConfig {
@@ -8,8 +9,22 @@ interface GeminiConfig {
   model: string;
 }
 
+interface FunctionResponse {
+  id?: string;
+  name: string
+  response: any;
+}
+
+interface FunctionCall {
+  id?: string;
+  name: string;
+  args: any;
+}
+
 interface MessagePart {
-  text: string;
+  text?: string;
+  functionResponse?: FunctionResponse;
+  functionCall?: FunctionCall;
 }
 
 interface MessageContent {
@@ -17,8 +32,20 @@ interface MessageContent {
   parts: MessagePart[];
 }
 
+interface FunctionDeclaration {
+  name: string;
+  description: string;
+  behavior?: any;
+  parameters: any;
+}
+
+interface Tool {
+  functionDeclarations: FunctionDeclaration[]
+}
+
 interface RequestBody {
   contents: MessageContent[];
+  tools: Tool[];
 }
 
 interface GeminiResponse {
@@ -40,25 +67,16 @@ class Gemini {
     this.#URL = `${settings.baseURL}/${model}:generateContent?key=${this.#apiKey}`;
   }
 
-  async sendMessage(message: string): Promise<MessageContent> {
+  async sendMessage(message: string): Promise<GeminiResponse|Error> {
     const body: RequestBody = {
       contents: [
         ...this.history,
-        {
-          role: 'user',
-          parts: [{ text: prompt }]
-        },
-        {
-          role: 'model',
-          parts: [{ text: `My Data: ${data}` }]
-        },
-        {
-          role: 'user',
-          parts: [
-            { text: message }
-          ]
-        }
-      ]
+        {role: 'user', parts: [{ text: prompt }]},
+        {role: 'model', parts: [{ text: `My Data: ${data}` }]},
+        {role: 'model', parts: [{ text: `Diagram: ${diagramData||null}` }]},
+        {role: 'user', parts: [{ text: message }]}
+      ],
+      tools: [{ functionDeclarations: declareFunction }]
     };
 
     try {
@@ -72,10 +90,7 @@ class Gemini {
 
       if (!response.ok) {
         const errorText = await response.text();
-        return {
-          role: 'model',
-          parts: [{ text: `[Error] - ${errorText}. Status: ${response.status}` }]
-        };
+        return new Error(`[Error] - ${errorText}. Status: ${response.status}`);
       }
 
       const resObj: GeminiResponse = await response.json();
@@ -86,15 +101,9 @@ class Gemini {
         this.addToHistory(content);
       }
 
-      return resObj?.candidates?.[0]?.content || {
-        role: 'model',
-        parts: [{ text: '[Error] - No response from API' }]
-      };
+      return resObj
     } catch (error) {
-      return {
-        role: 'model',
-        parts: [{ text: `[Error] - ${(error as Error).message}` }]
-      };
+      return new Error(`[Error] - ${(error as Error).message}`);
     }
   }
 
@@ -111,4 +120,4 @@ class Gemini {
 }
 
 export { Gemini };
-export type { GeminiConfig, MessageContent, MessagePart, GeminiResponse };
+export type { GeminiConfig, MessageContent, MessagePart, GeminiResponse, FunctionDeclaration };

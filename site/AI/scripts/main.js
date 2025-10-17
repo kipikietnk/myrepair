@@ -1,4 +1,5 @@
 import { Gemini } from "./core/gemini.js";
+import { callbacks } from "./core/functionDeclarations.js";
 // Khởi tạo Gemini
 const gemini = new Gemini('AIzaSyBQ2SaYUnqis-31tB3Tt_5104g21oUdfEw');
 // Quản lý file đã chọn
@@ -147,7 +148,6 @@ function addMessage(text, isUser, files = []) {
     if (files.length > 0) {
         fileHTML = files.map((f) => `<div class="file-attachment">${f.name} - ${formatFileSize(f.size)}</div>`).join('');
     }
-    // Format tin nhắn nếu là AI, giữ nguyên nếu là user
     const formattedText = isUser ? text : formatMessage(text);
     messageDiv.innerHTML = `
     <div class="message-content">
@@ -158,7 +158,6 @@ function addMessage(text, isUser, files = []) {
     chatArea.appendChild(messageDiv);
     chatArea.scrollTop = chatArea.scrollHeight;
 }
-// Hiển thị typing indicator
 function showTypingIndicator() {
     const indicator = document.createElement('div');
     indicator.className = 'message ai';
@@ -178,14 +177,11 @@ function removeTypingIndicator() {
     if (indicator)
         indicator.remove();
 }
-// Xử lý gửi tin nhắn
 async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text && selectedFiles.length === 0)
         return;
-    // Hiển thị tin nhắn người dùng
     addMessage(text || '(Đã gửi file .ips)', true, selectedFiles);
-    // Đọc nội dung các file
     const fileContents = [];
     for (const file of selectedFiles) {
         try {
@@ -217,12 +213,51 @@ async function sendMessage() {
     try {
         const response = await gemini.sendMessage(text);
         removeTypingIndicator();
-        addMessage(response?.parts?.[0]?.text || 'Xin lỗi, tôi không có phản hồi.');
+        if (response instanceof Error) {
+        }
+        else {
+            ResponseHandler(response.candidates?.[0].content);
+        }
     }
     catch (error) {
         removeTypingIndicator();
         addMessage('Đã xảy ra lỗi khi gửi tin nhắn.');
         console.error('Lỗi:', error);
+    }
+}
+async function ResponseHandler(content) {
+    if (!content)
+        return addMessage("[ERROR] - No response from API");
+    for (const part of content.parts) {
+        if (part.text) {
+            addMessage(part.text, content.role === 'user');
+        }
+        else if (part.functionCall) {
+            const { name, args } = part.functionCall;
+            const button = document.createElement("button");
+            button.className = "function-call-btn";
+            button.textContent = `${args.platform ? args.platform + " " : ""}${(args.component_name || args.picture)}`;
+            button.onclick = async () => {
+                if (name in callbacks) {
+                    try {
+                        await callbacks[name](args);
+                    }
+                    catch (err) {
+                        console.error(`Lỗi khi gọi hàm ${name}:`, err);
+                        addMessage(`Lỗi khi thực thi hàm ${name}`, false);
+                    }
+                }
+                else {
+                    addMessage(`Không tìm thấy hàm ${name}`, false);
+                }
+            };
+            // Gắn nút vào khu chat
+            const messageDiv = document.createElement("div");
+            messageDiv.className = "message ai";
+            messageDiv.appendChild(button);
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
     }
 }
 // Event listeners

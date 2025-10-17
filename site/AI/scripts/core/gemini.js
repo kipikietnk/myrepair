@@ -1,6 +1,7 @@
 import settings from '../config/settings.js';
 import prompt from '../config/prompt.js';
 import data from '../config/data.js';
+import { declareFunction, diagramData } from './functionDeclarations.js';
 class Gemini {
     #apiKey;
     #URL;
@@ -16,21 +17,12 @@ class Gemini {
         const body = {
             contents: [
                 ...this.history,
-                {
-                    role: 'user',
-                    parts: [{ text: prompt }]
-                },
-                {
-                    role: 'model',
-                    parts: [{ text: `My Data: ${data}` }]
-                },
-                {
-                    role: 'user',
-                    parts: [
-                        { text: message }
-                    ]
-                }
-            ]
+                { role: 'user', parts: [{ text: prompt }] },
+                { role: 'model', parts: [{ text: `My Data: ${data}` }] },
+                { role: 'model', parts: [{ text: `Diagram: ${diagramData || null}` }] },
+                { role: 'user', parts: [{ text: message }] }
+            ],
+            tools: [{ functionDeclarations: declareFunction }]
         };
         try {
             const response = await fetch(this.#URL, {
@@ -42,10 +34,7 @@ class Gemini {
             });
             if (!response.ok) {
                 const errorText = await response.text();
-                return {
-                    role: 'model',
-                    parts: [{ text: `[Error] - ${errorText}. Status: ${response.status}` }]
-                };
+                return new Error(`[Error] - ${errorText}. Status: ${response.status}`);
             }
             const resObj = await response.json();
             const content = resObj?.candidates?.[0]?.content;
@@ -53,16 +42,10 @@ class Gemini {
                 this.addToHistory({ role: 'user', parts: [{ text: message }] });
                 this.addToHistory(content);
             }
-            return resObj?.candidates?.[0]?.content || {
-                role: 'model',
-                parts: [{ text: '[Error] - No response from API' }]
-            };
+            return resObj;
         }
         catch (error) {
-            return {
-                role: 'model',
-                parts: [{ text: `[Error] - ${error.message}` }]
-            };
+            return new Error(`[Error] - ${error.message}`);
         }
     }
     addToHistory(content) {
