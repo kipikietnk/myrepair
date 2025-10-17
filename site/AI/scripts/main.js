@@ -141,14 +141,14 @@ function formatMessage(text) {
     }
     return formatted;
 }
-function addMessage(text, isUser, files = []) {
+function addMessage(text, isUser, files = [], format = true) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
     let fileHTML = '';
     if (files.length > 0) {
         fileHTML = files.map((f) => `<div class="file-attachment">${f.name} - ${formatFileSize(f.size)}</div>`).join('');
     }
-    const formattedText = isUser ? text : formatMessage(text);
+    const formattedText = (isUser || !format) ? text : formatMessage(text);
     messageDiv.innerHTML = `
     <div class="message-content">
       ${formattedText}
@@ -214,6 +214,7 @@ async function sendMessage() {
         const response = await gemini.sendMessage(text);
         removeTypingIndicator();
         if (response instanceof Error) {
+            addMessage(response.message, false, undefined, false);
         }
         else {
             ResponseHandler(response.candidates?.[0].content);

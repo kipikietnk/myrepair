@@ -183,7 +183,7 @@ function formatMessage(text: string): string {
   return formatted;
 }
 
-function addMessage(text: string, isUser?: boolean, files: File[] = []): void {
+function addMessage(text: string, isUser?: boolean, files: File[] = [], format: boolean = true): void {
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
 
@@ -194,7 +194,7 @@ function addMessage(text: string, isUser?: boolean, files: File[] = []): void {
     ).join('');
   }
 
-  const formattedText = isUser ? text : formatMessage(text);
+  const formattedText = (isUser || !format) ? text : formatMessage(text);
 
   messageDiv.innerHTML = `
     <div class="message-content">
@@ -269,7 +269,7 @@ async function sendMessage(): Promise<MessageContent|void> {
     const response = await gemini.sendMessage(text);
     removeTypingIndicator();
     if (response instanceof Error) {
-
+      addMessage(response.message, false, undefined, false)
     } else {
       ResponseHandler(response.candidates?.[0].content);
     }

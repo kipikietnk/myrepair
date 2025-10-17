@@ -33,8 +33,8 @@ class Gemini {
                 body: JSON.stringify(body),
             });
             if (!response.ok) {
-                const errorText = await response.text();
-                return new Error(`[Error] - ${errorText}. Status: ${response.status}`);
+                const errorJson = await response.json();
+                return new Error(errorJson.error.message);
             }
             const resObj = await response.json();
             const content = resObj?.candidates?.[0]?.content;
