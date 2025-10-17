@@ -1,7 +1,7 @@
 import { Gemini } from "./core/gemini.js";
 import { callbacks } from "./core/functionDeclarations.js";
 // Khởi tạo Gemini
-const gemini = new Gemini('AIzaSyBQ2SaYUnqis-31tB3Tt_5104g21oUdfEw');
+const gemini = new Gemini();
 // Quản lý file đã chọn
 let selectedFiles = [];
 let fileContents = [];
@@ -181,6 +181,13 @@ async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text && selectedFiles.length === 0)
         return;
+    if (text.startsWith('--api')) {
+        const newAPI = text.replace('--api', '').trim();
+        const result = await gemini.updateApiKey(newAPI);
+        addMessage(result);
+        ClearInput();
+        return;
+    }
     addMessage(text || '(Đã gửi file .ips)', true, selectedFiles);
     const fileContents = [];
     for (const file of selectedFiles) {
@@ -204,10 +211,7 @@ async function sendMessage() {
         });
     }
     // Clear input
-    messageInput.value = '';
-    selectedFiles = [];
-    filePreview.innerHTML = '';
-    fileInput.value = '';
+    ClearInput();
     // Hiển thị typing indicator
     showTypingIndicator();
     try {
@@ -225,6 +229,12 @@ async function sendMessage() {
         addMessage('Đã xảy ra lỗi khi gửi tin nhắn.');
         console.error('Lỗi:', error);
     }
+}
+function ClearInput() {
+    messageInput.value = '';
+    selectedFiles = [];
+    filePreview.innerHTML = '';
+    fileInput.value = '';
 }
 async function ResponseHandler(content) {
     if (!content)

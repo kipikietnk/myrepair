@@ -1,6 +1,7 @@
 import { Gemini } from "./core/gemini.js";
 import { callbacks } from "./core/functionDeclarations.js";
 import { MessageContent } from "./core/gemini.js";
+import settings from "./config/settings.js";
 
 // Types
 interface FileContent {
@@ -15,7 +16,7 @@ interface GeminiResponse {
 }
 
 // Khởi tạo Gemini
-const gemini = new Gemini('AIzaSyBQ2SaYUnqis-31tB3Tt_5104g21oUdfEw');
+const gemini = new Gemini();
 
 // Quản lý file đã chọn
 let selectedFiles: File[] = [];
@@ -232,6 +233,14 @@ async function sendMessage(): Promise<MessageContent|void> {
 
   if (!text && selectedFiles.length === 0) return;
 
+  if (text.startsWith('--api')) {
+    const newAPI = text.replace('--api', '').trim();
+    const result = await gemini.updateApiKey(newAPI);
+    addMessage(result);
+    ClearInput();
+    return;
+  }
+
   addMessage(text || '(Đã gửi file .ips)', true, selectedFiles);
 
   const fileContents: FileContent[] = [];
@@ -257,10 +266,7 @@ async function sendMessage(): Promise<MessageContent|void> {
   }
 
   // Clear input
-  messageInput.value = '';
-  selectedFiles = [];
-  filePreview.innerHTML = '';
-  fileInput.value = '';
+  ClearInput();
 
   // Hiển thị typing indicator
   showTypingIndicator();
@@ -273,13 +279,18 @@ async function sendMessage(): Promise<MessageContent|void> {
     } else {
       ResponseHandler(response.candidates?.[0].content);
     }
-    
-    
   } catch (error) {
     removeTypingIndicator();
     addMessage('Đã xảy ra lỗi khi gửi tin nhắn.');
     console.error('Lỗi:', error);
   }
+}
+
+function ClearInput() {
+  messageInput.value = '';
+  selectedFiles = [];
+  filePreview.innerHTML = '';
+  fileInput.value = '';
 }
 
 async function ResponseHandler(content: MessageContent | void): Promise<void> {

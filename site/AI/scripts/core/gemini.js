@@ -3,15 +3,25 @@ import prompt from '../config/prompt.js';
 import data from '../config/data.js';
 import { declareFunction, diagramData } from './functionDeclarations.js';
 class Gemini {
-    #apiKey;
     #URL;
     history;
     config;
-    constructor(apiKey, model = settings.model) {
-        this.#apiKey = apiKey;
+    model;
+    constructor(model = settings.model) {
         this.history = [];
         this.config = null;
-        this.#URL = `${settings.baseURL}/${model}:generateContent?key=${this.#apiKey}`;
+        this.model = model;
+        this.#URL = `${settings.baseURL}/${model}:generateContent?key=${settings.apiKey}`;
+    }
+    async updateApiKey(newAPI) {
+        const checkURL = `${settings.baseURL}?key=${newAPI}`;
+        const checkResponse = await fetch(checkURL);
+        if (!checkResponse.ok) {
+            const r = await checkResponse.json();
+            return `API update failed\n- Status: ${r?.error?.code}\n- Error: ${r?.error?.message}`;
+        }
+        this.#URL = `${settings.baseURL}/${this.model}:generateContent?key=${newAPI}`;
+        return "API has been Updated!";
     }
     async sendMessage(message) {
         const body = {

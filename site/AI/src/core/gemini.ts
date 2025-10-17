@@ -55,16 +55,28 @@ interface GeminiResponse {
 }
 
 class Gemini {
-  #apiKey: string;
   #URL: string;
   history: MessageContent[];
   config: GeminiConfig | null;
+  model: string;
 
-  constructor(apiKey: string, model: string = settings.model) {
-    this.#apiKey = apiKey;
+  constructor(model: string = settings.model) {
     this.history = [];
     this.config = null;
-    this.#URL = `${settings.baseURL}/${model}:generateContent?key=${this.#apiKey}`;
+    this.model = model
+    this.#URL = `${settings.baseURL}/${model}:generateContent?key=${settings.apiKey}`;
+  }
+
+  async updateApiKey(newAPI: string): Promise<string> {
+    const checkURL = `${settings.baseURL}?key=${newAPI}`;
+    const checkResponse = await fetch(checkURL);
+
+    if (!checkResponse.ok) {
+      const r = await checkResponse.json();
+      return `API update failed\n- Status: ${r?.error?.code}\n- Error: ${r?.error?.message}`;
+    }
+    this.#URL = `${settings.baseURL}/${this.model}:generateContent?key=${newAPI}`
+    return "API has been Updated!";
   }
 
   async sendMessage(message: string): Promise<GeminiResponse|Error> {
