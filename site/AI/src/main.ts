@@ -39,17 +39,17 @@ function validateIPSFormat(content: string): { valid: boolean; error?: string } 
   if (!content || content.trim().length === 0) {
     return { valid: false, error: 'File rỗng hoặc không có nội dung' };
   }
-  
+
   return { valid: true };
 }
 
 // Hàm xử lý nội dung file .ips (lọc, tách văn bản, v.v)
 function processIPSContent(content: string): string {
   let processedContent = content;
-  
+
   processedContent = processedContent.replace(/\\n/g, "\n");
 
-  
+
   return processedContent;
 }
 
@@ -57,7 +57,7 @@ function processIPSContent(content: string): string {
 fileInput.addEventListener('change', (e: Event) => {
   const target = e.target as HTMLInputElement;
   const files = Array.from(target.files || []);
-  
+
   // Lọc chỉ file .ips
   const validFiles = files.filter(file => {
     if (!isValidIPSFile(file)) {
@@ -66,10 +66,10 @@ fileInput.addEventListener('change', (e: Event) => {
     }
     return true;
   });
-  
+
   selectedFiles = validFiles;
   displayFilePreview();
-  
+
   // Reset input nếu không có file hợp lệ
   if (validFiles.length === 0) {
     target.value = '';
@@ -113,14 +113,14 @@ async function readFileContent(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const content = e.target?.result as string;
-      
+
       // Kiểm tra định dạng file .ips
       const validation = validateIPSFormat(content);
       if (!validation.valid) {
         reject(new Error(`File "${file.name}" không đúng định dạng .ips: ${validation.error}`));
         return;
       }
-      
+
       // Xử lý nội dung file .ips
       const processedContent = processIPSContent(content);
       resolve(processedContent);
@@ -136,10 +136,12 @@ interface FormatRule {
 }
 
 const formatRegex: FormatRule[] = [
-  { regex: /```(\w+)?\n([\s\S]*?)```/g, replacement: (match: string, lang: string, code: string) => {
+  {
+    regex: /```(\w+)?\n([\s\S]*?)```/g, replacement: (match: string, lang: string, code: string) => {
       const language = lang ? lang.toUpperCase() : 'CODE';
       return `<pre><div class="code-header">${language}</div><code>${code.trim()}</code></pre>`;
-    }  },
+    }
+  },
   { regex: /`([^`]+)`/g, replacement: '<code>$1</code>' },
   { regex: /^#### (.+)$/gm, replacement: '<h4>$1</h4>' },
   { regex: /^### (.+)$/gm, replacement: '<h3>$1</h3>' },
@@ -228,7 +230,7 @@ function removeTypingIndicator(): void {
   if (indicator) indicator.remove();
 }
 
-async function sendMessage(): Promise<MessageContent|void> {
+async function sendMessage(): Promise<MessageContent | void> {
   const text = messageInput.value.trim();
 
   if (!text && selectedFiles.length === 0) return;
@@ -261,14 +263,12 @@ async function sendMessage(): Promise<MessageContent|void> {
 
   if (fileContents.length > 0) {
     fileContents.forEach(file => {
-      gemini.addToHistory({ role: 'user', parts: [{ text: `File: ${file.name}\nNội dung:\n${file.content}` }]});
+      gemini.addToHistory({ role: 'user', parts: [{ text: `File: ${file.name}\nNội dung:\n${file.content}` }] });
     })
   }
 
   // Clear input
   ClearInput();
-
-  // Hiển thị typing indicator
   showTypingIndicator();
 
   try {
@@ -299,35 +299,32 @@ async function ResponseHandler(content: MessageContent | void): Promise<void> {
   for (const part of content.parts) {
     if (part.text) {
       addMessage(part.text, content.role === 'user');
-    } 
-    else if (part.functionCall) {
-  const { name, args } = part.functionCall;
-
-  const button = document.createElement("button");
-  button.className = "function-call-btn";
-  button.textContent = `${args.platform ? args.platform + " " : ""}${(args.component_name || args.picture)}`;
-  button.onclick = async () => {
-    if (name in callbacks) {
-      try {
-        await (callbacks as any)[name](args);
-      } catch (err) {
-        console.error(`Lỗi khi gọi hàm ${name}:`, err);
-        addMessage(`Lỗi khi thực thi hàm ${name}`, false);
-      }
-    } else {
-      addMessage(`Không tìm thấy hàm ${name}`, false);
     }
-  };
+    else if (part.functionCall) {
+      const { name, args } = part.functionCall;
 
-  // Gắn nút vào khu chat
-  const messageDiv = document.createElement("div");
-  messageDiv.className = "message ai";
-  messageDiv.appendChild(button)
+      const button = document.createElement("button");
+      button.className = "function-call-btn";
+      button.textContent = `${args.platform ? args.platform + " " : ""}${(args.component_name || args.picture)}`;
+      button.onclick = async () => {
+        if (name in callbacks) {
+          try {
+            await (callbacks as any)[name](args);
+          } catch (err) {
+            console.error(`Lỗi khi gọi hàm ${name}:`, err);
+            addMessage(`Lỗi khi thực thi hàm ${name}`, false);
+          }
+        } else {
+          addMessage(`Không tìm thấy hàm ${name}`, false);
+        }
+      };
 
-  chatArea.appendChild(messageDiv);
-  chatArea.scrollTop = chatArea.scrollHeight;
-}
-
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message ai";
+      messageDiv.appendChild(button)
+      chatArea.appendChild(messageDiv);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
   }
 }
 

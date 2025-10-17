@@ -98,10 +98,12 @@ async function readFileContent(file) {
     });
 }
 const formatRegex = [
-    { regex: /```(\w+)?\n([\s\S]*?)```/g, replacement: (match, lang, code) => {
+    {
+        regex: /```(\w+)?\n([\s\S]*?)```/g, replacement: (match, lang, code) => {
             const language = lang ? lang.toUpperCase() : 'CODE';
             return `<pre><div class="code-header">${language}</div><code>${code.trim()}</code></pre>`;
-        } },
+        }
+    },
     { regex: /`([^`]+)`/g, replacement: '<code>$1</code>' },
     { regex: /^#### (.+)$/gm, replacement: '<h4>$1</h4>' },
     { regex: /^### (.+)$/gm, replacement: '<h3>$1</h3>' },
@@ -212,7 +214,6 @@ async function sendMessage() {
     }
     // Clear input
     ClearInput();
-    // Hiển thị typing indicator
     showTypingIndicator();
     try {
         const response = await gemini.sendMessage(text);
@@ -262,7 +263,6 @@ async function ResponseHandler(content) {
                     addMessage(`Không tìm thấy hàm ${name}`, false);
                 }
             };
-            // Gắn nút vào khu chat
             const messageDiv = document.createElement("div");
             messageDiv.className = "message ai";
             messageDiv.appendChild(button);
