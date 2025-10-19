@@ -49,6 +49,8 @@ function processIPSContent(content: string): string {
 
   processedContent = processedContent.replace(/\\n/g, "\n");
 
+  // Chưa có tệp panic-full để phân tích
+
 
   return processedContent;
 }
