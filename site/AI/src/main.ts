@@ -27,6 +27,13 @@ const messageInput = document.getElementById('messageInput') as HTMLTextAreaElem
 const sendButton = document.getElementById('sendButton') as HTMLButtonElement;
 const fileInput = document.getElementById('fileInput') as HTMLInputElement;
 const filePreview = document.getElementById('filePreview') as HTMLDivElement;
+const newPage = document.getElementById('new') as HTMLDivElement;
+const menuContainer = document.querySelector(".menu-container") as HTMLDivElement;
+const menuButton = document.getElementById("menuButton") as HTMLDivElement;
+
+menuButton.addEventListener("click", () => {
+  menuContainer.classList.toggle("active");
+});
 
 // Kiểm tra file có phải .ips không
 function isValidIPSFile(file: File): boolean {
@@ -225,11 +232,13 @@ function showTypingIndicator(): void {
   `;
   chatArea.appendChild(indicator);
   chatArea.scrollTop = chatArea.scrollHeight;
+  sendButton.disabled = true;
 }
 
 function removeTypingIndicator(): void {
   const indicator = document.getElementById('typingIndicator');
   if (indicator) indicator.remove();
+  sendButton.disabled = messageInput.value.trim() === '' && selectedFiles.length === 0;
 }
 
 async function sendMessage(): Promise<MessageContent | void> {
@@ -334,8 +343,25 @@ async function ResponseHandler(content: MessageContent | void): Promise<void> {
 // Event listeners
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e: KeyboardEvent) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
+  const indicator = document.getElementById('typingIndicator');
+  if (e.key === 'Enter' && !e.shiftKey && !indicator) {
     e.preventDefault();
     sendMessage();
   }
 });
+
+messageInput.addEventListener('input', () => {
+  const indicator = document.getElementById('typingIndicator');
+  if (indicator) {
+    sendButton.disabled = true;
+  } else {
+    sendButton.disabled = messageInput.value.trim() === '' && selectedFiles.length === 0;
+  }
+});
+
+let removeInfo = () => {
+  newPage.remove();
+  sendButton.removeEventListener('click', removeInfo);
+}
+
+sendButton.addEventListener('click', removeInfo)

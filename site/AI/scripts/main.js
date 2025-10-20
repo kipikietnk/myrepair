@@ -10,6 +10,12 @@ const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
 const fileInput = document.getElementById('fileInput');
 const filePreview = document.getElementById('filePreview');
+const newPage = document.getElementById('new');
+const menuContainer = document.querySelector(".menu-container");
+const menuButton = document.getElementById("menuButton");
+menuButton.addEventListener("click", () => {
+    menuContainer.classList.toggle("active");
+});
 // Kiểm tra file có phải .ips không
 function isValidIPSFile(file) {
     const fileName = file.name.toLowerCase();
@@ -26,6 +32,7 @@ function validateIPSFormat(content) {
 function processIPSContent(content) {
     let processedContent = content;
     processedContent = processedContent.replace(/\\n/g, "\n");
+    // Chưa có tệp panic-full để phân tích
     return processedContent;
 }
 // Xử lý chọn file
@@ -173,11 +180,13 @@ function showTypingIndicator() {
   `;
     chatArea.appendChild(indicator);
     chatArea.scrollTop = chatArea.scrollHeight;
+    sendButton.disabled = true;
 }
 function removeTypingIndicator() {
     const indicator = document.getElementById('typingIndicator');
     if (indicator)
         indicator.remove();
+    sendButton.disabled = messageInput.value.trim() === '' && selectedFiles.length === 0;
 }
 async function sendMessage() {
     const text = messageInput.value.trim();
@@ -274,8 +283,23 @@ async function ResponseHandler(content) {
 // Event listeners
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    const indicator = document.getElementById('typingIndicator');
+    if (e.key === 'Enter' && !e.shiftKey && !indicator) {
         e.preventDefault();
         sendMessage();
     }
 });
+messageInput.addEventListener('input', () => {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) {
+        sendButton.disabled = true;
+    }
+    else {
+        sendButton.disabled = messageInput.value.trim() === '' && selectedFiles.length === 0;
+    }
+});
+let removeInfo = () => {
+    newPage.remove();
+    sendButton.removeEventListener('click', removeInfo);
+};
+sendButton.addEventListener('click', removeInfo);

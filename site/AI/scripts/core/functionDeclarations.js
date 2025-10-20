@@ -101,7 +101,7 @@ const callbacks = {
         };
     }
 };
-async function loadDiagramData() {
+(async function () {
     const r = await fetch("../diagram/assets/diagram.json");
     if (r.status === 200) {
         declare.push({
@@ -124,6 +124,5 @@ async function loadDiagramData() {
     else {
         console.error("Load Diagram Fail:", r.status, r.statusText);
     }
-}
-loadDiagramData();
+})();
 export { declare as declareFunction, callbacks, diagramData };
