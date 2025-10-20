@@ -11,11 +11,6 @@ const sendButton = document.getElementById('sendButton');
 const fileInput = document.getElementById('fileInput');
 const filePreview = document.getElementById('filePreview');
 const newPage = document.getElementById('new');
-const menuContainer = document.querySelector(".menu-container");
-const menuButton = document.getElementById("menuButton");
-menuButton.addEventListener("click", () => {
-    menuContainer.classList.toggle("active");
-});
 // Kiểm tra file có phải .ips không
 function isValidIPSFile(file) {
     const fileName = file.name.toLowerCase();

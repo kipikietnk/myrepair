@@ -28,12 +28,6 @@ const sendButton = document.getElementById('sendButton') as HTMLButtonElement;
 const fileInput = document.getElementById('fileInput') as HTMLInputElement;
 const filePreview = document.getElementById('filePreview') as HTMLDivElement;
 const newPage = document.getElementById('new') as HTMLDivElement;
-const menuContainer = document.querySelector(".menu-container") as HTMLDivElement;
-const menuButton = document.getElementById("menuButton") as HTMLDivElement;
-
-menuButton.addEventListener("click", () => {
-  menuContainer.classList.toggle("active");
-});
 
 // Kiểm tra file có phải .ips không
 function isValidIPSFile(file: File): boolean {
