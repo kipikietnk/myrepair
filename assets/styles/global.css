@@ -2,11 +2,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-img {
-  pointer-events: none;
-  user-select: none;
-}
-
 :root {
   --accent: #FF6B35;
   --danger: #FF3B30;

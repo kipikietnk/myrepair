@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+.no-select {
+    pointer-events: none;
+    user-select: none;
+}
+
 :root {
     --bg: #000000;
     --msg-bg: #2B2B2B;
@@ -54,14 +59,28 @@ body {
 }
 
 #new h1 {
-    color: #F7B62C;
-    font-size: 32px;
+    color: #ffc107;
+    font-size: 34px;
+    font-weight: 700;
+    text-shadow: 0 0 30px rgba(255, 193, 7, 0.5);
+    font-weight: bold;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+    }
+
+    to {
+        text-shadow: 0 0 40px rgba(255, 193, 7, 0.8);
+    }
 }
 
 #new p {
     color: var(--text);
     font-size: 18px;
-    margin-top: 8px;
+    margin-top: 5px;
 }
 
 /* Chat Area */
@@ -96,6 +115,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -426,9 +446,13 @@ body {
 }
 
 @keyframes bounce {
-    0%, 60%, 100% {
+
+    0%,
+    60%,
+    100% {
         transform: translateY(0);
     }
+
     30% {
         transform: translateY(-10px);
     }
@@ -437,91 +461,90 @@ body {
 
 
 .image-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 100001;
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
 }
 
 .image-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: var(--surface-glass);
+    position: absolute;
+    inset: 0;
+    background: var(--surface-glass);
 }
 
 .image-modal-content {
-  position: absolute;
-  margin: auto;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--surface-glass);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
-  width: 100dvw;
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 100001;
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface-glass);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100001;
 }
 
 .image-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 8px;
-  background: #222;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 8px;
+    background: #222;
 }
 
 .image-toolbar button {
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
 }
 
 .image-toolbar button:hover {
-  background: #555;
+    background: #555;
 }
 
 .image-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .zoomable-image {
-  cursor: grab;
-  transition: transform 0.15s ease;
-  user-select: none;
-  max-width: none;
+    cursor: grab;
+    transition: transform 0.15s ease;
+    user-select: none;
+    max-width: none;
 }
 
 .message-footer {
-  margin-top: 6px;
-  display: flex;
-  justify-content: flex-start;
-  padding-left: 12px;
+    margin-top: 6px;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 12px;
 }
 
 .function-call-btn {
-  background: var(--control-surface-glass);
+    background: var(--control-surface-glass);
     color: var(--text);
-  padding: 12px 17px;
-  border: none;
+    padding: 12px 17px;
+    border: none;
     border-radius: 18px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
 .function-call-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 3px 10px rgba(255, 193, 7, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.4);
 }
-
