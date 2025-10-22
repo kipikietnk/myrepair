@@ -73,7 +73,7 @@ body {
 }
 
 .chat-area::-webkit-scrollbar {
-    width: 8px;
+    width: 3px;
 }
 
 .chat-area::-webkit-scrollbar-track {
