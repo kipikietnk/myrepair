@@ -1,3 +1,7 @@
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 :root {
   --accent: #FF6B35;
   --danger: #FF3B30;
