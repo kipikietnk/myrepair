@@ -137,17 +137,6 @@ body {
     overflow-wrap: break-word;
 }
 
-.message.user .message-content {
-    border-bottom-right-radius: 4px;
-    font-weight: 500;
-}
-
-.message.ai .message-content {
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
-    line-height: 1.6;
-}
-
 /* Formatted text styles */
 .message-content h1,
 .message-content h2,
@@ -469,7 +458,6 @@ body {
 .image-modal-backdrop {
     position: absolute;
     inset: 0;
-    background: var(--surface-glass);
 }
 
 .image-modal-content {
@@ -478,7 +466,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     background: var(--surface-glass);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     border-radius: 10px;
     width: 100dvw;
     height: 100dvh;
@@ -489,11 +477,16 @@ body {
 }
 
 .image-toolbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     padding: 8px;
-    background: #222;
+    background: rgba(34, 34, 34, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 100002;
 }
 
 .image-toolbar button {
@@ -533,18 +526,18 @@ body {
 }
 
 .function-call-btn {
-    background: var(--control-surface-glass);
+    background: var(--msg-bg);
     color: var(--text);
     padding: 12px 17px;
     border: none;
-    border-radius: 18px;
-    font-size: 13px;
+    border-radius: 12px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
+    text-decoration: underline;
 }
 
 .function-call-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.4);
+    transform: scale(1.02);
 }
