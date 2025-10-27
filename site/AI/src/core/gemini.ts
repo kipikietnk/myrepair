@@ -1,7 +1,7 @@
 import settings from '../config/settings.js';
 import prompt from '../config/prompt.js';
 import data from '../config/data.js';
-import { declareFunction, diagramData } from './functionDeclarations.js';
+import { declareFunction, diagramData, otherImageData } from './functionDeclarations.js';
 
 // Types
 interface GeminiConfig {
@@ -76,7 +76,7 @@ class Gemini {
       return `API update failed\n- Status: ${r?.error?.code}\n- Error: ${r?.error?.message}`;
     }
     this.#URL = `${settings.baseURL}/${this.model}:generateContent?key=${newAPI}`
-    return "API has been Updated!";
+    return 'API key updated successfully';
   }
 
   async sendMessage(message: string): Promise<GeminiResponse|Error> {
@@ -86,6 +86,7 @@ class Gemini {
         {role: 'user', parts: [{ text: prompt }]},
         {role: 'model', parts: [{ text: `My Data: ${data}` }]},
         {role: 'model', parts: [{ text: `Diagram: ${diagramData||null}` }]},
+        {role: 'model', parts: [{ text: `Other Images: ${otherImageData||null}` }]},
         {role: 'user', parts: [{ text: message }]}
       ],
       tools: [{ functionDeclarations: declareFunction }]

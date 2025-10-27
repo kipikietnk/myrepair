@@ -1,7 +1,7 @@
 import { Gemini } from "./core/gemini.js";
 import { callbacks } from "./core/functionDeclarations.js";
 // Constants
-const IPS_EXTENSION = '.ips';
+const IPS_EXTENSION = ['.ips', '.txt'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
 // Gemini instance
 const gemini = new Gemini();
@@ -30,7 +30,10 @@ const elements = {
     newPage: document.getElementById('new'),
 };
 // Validation functions
-const isValidIPSFile = (file) => file.name.toLowerCase().endsWith(IPS_EXTENSION);
+const isValidIPSFile = (file) => {
+    return IPS_EXTENSION.some(ext => file.name.toLowerCase().endsWith(ext));
+};
+//file.name.toLowerCase().endsWith();
 const validateIPSFormat = (content) => {
     if (!content?.trim()) {
         return { valid: false, error: 'File rỗng hoặc không có nội dung' };
@@ -38,7 +41,13 @@ const validateIPSFormat = (content) => {
     return { valid: true };
 };
 // File processing
-const processIPSContent = (content) => content.replace(/\\n/g, "\n");
+function processIPSContent(content) {
+    const lines = content.split('\n');
+    const panicString = lines.find(line => line.includes('panicString'));
+    const panicInfo = panicString?.split('\\n')?.[0].trim();
+    console.log('Panic Info:', panicInfo);
+    return panicInfo ? `Panic Log: ${panicInfo}` : "Void";
+}
 const formatFileSize = (bytes) => {
     if (bytes < 1024)
         return `${bytes} B`;
@@ -95,47 +104,140 @@ elements.filePreview.addEventListener('click', (e) => {
         updateSendButtonState();
     }
 });
-const formatRules = [
-    {
-        regex: /```(\w+)?\n([\s\S]*?)```/g,
-        replacement: (_, lang, code) => {
-            const language = lang?.toUpperCase() || 'CODE';
-            return `<pre><div class="code-header">${language}</div><code>${code.trim()}</code></pre>`;
+// Message formatting
+function formatMessage(markdown) {
+    let html = markdown;
+    // 1. Escape HTML đặc biệt trước khi xử lý
+    html = html.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    // 2. Code blocks (```language\ncode\n```)
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+        const language = lang ? ` class="language-${lang}"` : '';
+        return `<pre><code${language}>${code.trim()}</code></pre>`;
+    });
+    // 3. Inline code (`code`)
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // 4. Images (![alt](url "title"))
+    html = html.replace(/!\[([^\]]*)\]\(([^)"]+)(?:\s+"([^"]*)")?\)/g, (_, alt, url, title) => {
+        const titleAttr = title ? ` title="${title}"` : '';
+        return `<img src="${url}" alt="${alt}"${titleAttr}>`;
+    });
+    // 5. Links ([text](url "title"))
+    html = html.replace(/\[([^\]]+)\]\(([^)"]+)(?:\s+"([^"]*)")?\)/g, (_, text, url, title) => {
+        const titleAttr = title ? ` title="${title}"` : '';
+        return `<a href="${url}"${titleAttr}>${text}</a>`;
+    });
+    // 6. Headers (# H1, ## H2, etc.)
+    html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
+    html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
+    html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+    // 7. Horizontal rules (---, ***, ___)
+    html = html.replace(/^(\*\*\*|---|___)$/gm, '<hr>');
+    // 8. Bold + Italic (***text*** hoặc ___text___)
+    html = html.replace(/(\*\*\*|___)(?=\S)(.+?)(?<=\S)\1/g, '<strong><em>$2</em></strong>');
+    // 9. Bold (**text** hoặc __text__)
+    html = html.replace(/(\*\*|__)(?=\S)(.+?)(?<=\S)\1/g, '<strong>$2</strong>');
+    // 10. Italic (*text* hoặc _text_)
+    html = html.replace(/(\*|_)(?=\S)(.+?)(?<=\S)\1/g, '<em>$2</em>');
+    // 11. Strikethrough (~~text~~)
+    html = html.replace(/~~(?=\S)(.+?)(?<=\S)~~/g, '<del>$1</del>');
+    // 12. Blockquotes (> text)
+    html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+    // Gộp blockquotes liên tiếp
+    html = html.replace(/(<\/blockquote>\n<blockquote>)/g, '\n');
+    // 13. Unordered lists (-, *, +)
+    html = html.replace(/^[\*\-\+]\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, (match) => {
+        return `<ul>${match}</ul>`;
+    });
+    // 14. Ordered lists (1. item)
+    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, (match) => {
+        // Kiểm tra xem có phải là unordered list không
+        if (!match.includes('<ul>')) {
+            return `<ol>${match}</ol>`;
         }
-    },
-    { regex: /`([^`]+)`/g, replacement: '<code>$1</code>' },
-    { regex: /^#### (.+)$/gm, replacement: '<h4>$1</h4>' },
-    { regex: /^### (.+)$/gm, replacement: '<h3>$1</h3>' },
-    { regex: /^## (.+)$/gm, replacement: '<h2>$1</h2>' },
-    { regex: /^# (.+)$/gm, replacement: '<h1>$1</h1>' },
-    { regex: /\*\*\*(.+?)\*\*\*/g, replacement: '<strong><em>$1</em></strong>' },
-    { regex: /\*\*(.+?)\*\*/g, replacement: '<strong>$1</strong>' },
-    { regex: /\*(.+?)\*/g, replacement: '<em>$1</em>' },
-    { regex: /___(.+?)___/g, replacement: '<strong><em>$1</em></strong>' },
-    { regex: /__(.+?)__/g, replacement: '<strong>$1</strong>' },
-    { regex: /_(.+?)_/g, replacement: '<em>$1</em>' },
-    { regex: /\[([^\]]+)\]\(([^)]+)\)/g, replacement: '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>' },
-    { regex: /^&gt; (.+)$/gm, replacement: '<blockquote>$1</blockquote>' },
-    { regex: /^(---|\*\*\*)$/gm, replacement: '<hr>' },
-    { regex: /^[\*-] (.+)$/gm, replacement: '<ul><li>$1</li></ul>' },
-    { regex: /^\d+\. (.+)$/gm, replacement: '<ol><li>$1</li></ol>' },
-    { regex: /<\/(ul|ol)>\s*<\1>/g, replacement: '' },
-    { regex: /  \n/g, replacement: '<br>' },
-    { regex: /\n\n/g, replacement: '</p><p>' },
-    { regex: /\n/g, replacement: '<br>' },
-];
-const escapeHTML = (text) => text.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-const formatMessage = (text) => {
-    if (!text)
-        return '';
-    let formatted = escapeHTML(text);
-    for (const rule of formatRules) {
-        formatted = formatted.replace(rule.regex, rule.replacement);
+        return match;
+    });
+    // 15. Task lists (- [ ] todo, - [x] done)
+    html = html.replace(/<li>\[\s\]\s+(.+)<\/li>/g, '<li><input type="checkbox" disabled> $1</li>');
+    html = html.replace(/<li>\[x\]\s+(.+)<\/li>/gi, '<li><input type="checkbox" checked disabled> $1</li>');
+    // 16. Tables
+    html = html.replace(/^\|(.+)\|$/gm, (match) => {
+        const cells = match.split('|').filter(cell => cell.trim());
+        const isHeaderSeparator = cells.every(cell => /^[\s\-:]+$/.test(cell));
+        if (isHeaderSeparator) {
+            return '<!--SEPARATOR-->';
+        }
+        const cellTags = cells.map(cell => `<td>${cell.trim()}</td>`).join('');
+        return `<tr>${cellTags}</tr>`;
+    });
+    // Chuyển dòng đầu tiên thành header
+    html = html.replace(/<tr>(.*?)<\/tr>\s*<!--SEPARATOR-->/g, (_, cells) => {
+        const headerCells = cells.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>');
+        return `<thead><tr>${headerCells}</tr></thead><tbody>`;
+    });
+    // Wrap table và đóng tbody
+    html = html.replace(/(<thead>[\s\S]*?<\/thead><tbody>[\s\S]*?)(<tr>[\s\S]*?<\/tr>)/g, (match) => {
+        if (!match.includes('</tbody>')) {
+            return match.replace(/(<tr>.*<\/tr>)(?![\s\S]*<tr>)/, '$1</tbody>');
+        }
+        return match;
+    });
+    html = html.replace(/(<thead>[\s\S]*?<\/tbody>)/g, '<table>$1</table>');
+    // 17. Line breaks (2 spaces + newline hoặc <br>)
+    html = html.replace(/  \n/g, '<br>\n');
+    // 18. Paragraphs - wrap text không có tag trong <p>
+    const lines = html.split('\n');
+    const processed = [];
+    let inParagraph = false;
+    let paragraphContent = '';
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        // Bỏ qua dòng trống
+        if (!line) {
+            if (inParagraph) {
+                processed.push(`<p>${paragraphContent.trim()}</p>`);
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            continue;
+        }
+        // Kiểm tra xem dòng có phải là block element không
+        const isBlockElement = /^<(h[1-6]|hr|pre|blockquote|ul|ol|table|thead|tbody|tr|li)/.test(line);
+        const isClosingBlock = /^<\/(ul|ol|blockquote|table|thead|tbody)>/.test(line);
+        if (isBlockElement || isClosingBlock) {
+            if (inParagraph) {
+                processed.push(`<p>${paragraphContent.trim()}</p>`);
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            processed.push(line);
+        }
+        else {
+            if (inParagraph) {
+                paragraphContent += ' ' + line;
+            }
+            else {
+                paragraphContent = line;
+                inParagraph = true;
+            }
+        }
     }
-    return formatted.startsWith('<') ? formatted : `<p>${formatted}</p>`;
-};
+    // Đóng paragraph cuối cùng nếu còn
+    if (inParagraph && paragraphContent.trim()) {
+        processed.push(`<p>${paragraphContent.trim()}</p>`);
+    }
+    html = processed.join('\n');
+    // 19. Cleanup - xóa các comment và khoảng trắng thừa
+    html = html.replace(/<!--SEPARATOR-->/g, '');
+    html = html.replace(/\n{3,}/g, '\n\n');
+    return html.trim();
+}
 // UI functions
 const scrollToBottom = () => {
     elements.chatArea.scrollTop = elements.chatArea.scrollHeight;
@@ -205,7 +307,7 @@ const sendMessage = async () => {
         return;
     }
     state.isProcessing = true;
-    addMessage(text || '(Đã gửi file .ips)', true, state.selectedFiles);
+    addMessage(text || 'Đã gửi tệp', true, state.selectedFiles);
     // Process files
     const fileContents = [];
     for (const file of state.selectedFiles) {
@@ -226,6 +328,7 @@ const sendMessage = async () => {
             role: 'user',
             parts: [{ text: `File: ${file.name}\nNội dung:\n${file.content}` }]
         });
+        addMessage(file.content);
     });
     clearInput();
     showTypingIndicator();

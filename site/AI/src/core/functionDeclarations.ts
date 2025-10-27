@@ -12,6 +12,7 @@ type CallbackMap<T extends Record<string, { args: any[]; return: any }>> = {
 };
 
 let diagramData: string;
+let otherImageData: string;
 
 const declare: FunctionDeclaration[] = [];
 
@@ -154,10 +155,16 @@ const callbacks: CallbackMap<CallbackDefinitions> = {
     });
 
     diagramData = await r.text();
-    console.log("Load Diagram Success");
   } else {
     console.error("Load Diagram Fail:", r.status, r.statusText);
   }
+
+  const otherR = await fetch("../diagram/assets/images/other/data.json");
+  if (otherR.status === 200) {
+    otherImageData = await otherR.text();
+  } else {
+    console.error("Load Other Images Fail:", otherR.status, otherR.statusText);
+  }
 })();
 
-export { declare as declareFunction, callbacks, diagramData };
+export { declare as declareFunction, callbacks, diagramData, otherImageData };

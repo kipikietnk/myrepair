@@ -1,0 +1,10 @@
+{
+    "folder": "images/other",
+    "files": [
+        {
+            "name": "enter-dfu-mode-7plus",
+            "description": "Example photo of forcing iphone 7 plus to DFU from mainboard",
+            "image": "dfu-mode-iphone-7p.png"
+        }
+    ]
+}
