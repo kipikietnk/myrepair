@@ -2,7 +2,6 @@ html,
 body {
   height: 100%;
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
   background: var(--bg);
   overflow: hidden;
@@ -16,36 +15,6 @@ body {
   position: relative;
 }
 
-/* Animated background particles */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(52, 199, 89, 0.2) 0%, transparent 50%);
-  animation: floatingParticles 20s ease-in-out infinite;
-  z-index: -1;
-}
-
-@keyframes floatingParticles {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 1;
-  }
-
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-    opacity: 0.8;
-  }
-}
-
 .draggable {
   touch-action: none;
   user-select: none;
@@ -57,6 +26,7 @@ body::before {
   top: 0;
   left: 0;
   right: 0;
+  width: 100dvw;
   display: grid;
   height: var(--topbar-height);
   background: var(--surface-glass);
@@ -84,7 +54,7 @@ body::before {
   position: absolute !important;
   top: 90px;
   left: 10px;
-  z-index: 10000;
+  z-index: 999;
   background: var(--surface-glass);
   backdrop-filter: blur(5px);
   border: none;
@@ -119,8 +89,10 @@ body::before {
 .controls-section {
   background: rgba(0, 0, 0, 0);
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 6px;
   flex: 1;
 }
 
@@ -334,8 +306,8 @@ body::before {
 }
 
 .image-stage {
-  width: 100%;
-  height: 100%;
+  width: 100dvw;
+  height: 100dvh;
   position: absolute;
   z-index: -1;
 }
@@ -525,22 +497,6 @@ body::before {
 
 /* Enhanced Mobile Responsive */
 @media (max-width: 768px) {
-  .topbar {
-    padding: 0 16px;
-    gap: 12px;
-  }
-
-  .topbar-hidden {
-    transform: translateY(-120%) scale(0.9);
-  }
-
-  .topbar-hidden~.main-content,
-  .topbar-hidden~main,
-  .topbar-hidden+* {
-    margin-top: -60px;
-    transition: margin-top 0.4s ease;
-  }
-
   .logo {
     width: 50px;
     height: 50px;
@@ -580,69 +536,6 @@ body::before {
 
   .placeholder-icon {
     font-size: 48px;
-  }
-}
-
-@media (max-width: 480px) {
-  .topbar {
-    flex-direction: column;
-    height: auto;
-    min-height: 80px;
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .controls-section {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .select-group {
-    width: 100%;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .select-wrapper {
-    width: 100%;
-  }
-
-  .modern-select {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .control-buttons {
-    width: 100%;
-    justify-content: center;
-    order: 2;
-  }
-
-  .image-wrapper {
-    top: 100px;
-    height: calc(100vh - 120px);
-  }
-}
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .logo:hover {
-    transform: scale(1.05);
-  }
-
-  .control-btn:hover {
-    transform: translateY(-1px) scale(1.05);
   }
 }
 

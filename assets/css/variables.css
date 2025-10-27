@@ -1,23 +1,27 @@
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 :root {
   --accent: #FF6B35;
   --danger: #FF3B30;
   --warning: #FF9500;
   --success: #4CAF50;
 
-  /* Modern color palette */
-  --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --surface: rgba(255, 255, 255, 0.95);
-  --surface-secondary: rgba(255, 255, 255, 0.8);
-  --surface-glass: rgba(255, 255, 255, 0.1);
-  --control-surface-glass: rgba(200, 200, 200, 0.6);
-  --text: #1A1A1A;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
-  --border: rgba(255, 255, 255, 0.2);
-  --border-solid: #E5E7EB;
-  --shadow: rgba(0, 0, 0, 0.1);
-  --shadow-lg: rgba(0, 0, 0, 0.25);
-  --shadow-colored: rgba(102, 126, 234, 0.4);
+  /* Modern color palette - Light theme (softer, easier on eyes) */
+  --bg: linear-gradient(135deg, rgb(90, 120, 230) 0%, rgb(130, 70, 170) 100%);
+  --surface: rgba(200, 200, 200, 0.98);
+  --surface-secondary: rgba(180, 180, 180, 0.9);
+  --surface-glass: rgba(180, 180, 180, 0.7);
+  --control-surface-glass: rgba(180, 180, 180, 0.8);
+  --text: rgb(18, 18, 18, 0.8);
+  --text-secondary: #718096;
+  --text-muted: #1e1e1e;
+  --border: rgba(203, 213, 225, 0.5);
+  --border-solid: #E2E8F0;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-lg: rgba(0, 0, 0, 0.15);
+  --shadow-colored: rgba(100, 116, 139, 0.2);
 
   --radius: 16px;
   --topbar-height: 80px;
