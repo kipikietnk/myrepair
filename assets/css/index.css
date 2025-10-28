@@ -28,12 +28,12 @@ body {
   right: 0;
   width: 100dvw;
   display: grid;
-  height: var(--topbar-height);
+  padding: 10px 1px;
   background: var(--surface-glass);
   backdrop-filter: blur(30px) saturate(1.8);
   border-bottom: 1px solid var(--border);
   gap: 20px;
-  z-index: 1000;
+  z-index: 998;
   box-shadow: 0 8px 32px var(--shadow);
   animation: slideDown 0.8s var(--ease-spring);
 }
@@ -91,6 +91,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 6px;
   flex: 1;

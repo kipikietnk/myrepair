@@ -1,6 +1,6 @@
-import settings from '../config/settings.js';
-import prompt from '../config/prompt.js';
-import data from '../config/data.js';
+import settings from '../../config/ai.js';
+import prompt from '../prompt/setup.js';
+import data from '../prompt/data.js';
 import { declareFunction, diagramData, otherImageData } from './functionDeclarations.js';
 
 // Types
@@ -45,7 +45,7 @@ interface Tool {
 
 interface RequestBody {
   contents: MessageContent[];
-  tools: Tool[];
+  tools?: Tool[];
 }
 
 interface GeminiResponse {
@@ -86,7 +86,7 @@ class Gemini {
         {role: 'user', parts: [{ text: prompt }]},
         {role: 'model', parts: [{ text: `My Data: ${data}` }]},
         {role: 'model', parts: [{ text: `Diagram: ${diagramData||null}` }]},
-        {role: 'model', parts: [{ text: `Other Images: ${otherImageData||null}` }]},
+        // {role: 'model', parts: [{ text: `Other Images: ${otherImageData||null}` }]},
         {role: 'user', parts: [{ text: message }]}
       ],
       tools: [{ functionDeclarations: declareFunction }]

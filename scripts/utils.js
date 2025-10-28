@@ -1,4 +1,7 @@
 import CONFIG from "./config/diagram.js";
+import ui from "./ui.js";
+import elements from "./elements.js";
+import { resetTransforms, fitToContainer } from "./handle.js";
 export default {
     debounce(func, wait) {
         let timeout;
@@ -67,5 +70,30 @@ export default {
     },
     isMobileDevice() {
         return window.innerWidth <= 768;
+    },
+    loadPartImage: async function (imagePath, altText) {
+        ui.showLoading();
+        try {
+            await this.preloadImage(imagePath);
+            elements.partImage.src = imagePath;
+            elements.partImage.alt = altText || 'Part Image';
+            ui.hideLoading();
+            ui.showImage();
+            ui.showControls();
+            ui.updateControlsState();
+            resetTransforms();
+            setTimeout(fitToContainer, CONFIG.ANIMATION_DELAY);
+        }
+        catch (error) {
+            console.error('Error loading image:', error);
+            ui.hideLoading();
+            ui.showPlaceholder();
+            ui.hideControls();
+            this.showErrorMessage("Tải ảnh thất bại");
+        }
+    },
+    loadImage: function (folder, image, altText) {
+        const imgPath = `assets/${folder}/${image}`;
+        return this.loadPartImage(imgPath, altText);
     }
 };

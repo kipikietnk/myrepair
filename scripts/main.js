@@ -1,5 +1,5 @@
 import { initPanzoom, fullScreenChange, FollowCursorDrag } from "./action.js";
-import { rotateImage, handleLogoClick, resetTransforms, fitToContainer, canUseFullscreen } from "./handle.js";
+import { rotateImage, handleLogoClick, resetTransforms, canUseFullscreen } from "./handle.js";
 import CONFIG from "./config/diagram.js";
 import elements from "./elements.js";
 import ui from "./ui.js";
@@ -117,29 +117,7 @@ async function onPartChange() {
     if (!utils.isValidImageUrl(imagePath)) {
         return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
     }
-    await loadPartImage(imagePath, part.name);
-}
-// ==== Image loading ====
-async function loadPartImage(imagePath, altText) {
-    ui.showLoading();
-    try {
-        await utils.preloadImage(imagePath);
-        elements.partImage.src = imagePath;
-        elements.partImage.alt = altText || 'Part Image';
-        ui.hideLoading();
-        ui.showImage();
-        ui.showControls();
-        ui.updateControlsState();
-        resetTransforms();
-        setTimeout(fitToContainer, CONFIG.ANIMATION_DELAY);
-    }
-    catch (error) {
-        console.error('Error loading image:', error);
-        ui.hideLoading();
-        ui.showPlaceholder();
-        ui.hideControls();
-        utils.showErrorMessage("Tải ảnh thất bại");
-    }
+    await utils.loadPartImage(imagePath, part.name);
 }
 // ==== Ripple effect ====
 function addRippleEffect(button, event) {
@@ -220,3 +198,5 @@ elements.chatBoxClose.addEventListener('click', () => {
 elements.chatBoxToggle.addEventListener('click', () => {
     ui.ChatBoxToggle();
 });
+const loadAI = async () => import('./chatbox/index.js').catch(e => console.error(e));
+loadAI();

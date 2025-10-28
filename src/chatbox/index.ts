@@ -1,7 +1,11 @@
+console.log('Chatbox module loaded');
+
+export {};
+
 import { Gemini } from "./core/gemini.js";
 import { callbacks } from "./core/functionDeclarations.js";
 import { MessageContent } from "./core/gemini.js";
-import settings from "./config/settings.js";
+import elements from "../elements.js";
 
 // Types
 interface FileContent {
@@ -22,7 +26,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
 // Gemini instance
 const gemini = new Gemini();
 
-// State management
+// // State management
 class AppState {
   selectedFiles: File[] = [];
   isProcessing = false;
@@ -42,22 +46,8 @@ class AppState {
 
 const state = new AppState();
 
-// DOM Elements - cached for performance
-const elements = {
-  chatArea: document.getElementById('chatArea') as HTMLDivElement,
-  messageInput: document.getElementById('messageInput') as HTMLTextAreaElement,
-  sendButton: document.getElementById('sendButton') as HTMLButtonElement,
-  fileInput: document.getElementById('fileInput') as HTMLInputElement,
-  filePreview: document.getElementById('filePreview') as HTMLDivElement,
-  newPage: document.getElementById('new') as HTMLDivElement,
-};
-
 // Validation functions
-const isValidIPSFile = (file: File): boolean => {
-  return IPS_EXTENSION.some(ext => file.name.toLowerCase().endsWith(ext));
-}
-  
-  //file.name.toLowerCase().endsWith();
+const isValidIPSFile = (file: File): boolean => IPS_EXTENSION.some(ext => file.name.toLowerCase().endsWith(ext));
 
 const validateIPSFormat = (content: string): { valid: boolean; error?: string } => {
   if (!content?.trim()) {
@@ -66,7 +56,7 @@ const validateIPSFormat = (content: string): { valid: boolean; error?: string } 
   return { valid: true };
 };
 
-// File processing
+// // File processing
 function processIPSContent(content: string): string {
   const lines = content.split('\n');
   const panicString = lines.find(line => line.includes('panicString'));
@@ -442,29 +432,14 @@ const handleResponse = async (content: MessageContent | void): Promise<void> => 
       addMessage(part.text, content.role === 'user');
     } else if (part.functionCall) {
       const { name, args } = part.functionCall;
-
-      const button = document.createElement("button");
-      button.className = "function-call-btn";
-      button.textContent = `${args.platform ? args.platform + " " : ""}${args.component_name || args.picture || name}`;
-      button.onclick = async () => {
-        if (name in callbacks) {
-          try {
-            await (callbacks as any)[name](args);
-          } catch (err) {
-            console.error(`Lỗi khi gọi hàm ${name}:`, err);
-            addMessage(`Lỗi khi thực thi hàm ${name}`, false);
-          }
+        const callback = callbacks[name as keyof typeof callbacks];
+        if (typeof callback === 'function') {
+          callback(args);
         } else {
-          addMessage(`Không tìm thấy hàm ${name}`, false);
+          addMessage(`[ERROR] - No callback found for function: ${name}`, false);
         }
       };
-
-      const messageDiv = document.createElement("div");
-      messageDiv.className = "message ai";
-      messageDiv.appendChild(button);
-      elements.chatArea.appendChild(messageDiv);
       scrollToBottom();
-    }
   }
 };
 
@@ -523,4 +498,5 @@ elements.messageInput.addEventListener('keypress', (e: KeyboardEvent) => {
 elements.messageInput.addEventListener('input', updateSendButtonState);
 
 // Initialize
+console.log('Chatbox initialized');
 updateSendButtonState();

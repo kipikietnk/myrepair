@@ -140,31 +140,7 @@ async function onPartChange() {
     return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
   }
 
-  await loadPartImage(imagePath, part.name);
-}
-
-// ==== Image loading ====
-async function loadPartImage(imagePath: string, altText: string) {
-  ui.showLoading();
-  try {
-    await utils.preloadImage(imagePath);
-    elements.partImage.src = imagePath;
-    elements.partImage.alt = altText || 'Part Image';
-
-    ui.hideLoading();
-    ui.showImage();
-    ui.showControls();
-    ui.updateControlsState();
-
-    resetTransforms();
-    setTimeout(fitToContainer, CONFIG.ANIMATION_DELAY);
-  } catch (error) {
-    console.error('Error loading image:', error);
-    ui.hideLoading();
-    ui.showPlaceholder();
-    ui.hideControls();
-    utils.showErrorMessage("Tải ảnh thất bại");
-  }
+  await utils.loadPartImage(imagePath, part.name);
 }
 
 // ==== Ripple effect ====
@@ -256,3 +232,7 @@ document.readyState === 'loading'
 elements.chatBoxToggle.addEventListener('click', () => {
   ui.ChatBoxToggle();
 });
+
+const loadAI = async () => import('./chatbox/index.js').catch(e => console.error(e));
+
+loadAI();
