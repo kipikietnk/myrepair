@@ -1,7 +1,8 @@
 import settings from '../../config/ai.js';
 import prompt from '../prompt/setup.js';
 import data from '../prompt/data.js';
-import { declareFunction, diagramData, otherImageData } from './functionDeclarations.js';
+import { declareFunction } from './functionDeclarations.js';
+import { data as diagramData } from '../../main.js';
 
 // Types
 interface GeminiConfig {
@@ -85,8 +86,7 @@ class Gemini {
         ...this.history,
         {role: 'user', parts: [{ text: prompt }]},
         {role: 'model', parts: [{ text: `My Data: ${data}` }]},
-        {role: 'model', parts: [{ text: `Diagram: ${diagramData||null}` }]},
-        // {role: 'model', parts: [{ text: `Other Images: ${otherImageData||null}` }]},
+        {role: 'model', parts: [{ text: `Diagram: ${JSON.stringify(diagramData)}` }]},
         {role: 'user', parts: [{ text: message }]}
       ],
       tools: [{ functionDeclarations: declareFunction }]

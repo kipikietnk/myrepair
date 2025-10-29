@@ -1,14 +1,18 @@
 import { state } from "./main.js";
 import elements from "./elements.js";
 export default {
-    ChatBoxToggle() {
+    ChatBoxToggle(state) {
         const e = elements.chatBoxContainer;
-        e.classList.toggle('active');
-        if (e.classList.contains('active')) {
-            elements.chatBoxToggle.title = 'Đóng hộp trò chuyện AI';
+        if (state !== undefined) {
+            if (state) {
+                e.classList.add('active');
+            }
+            else {
+                e.classList.remove('active');
+            }
         }
         else {
-            elements.chatBoxToggle.title = 'Mở hộp trò chuyện AI';
+            e.classList.toggle('active');
         }
     },
     showPartSelector() {
@@ -88,13 +92,11 @@ export default {
             element.classList.remove('topbar-hidden');
             element.classList.add('topbar-visible');
             elements.logoBtn.classList.remove('controls-hidden');
-            elements.logoBtn.title = 'Ẩn thanh điều khiển';
         }
         else {
             element.classList.remove('topbar-visible');
             element.classList.add('topbar-hidden');
             elements.logoBtn.classList.add('controls-hidden');
-            elements.logoBtn.title = 'Hiện thanh điều khiển';
         }
         // Add animation class to logo
         elements.logoBtn.classList.add('logo-toggle');

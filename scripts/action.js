@@ -126,7 +126,6 @@ class FollowCursorDrag {
             if (getComputedStyle(element).position === 'static') {
                 element.style.position = 'absolute';
             }
-            // 🖱 Chuột
             element.addEventListener('mousedown', (e) => {
                 e.preventDefault(); // Ngăn text selection
                 this.pointerStart = { x: e.clientX, y: e.clientY };
@@ -134,7 +133,6 @@ class FollowCursorDrag {
                 this.isMouseDown = true;
                 this.dragMoved = false;
             });
-            // 📱 Cảm ứng
             element.addEventListener('touchstart', (e) => {
                 e.stopPropagation();
                 const touch = e.touches[0];

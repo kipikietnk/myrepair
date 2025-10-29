@@ -16,20 +16,8 @@ type CallbackMap<T extends Record<string, { args: any[]; return: any }>> = {
 let diagramData: string;
 let otherImageData: string;
 
-const declare: FunctionDeclaration[] = [];
-
-const callbacks: CallbackMap<CallbackDefinitions> = {
-  showImage: (args) => {
-    const { folder, picture, product, platform, component_name } = args;
-    ui.ChatBoxToggle();
-    utils.loadImage(folder, picture, component_name || 'Diagram Image');
-  }
-};
-
-(async function() {
-  const r = await fetch("../../assets/diagram.json");
-  if (r.status === 200) {
-    declare.push({
+const declare: FunctionDeclaration[] = [
+  {
       name: "showImage",
       description: "Display a diagram image to the user upon request",
       parameters: {
@@ -42,19 +30,15 @@ const callbacks: CallbackMap<CallbackDefinitions> = {
           component_name: { type: "STRING", description: "Component name", nullable: true },
         }
       }
-    });
+    }
+];
 
-    diagramData = await r.text();
-  } else {
-    console.error("Load Diagram Fail:", r.status, r.statusText);
+const callbacks: CallbackMap<CallbackDefinitions> = {
+  showImage: (args) => {
+    const { folder, picture, product, platform, component_name } = args;
+    ui.ChatBoxToggle();
+    utils.loadImage(folder, picture, component_name || 'Diagram Image');
   }
+};
 
-  const otherR = await fetch("../../assets/images/other/data.json");
-  if (otherR.status === 200) {
-    otherImageData = await otherR.text();
-  } else {
-    console.error("Load Other Images Fail:", otherR.status, otherR.statusText);
-  }
-})();
-
-export { declare as declareFunction, callbacks, diagramData, otherImageData };
+export { declare as declareFunction, callbacks };

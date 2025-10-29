@@ -200,3 +200,4 @@ elements.chatBoxToggle.addEventListener('click', () => {
 });
 const loadAI = async () => import('./chatbox/index.js').catch(e => console.error(e));
 loadAI();
+export { data };
