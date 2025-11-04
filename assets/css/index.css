@@ -587,11 +587,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  color: var(--text-secondary);
   font-size: 18px;
   font-weight: 500;
   gap: 16px;
   animation: floating 3s ease-in-out infinite;
+  user-select: none;
 }
 
 @keyframes floating {
