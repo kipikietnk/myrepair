@@ -3,11 +3,16 @@ export default {
   rotationContainer: document.getElementById('rotationContainer') as HTMLDivElement,
   panzoomContainer: document.getElementById('panzoomContainer') as HTMLDivElement,
   logoBtn: document.getElementById('logoBtn') as HTMLButtonElement,
-  deviceSelect: document.getElementById('deviceSelect') as HTMLSelectElement,
-  modelSelect: document.getElementById('modelSelect') as HTMLSelectElement,
-  partSelect: document.getElementById('partSelect') as HTMLSelectElement,
-  partSelectWrapper: document.getElementById('partSelectWrapper') as HTMLSelectElement,
-  modelSelectWrapper: document.getElementById('modelSelectWrapper') as HTMLSelectElement,
+
+  // Custom Select Wrappers
+  deviceSelect: document.getElementById('deviceSelectWrapper') as HTMLDivElement,
+  modelSelect: document.getElementById('modelSelectWrapper') as HTMLDivElement,
+  partSelect: document.getElementById('partSelectWrapper') as HTMLDivElement,
+
+  partSelectWrapper: document.getElementById('partSelectWrapper') as HTMLDivElement,
+  modelSelectWrapper: document.getElementById('modelSelectWrapper') as HTMLDivElement,
+
+  // Image & Control
   partImage: document.getElementById('partImage') as HTMLImageElement,
   imageWrapper: document.getElementById('imageWrapper') as HTMLDivElement,
   controlButtons: document.getElementById('controlButtons') as HTMLDivElement,
@@ -23,7 +28,7 @@ export default {
   chatBoxClose: document.getElementById('chatbox-close') as HTMLButtonElement,
   chatBoxContainer: document.getElementById('ai-chat-container') as HTMLDivElement,
   chatArea: document.getElementById('chatArea') as HTMLDivElement,
-  messageInput: document.getElementById('messageInput') as HTMLTextAreaElement,
+  messageInput: document.getElementById('messageInput') as HTMLInputElement,
   sendButton: document.getElementById('sendButton') as HTMLButtonElement,
   fileInput: document.getElementById('fileInput') as HTMLInputElement,
   filePreview: document.getElementById('filePreview') as HTMLDivElement,

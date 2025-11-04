@@ -16,54 +16,33 @@
 
 <body>
   <!-- Top Navigation Bar -->
-  <img class="logo draggable" id="logoBtn" src="../../assets/images/logo.webp" alt="">
+  <img class="logo draggable liquid-bg" id="logoBtn" src="../../assets/images/logo.webp" alt="">
 
   <button id="chatbox-toggle">Chat Box</button>
-  <div class="topbar">
-    <div class="controls-section">
-      <div class="select-group">
+  <div class="topbar liquid-bg">
         <!-- Chọn loại thiết bị -->
-        <div class="select-wrapper" id="deviceSelectWrapper">
-          <select id="deviceSelect" class="modern-select" aria-label="Chọn loại máy">
-            <option value="">Chọn loại máy</option>
-          </select>
-        </div>
+        <div class="select-wrapper" id="deviceSelectWrapper"></div>
 
         <!-- Chọn Model -->
-        <div class="select-wrapper hidden" id="modelSelectWrapper">
-          <select id="modelSelect" class="modern-select" aria-label="Chọn Model">
-            <option value="">Chọn Model</option>
-          </select>
-        </div>
+        <div class="select-wrapper hidden" id="modelSelectWrapper"></div>
 
         <!-- Chọn Linh kiện -->
-        <div class="select-wrapper hidden" id="partSelectWrapper">
-          <select id="partSelect" class="modern-select" disabled aria-label="Chọn Linh kiện">
-            <option value="">Chọn Linh kiện</option>
-          </select>
-        </div>
-      </div>
+        <div class="select-wrapper hidden" id="partSelectWrapper"></div>
 
-      <div class="control-buttons" id="controlButtons" title="">
-        <button id="rotateLeft" class="control-btn" title="Xoay trái" aria-label="Xoay ảnh sang trái">
-          <span>↺</span>
-        </button>
-        <button id="rotateRight" class="control-btn" title="Xoay phải" aria-label="Xoay ảnh sang phải">
-          <span>↻</span>
-        </button>
-        <button id="resetView" class="control-btn" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
-          <span>⌂</span>
-        </button>
-        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình" aria-label="Toàn màn hình">
-          <span>⛶</span>
-        </button>
-      </div>
+      <div class="control-buttons" id="controlButtons">
+        <button id="rotateLeft" class="control-btn" title="Xoay trái"><span>↺</span></button>
+        <button id="rotateRight" class="control-btn" title="Xoay phải"><span>↻</span></button>
+        <button id="resetView" class="control-btn" title="Đặt lại view"><span>⌂</span></button>
+        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình"><span>⛶</span></button>
     </div>
   </div>
 
   <div id="ai-chat-container">
-    <button id="chatbox-close">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 42 42"><path fill="currentColor" fill-rule="evenodd" d="M27.066 1L7 21.068l19.568 19.569l4.934-4.933l-14.637-14.636L32 5.933z"/></svg>
+    <button id="chatbox-close" class="liquid-bg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 42 42">
+        <path fill="currentColor" fill-rule="evenodd"
+          d="M27.066 1L7 21.068l19.568 19.569l4.934-4.933l-14.637-14.636L32 5.933z" />
+      </svg>
     </button>
     <div id="new">
       <img src="../../assets/images/logo.webp" class="logo no-select">
@@ -121,6 +100,6 @@
   <!-- Libraries -->
   <script src="https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script type="module" src="./scripts/main.js"></script>
-  <scrip type="module" src="./scripts/chatbox/index.js"></script>
 </body>
+
 </html>

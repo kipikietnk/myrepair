@@ -3,11 +3,13 @@ export default {
     rotationContainer: document.getElementById('rotationContainer'),
     panzoomContainer: document.getElementById('panzoomContainer'),
     logoBtn: document.getElementById('logoBtn'),
-    deviceSelect: document.getElementById('deviceSelect'),
-    modelSelect: document.getElementById('modelSelect'),
-    partSelect: document.getElementById('partSelect'),
+    // Custom Select Wrappers
+    deviceSelect: document.getElementById('deviceSelectWrapper'),
+    modelSelect: document.getElementById('modelSelectWrapper'),
+    partSelect: document.getElementById('partSelectWrapper'),
     partSelectWrapper: document.getElementById('partSelectWrapper'),
     modelSelectWrapper: document.getElementById('modelSelectWrapper'),
+    // Image & Control
     partImage: document.getElementById('partImage'),
     imageWrapper: document.getElementById('imageWrapper'),
     controlButtons: document.getElementById('controlButtons'),

@@ -4,9 +4,13 @@ import CONFIG from "./config/diagram.js";
 import elements from "./elements.js";
 import ui from "./ui.js";
 import utils from "./utils.js";
-console.log(window.location.origin, window.location.pathname);
 let data = [];
 let dragManager = null;
+// Dropdown instances
+let deviceDropdown = null;
+let modelDropdown = null;
+let partDropdown = null;
+let allDropdowns = [];
 export const state = {
     currentRotation: 0,
     panzoomInstance: null,
@@ -20,134 +24,168 @@ export const state = {
     chatBoxVisible: true,
     isMobile: window.innerWidth <= 768
 };
-// ==== Data loading ====
+// ========== Data loading ==========
 async function loadData() {
     try {
         const response = await fetch("./assets/diagram.json");
         if (!response.ok)
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        const contentType = response.headers.get('content-type') || '';
-        if (!contentType.includes('application/json'))
-            throw new Error('Invalid content type - expected JSON');
         data = await response.json();
-        if (!Array.isArray(data))
-            throw new Error('Invalid data format - expected Array');
         populateDevices();
     }
     catch (error) {
         console.error('Error loading data:', error);
-        showOfflineMessage();
     }
 }
-function showOfflineMessage() {
-    elements.deviceSelect.innerHTML = 'Không thể kết nối - Thử lại sau';
-    elements.deviceSelect.disabled = true;
-}
-// ==== UI Setup ====
+// ========== Populate Selectors ==========
 function populateDevices() {
-    if (!Array.isArray(data) || data.length === 0) {
-        return utils.showErrorMessage('Không có dữ liệu thiết bị');
-    }
-    elements.deviceSelect.innerHTML = '<option value="">Chọn loại máy</option>';
-    elements.deviceSelect.disabled = false;
-    // Lấy danh sách product (unique)
+    if (!Array.isArray(data) || data.length === 0)
+        return;
+    // Lấy danh sách thiết bị
     const products = [...new Set(data.map(item => item.product))];
-    products.forEach(product => {
-        elements.deviceSelect.appendChild(new Option(product, product));
-    });
+    // Tạo HTML cho dropdown device
+    const deviceSelectWrapper = document.getElementById('deviceSelectWrapper');
+    deviceSelectWrapper.innerHTML = `
+    <div class="custom-dropdown" id="deviceDropdown" data-placeholder="Chọn loại máy">
+      <div class="dropdown-header">
+        <span class="dropdown-selected">Chọn loại máy</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="dropdown-list">
+        <div class="dropdown-item clear-option" data-value="">
+          <em style="color: #999;">-- Không chọn --</em>
+        </div>
+        ${products.map(product => `
+          <div class="dropdown-item" data-value="${product}">${product}</div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+    // Tạo HTML cho dropdown model (ban đầu trống)
+    const modelSelectWrapper = document.getElementById('modelSelectWrapper');
+    modelSelectWrapper.innerHTML = `
+    <div class="custom-dropdown" id="modelDropdown" data-placeholder="Chọn Model">
+      <div class="dropdown-header">
+        <span class="dropdown-selected">Chọn Model</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="dropdown-list">
+        <div class="dropdown-item clear-option" data-value="">
+          <em style="color: #999;">-- Không chọn --</em>
+        </div>
+      </div>
+    </div>
+  `;
+    // Tạo HTML cho dropdown part (ban đầu trống)
+    const partSelectWrapper = document.getElementById('partSelectWrapper');
+    partSelectWrapper.innerHTML = `
+    <div class="custom-dropdown" id="partDropdown" data-placeholder="Chọn Linh kiện">
+      <div class="dropdown-header">
+        <span class="dropdown-selected">Chọn Linh kiện</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="dropdown-list">
+        <div class="dropdown-item clear-option" data-value="">
+          <em style="color: #999;">-- Không chọn --</em>
+        </div>
+      </div>
+    </div>
+  `;
+    // Khởi tạo các dropdown với ui.CustomDropdown
+    deviceDropdown = new ui.CustomDropdown('deviceDropdown');
+    modelDropdown = new ui.CustomDropdown('modelDropdown');
+    partDropdown = new ui.CustomDropdown('partDropdown');
     setupEventListeners();
     initPanzoom();
 }
-// ==== Event handlers ====
+// ========== Update dropdown options ==========
+function updateDropdownOptions(dropdown, options, placeholder) {
+    const dropdownElement = dropdown.dropdown;
+    const listContainer = dropdownElement.querySelector('.dropdown-list');
+    // Giữ lại option "Không chọn"
+    listContainer.innerHTML = `
+    <div class="dropdown-item clear-option" data-value="">
+      <em style="color: #999;">-- Không chọn --</em>
+    </div>
+    ${options.map(opt => `
+      <div class="dropdown-item" data-value="${opt}">${opt}</div>
+    `).join('')}
+  `;
+    // Reinitialize dropdown items
+    dropdown.items = dropdownElement.querySelectorAll('.dropdown-item');
+    dropdown.items.forEach((item) => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.selectItem(item);
+        });
+    });
+    // Reset về placeholder
+    dropdown.clear();
+}
+// ========== Event Handlers ==========
 function onDeviceChange() {
-    const device = elements.deviceSelect.value;
+    const device = deviceDropdown.getValue();
     state.lastSelectedDevice = device;
-    elements.modelSelect.innerHTML = '<option value="">Chọn Model</option>';
-    ui.hidePartSelector();
+    modelDropdown.clear();
+    partDropdown.clear();
+    const modelSelectWrapper = document.getElementById('modelSelectWrapper');
+    const partSelectWrapper = document.getElementById('partSelectWrapper');
+    modelSelectWrapper.classList.add('hidden');
+    partSelectWrapper.classList.add('hidden');
     ui.hideControls();
     ui.showPlaceholder();
     resetTransforms();
     if (!device)
-        return ui.hideModelSelector();
-    const models = data.filter(item => item.product === device).map(item => item.platform);
-    if (!models.length)
-        return utils.showErrorMessage('Không tìm thấy model cho thiết bị này');
-    models.forEach(model => {
-        elements.modelSelect.appendChild(new Option(model, model));
-    });
-    ui.showModelSelector();
+        return;
+    // Lấy danh sách models cho device được chọn
+    const models = data.filter(d => d.product === device).map(d => d.platform);
+    updateDropdownOptions(modelDropdown, models, 'Chọn Model');
+    modelSelectWrapper.classList.remove('hidden');
 }
 function onModelChange() {
-    const device = elements.deviceSelect.value;
-    const model = elements.modelSelect.value;
+    const device = deviceDropdown.getValue();
+    const model = modelDropdown.getValue();
     state.lastSelectedModel = model;
-    elements.partSelect.innerHTML = '<option value="">Chọn Linh kiện</option>';
+    partDropdown.clear();
+    const partSelectWrapper = document.getElementById('partSelectWrapper');
+    partSelectWrapper.classList.add('hidden');
     ui.hideControls();
     ui.showPlaceholder();
     if (!device || !model)
-        return ui.hidePartSelector();
-    const selected = data.find(item => item.product === device && item.platform === model);
-    if (!selected || !Array.isArray(selected.components)) {
-        return utils.showErrorMessage('Không có linh kiện nào cho model này');
-    }
-    selected.components.forEach((part, index) => {
-        if (part?.name) {
-            elements.partSelect.appendChild(new Option(part.name, index));
-        }
-    });
-    ui.showPartSelector();
+        return;
+    const selected = data.find(d => d.product === device && d.platform === model);
+    if (!selected || !selected.components)
+        return;
+    // Lấy danh sách parts cho model được chọn
+    const parts = selected.components.map((p) => p.name);
+    updateDropdownOptions(partDropdown, parts, 'Chọn Linh kiện');
+    partSelectWrapper.classList.remove('hidden');
 }
 async function onPartChange() {
-    const device = elements.deviceSelect.value;
-    const model = elements.modelSelect.value;
-    const index = elements.partSelect.value;
-    state.lastSelectedPart = index;
-    if (!device || !model || index === "") {
+    const device = deviceDropdown.getValue();
+    const model = modelDropdown.getValue();
+    const partName = partDropdown.getValue();
+    state.lastSelectedPart = partName;
+    if (!device || !model || !partName) {
         ui.hideControls();
         return ui.showPlaceholder();
     }
-    const selected = data.find(item => item.product === device && item.platform === model);
+    const selected = data.find(d => d.product === device && d.platform === model);
     if (!selected)
-        return utils.showErrorMessage("Không tìm thấy model");
-    const part = selected.components[index];
+        return;
+    const part = selected.components.find((p) => p.name === partName);
     if (!part)
-        return utils.showErrorMessage("Không tìm thấy linh kiện");
+        return;
     const imagePath = `assets/${selected.folder}/${part.picture}`;
-    console.log(imagePath);
-    if (!utils.isValidImageUrl(imagePath)) {
-        return utils.showErrorMessage("Định dạng ảnh không hợp lệ");
-    }
     await utils.loadPartImage(imagePath, part.name);
+    ui.showControls();
 }
-// ==== Ripple effect ====
-function addRippleEffect(button, event) {
-    const ripple = document.createElement('span');
-    const rect = button.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = event.clientX - rect.left - size / 2;
-    const y = event.clientY - rect.top - size / 2;
-    ripple.style.cssText = `
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    width: ${size}px;
-    height: ${size}px;
-    left: ${x}px;
-    top: ${y}px;
-    transform: scale(0);
-    animation: ripple 0.6s ease-out;
-    pointer-events: none;
-  `;
-    button.style.position = 'relative';
-    button.style.overflow = 'hidden';
-    button.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-}
-// ==== Event listeners ====
+// ========== Event Binding ==========
 function setupEventListeners() {
-    elements.deviceSelect.addEventListener('change', onDeviceChange);
-    elements.modelSelect.addEventListener('change', onModelChange);
-    elements.partSelect.addEventListener('change', onPartChange);
+    // Lắng nghe sự kiện change từ các dropdown
+    document.getElementById('deviceDropdown')?.addEventListener('change', onDeviceChange);
+    document.getElementById('modelDropdown')?.addEventListener('change', onModelChange);
+    document.getElementById('partDropdown')?.addEventListener('change', onPartChange);
     const btnEvents = [
         [elements.fullScreenToggleBtn, fullScreenChange],
         [elements.rotateLeftBtn, () => rotateImage(-CONFIG.ROTATION_STEP)],
@@ -157,30 +195,27 @@ function setupEventListeners() {
     btnEvents.forEach(([btn, handler]) => {
         btn.addEventListener('click', e => {
             e.preventDefault();
-            addRippleEffect(btn, e);
             handler();
         });
     });
     elements.logoBtn.addEventListener('click', handleLogoClick);
 }
-// ==== Initialization ====
+// ========== Initialize ==========
 async function initialize() {
-    const missing = Object.entries(elements).filter(([_, el]) => !el);
-    if (missing.length > 0) {
-        return console.error('Missing DOM elements:', missing.map(([k]) => k));
-    }
     if (!canUseFullscreen())
         elements.fullScreenToggleBtn.remove();
     state.isMobile = utils.isMobileDevice();
     dragManager = new FollowCursorDrag();
-    loadData();
+    await loadData();
 }
+document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', initialize)
+    : initialize();
 // Prevent context menu on draggable
 document.addEventListener('contextmenu', e => {
     if (e.target.classList.contains('draggable'))
         e.preventDefault();
 });
-// Prevent double-tap zoom
 let lastTouchEnd = 0;
 document.addEventListener('touchend', e => {
     const now = Date.now();
@@ -188,16 +223,8 @@ document.addEventListener('touchend', e => {
         e.preventDefault();
     lastTouchEnd = now;
 }, false);
-// Start
-document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', initialize)
-    : initialize();
-elements.chatBoxClose.addEventListener('click', () => {
-    ui.ChatBoxToggle();
-});
-elements.chatBoxToggle.addEventListener('click', () => {
-    ui.ChatBoxToggle();
-});
-const loadAI = async () => import('./chatbox/index.js').catch(e => console.error(e));
+elements.chatBoxClose.addEventListener('click', () => ui.ChatBoxToggle());
+elements.chatBoxToggle.addEventListener('click', () => ui.ChatBoxToggle());
+const loadAI = async () => import('./chatbox/index.js').catch(console.error);
 loadAI();
 export { data };

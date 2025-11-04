@@ -18,11 +18,11 @@ export default {
     showPartSelector() {
         elements.partSelectWrapper.classList.remove('hidden');
         elements.partSelectWrapper.classList.add('slide-in');
-        elements.partSelect.disabled = false;
+        // elements.partSelect.disabled = false;
     },
     hidePartSelector() {
         elements.partSelectWrapper.classList.add('slide-out');
-        elements.partSelect.disabled = true;
+        // elements.partSelect.disabled = true;
         setTimeout(() => {
             elements.partSelectWrapper.classList.add('hidden');
             elements.partSelectWrapper.classList.remove('slide-out');
@@ -31,11 +31,11 @@ export default {
     showModelSelector() {
         elements.modelSelectWrapper.classList.remove('hidden');
         elements.modelSelectWrapper.classList.add('slide-in');
-        elements.modelSelect.disabled = false;
+        // elements.modelSelect.disabled = false;
     },
     hideModelSelector() {
         elements.modelSelectWrapper.classList.add('slide-out');
-        elements.modelSelect.disabled = true;
+        // elements.modelSelect.disabled = true;
         setTimeout(() => {
             elements.modelSelectWrapper.classList.add('hidden');
             elements.modelSelectWrapper.classList.remove('slide-out');
@@ -109,5 +109,134 @@ export default {
         elements.controlButtons.querySelectorAll('button').forEach(btn => {
             btn.disabled = !hasImage;
         });
+    },
+    CustomDropdown: class {
+        dropdown;
+        header;
+        list;
+        arrow;
+        selected;
+        items;
+        wrapper;
+        placeholder;
+        selectedValue;
+        selectedText;
+        isOpen;
+        constructor(id) {
+            const dropdown = document.getElementById(id);
+            if (!dropdown) {
+                throw new Error(`Không tìm thấy phần tử với id "${id}"`);
+            }
+            this.dropdown = dropdown;
+            this.header = this.dropdown.querySelector('.dropdown-header');
+            this.list = this.dropdown.querySelector('.dropdown-list');
+            this.arrow = this.dropdown.querySelector('.dropdown-arrow');
+            this.selected = this.dropdown.querySelector('.dropdown-selected');
+            this.items = this.dropdown.querySelectorAll('.dropdown-item');
+            this.wrapper = this.dropdown.closest('.select-wrapper');
+            this.placeholder = this.dropdown.getAttribute('data-placeholder') || 'Chọn một tùy chọn';
+            this.selectedValue = '';
+            this.selectedText = '';
+            this.isOpen = false;
+            this.init();
+            this.setDefaultValue();
+        }
+        init() {
+            this.header.addEventListener('click', () => this.toggle());
+            this.items.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.selectItem(item);
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!this.dropdown.contains(e.target)) {
+                    this.close();
+                }
+            });
+        }
+        setDefaultValue() {
+            const defaultValue = this.dropdown.getAttribute('data-default');
+            if (defaultValue) {
+                this.setValue(defaultValue);
+            }
+        }
+        toggle() {
+            this.isOpen ? this.close() : this.open();
+        }
+        open() {
+            // Đóng tất cả các dropdown khác trước
+            document.querySelectorAll('.custom-dropdown.open').forEach(dd => {
+                if (dd !== this.dropdown) {
+                    dd.classList.remove('open');
+                }
+            });
+            document.querySelectorAll('.select-wrapper.open').forEach(sw => {
+                if (sw !== this.wrapper) {
+                    sw.classList.remove('open');
+                }
+            });
+            this.list.classList.add('open');
+            this.header.classList.add('active');
+            this.arrow.classList.add('rotate');
+            this.dropdown.classList.add('open');
+            if (this.wrapper) {
+                this.wrapper.classList.add('open');
+            }
+            this.isOpen = true;
+        }
+        close() {
+            this.list.classList.remove('open');
+            this.header.classList.remove('active');
+            this.arrow.classList.remove('rotate');
+            this.dropdown.classList.remove('open');
+            if (this.wrapper) {
+                this.wrapper.classList.remove('open');
+            }
+            this.isOpen = false;
+        }
+        selectItem(item) {
+            this.items.forEach(i => i.classList.remove('selected'));
+            const value = item.getAttribute('data-value');
+            if (!value) {
+                this.selectedValue = '';
+                this.selectedText = '';
+                this.selected.textContent = this.placeholder;
+                this.selected.style.color = '#999';
+            }
+            else {
+                item.classList.add('selected');
+                this.selectedValue = value;
+                this.selectedText = (item.textContent || '').trim();
+                this.selected.textContent = this.selectedText;
+                this.selected.style.color = '#333';
+            }
+            this.close();
+            const event = new CustomEvent('change', {
+                detail: {
+                    value: this.selectedValue,
+                    text: this.selectedText,
+                },
+            });
+            this.dropdown.dispatchEvent(event);
+        }
+        getValue() {
+            return this.selectedValue;
+        }
+        getText() {
+            return this.selectedText;
+        }
+        setValue(value) {
+            const item = Array.from(this.items).find(i => i.getAttribute('data-value') === value);
+            if (item) {
+                this.selectItem(item);
+            }
+        }
+        clear() {
+            const clearItem = this.dropdown.querySelector('[data-value=""]');
+            if (clearItem) {
+                this.selectItem(clearItem);
+            }
+        }
     }
 };

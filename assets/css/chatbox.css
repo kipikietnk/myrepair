@@ -10,7 +10,6 @@
 }
 
 :root {
-    --bg: #000000;
     --msg-bg: #2B2B2B;
     --text: #ffffff;
     --input-bg: rgba(65, 65, 65, 0.6);
@@ -20,7 +19,6 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --bg: #FFFFFF;
         --msg-bg: #F4F4F4;
         --text: #0D0D0D;
         --input-bg: rgba(243, 243, 243, 0.6);
@@ -48,10 +46,15 @@
 #chatbox-close {
     position: fixed;
     color: var(--text);
-    background: none;
-    border: none;
-    top: 6px;
+    top: 7px;
     left: 2px;
+    z-index: 1002;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
 }
 
 #new {
@@ -313,7 +316,7 @@
 
 /* Input Area */
 .input-area {
-    background: rgba(255, 255, 255, 0);
+    background: none;
     width: 100dvw;
     padding: 10px 20px;
     position: absolute;
@@ -334,12 +337,17 @@
 
 .file-input-label {
     cursor: pointer;
-    color: var(--text);
+    background: var(--input-bg);
+    color: var(--btn-text);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
     font-size: 24px;
     padding: 8px;
     transition: transform 0.2s;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .file-input-label:hover {
@@ -456,99 +464,4 @@
     30% {
         transform: translateY(-10px);
     }
-}
-
-
-
-.image-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100001;
-}
-
-.image-modal-backdrop {
-    position: absolute;
-    inset: 0;
-}
-
-.image-modal-content {
-    position: absolute;
-    margin: auto;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--surface-glass);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    width: 100dvw;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 100001;
-}
-
-.image-toolbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 8px;
-    background: rgba(34, 34, 34, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 100002;
-}
-
-.image-toolbar button {
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-}
-
-.image-toolbar button:hover {
-    background: #555;
-}
-
-.image-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.zoomable-image {
-    cursor: grab;
-    transition: transform 0.15s ease;
-    user-select: none;
-    max-width: none;
-}
-
-.message-footer {
-    margin-top: 6px;
-    display: flex;
-    justify-content: flex-start;
-    padding-left: 12px;
-}
-
-.function-call-btn {
-    background: var(--msg-bg);
-    color: var(--text);
-    padding: 12px 17px;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-    text-decoration: underline;
-}
-
-.function-call-btn:hover {
-    transform: scale(1.02);
 }
