@@ -196,7 +196,7 @@ body {
 .dropdown-item:hover {
   background: rgba(255, 215, 0, 0.1);
   color: var(--text);
-  padding-left: 20px;
+  padding-left: 25px;
 }
 
 .dropdown-item.selected {
@@ -447,7 +447,7 @@ body {
   overflow: hidden;
 }
 
-.control-btn::before {
+/* .control-btn::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -463,7 +463,7 @@ body {
 .control-btn:hover::before {
   width: 120px;
   height: 120px;
-}
+} */
 
 .control-btn:hover {
   transform: translateY(-3px) scale(1.08);

@@ -202,14 +202,12 @@ export default {
                 this.selectedValue = '';
                 this.selectedText = '';
                 this.selected.textContent = this.placeholder;
-                this.selected.style.color = '#999';
             }
             else {
                 item.classList.add('selected');
                 this.selectedValue = value;
                 this.selectedText = (item.textContent || '').trim();
                 this.selected.textContent = this.selectedText;
-                this.selected.style.color = '#333';
             }
             this.close();
             const event = new CustomEvent('change', {
