@@ -2,12 +2,9 @@ import { state } from "./main.js";
 import CONFIG from "./config/diagram.js";
 import elements from "./elements.js";
 import ui from "./ui.js";
-import utils from "./utils.js";
 function rotateImage(degrees) {
-    if (!state.isImageLoaded) {
-        utils.showErrorMessage('Không có ảnh để xoay');
+    if (!state.isImageLoaded)
         return;
-    }
     setImageRotation(state.currentRotation + degrees);
 }
 // Enhanced transform functions

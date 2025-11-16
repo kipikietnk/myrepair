@@ -36,6 +36,7 @@
     border-left: 1px solid var(--border-solid);
     left: -100%;
     transition: all 0.5s var(--ease-spring);
+    overflow: hidden;
     z-index: 1500;
 }
 
@@ -317,11 +318,10 @@
 /* Input Area */
 .input-area {
     background: none;
-    width: 100dvw;
-    padding: 10px 20px;
+    width: 100%;
+    padding: 10px 15px;
     position: absolute;
     bottom: 0;
-    color: var(--text);
 }
 
 .input-container {
@@ -333,11 +333,12 @@
     border-radius: 50px;
     padding: 8px 15px;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .file-input-label {
     cursor: pointer;
-    background: var(--input-bg);
+    background: var(--btn-bg);
     color: var(--btn-text);
     border-radius: 50%;
     width: 45px;
@@ -359,10 +360,10 @@
 }
 
 #messageInput {
-    flex: 1;
     background: none;
     border: none;
     color: var(--text);
+    width: 78%;
     font-size: 15px;
     outline: none;
     padding: 8px 10px;
@@ -386,6 +387,8 @@
     justify-content: center;
     transition: all 0.3s ease;
     font-weight: bold;
+    position: fixed;
+    right: 2%;
 }
 
 #sendButton:active {

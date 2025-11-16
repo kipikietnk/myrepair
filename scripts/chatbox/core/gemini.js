@@ -3,6 +3,20 @@ import prompt from '../prompt/setup.js';
 import data from '../prompt/data.js';
 import { declareFunction } from './functionDeclarations.js';
 import { data as diagramData } from '../../main.js';
+export function buildPrompt(data) {
+    return data
+        .map(item => {
+        const platform = item.platform;
+        const folder = item.folder;
+        const components = item.components?.map((c) => c.picture).join(", ");
+        return `${platform}: ${components} (${folder})`;
+    })
+        .join(" | ");
+}
+const diagramPrompt = buildPrompt(diagramData);
+console.log(JSON.stringify(diagramData).length, buildPrompt(diagramData).length);
+console.log(JSON.stringify(diagramData));
+console.log(diagramPrompt);
 class Gemini {
     #URL;
     history;
@@ -30,7 +44,7 @@ class Gemini {
                 ...this.history,
                 { role: 'user', parts: [{ text: prompt }] },
                 { role: 'model', parts: [{ text: `My Data: ${data}` }] },
-                { role: 'model', parts: [{ text: `Diagram: ${JSON.stringify(diagramData)}` }] },
+                { role: 'model', parts: [{ text: `Diagram: ${diagramPrompt}` }] },
                 { role: 'user', parts: [{ text: message }] }
             ],
             tools: [{ functionDeclarations: declareFunction }]

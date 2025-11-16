@@ -55,6 +55,24 @@ interface GeminiResponse {
   }>;
 }
 
+export function buildPrompt(data: any[]): string {
+  return data
+    .map(item => {
+      const platform = item.platform;
+      const folder = item.folder;
+      const components = item.components?.map((c: any) => c.picture).join(", ");
+      return `${platform}: ${components} (${folder})`;
+    })
+    .join(" | ");
+}
+
+const diagramPrompt = buildPrompt(diagramData);
+
+console.log(JSON.stringify(diagramData).length, buildPrompt(diagramData).length)
+console.log(JSON.stringify(diagramData))
+console.log(diagramPrompt)
+
+
 class Gemini {
   #URL: string;
   history: MessageContent[];
@@ -86,7 +104,7 @@ class Gemini {
         ...this.history,
         {role: 'user', parts: [{ text: prompt }]},
         {role: 'model', parts: [{ text: `My Data: ${data}` }]},
-        {role: 'model', parts: [{ text: `Diagram: ${JSON.stringify(diagramData)}` }]},
+        {role: 'model', parts: [{ text: `Diagram: ${diagramPrompt}` }]},
         {role: 'user', parts: [{ text: message }]}
       ],
       tools: [{ functionDeclarations: declareFunction }]

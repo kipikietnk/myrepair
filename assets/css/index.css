@@ -445,14 +445,6 @@ body {
   transform: translateY(-1px) scale(1.02);
 }
 
-#rotateLeft:hover {
-  transform: rotateZ(-90deg)
-}
-
-#rotateRight:hover {
-  transform: rotateZ(90deg)
-}
-
 .hidden {
   opacity: 0 !important;
   visibility: hidden !important;

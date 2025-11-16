@@ -5,10 +5,7 @@ import ui from "./ui.js";
 import utils from "./utils.js";
 
 function rotateImage(degrees: number) {
-  if (!state.isImageLoaded) {
-    utils.showErrorMessage('Không có ảnh để xoay');
-    return;
-  }
+  if (!state.isImageLoaded) return;
   
   setImageRotation(state.currentRotation + degrees);
 }
