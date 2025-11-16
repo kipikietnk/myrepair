@@ -1,4 +1,3 @@
-console.log('Chatbox module loaded');
 import { Gemini } from "./core/gemini.js";
 import { callbacks } from "./core/functionDeclarations.js";
 import elements from "../elements.js";
@@ -410,5 +409,4 @@ elements.messageInput.addEventListener('keypress', (e) => {
 });
 elements.messageInput.addEventListener('input', updateSendButtonState);
 // Initialize
-console.log('Chatbox initialized');
 updateSendButtonState();

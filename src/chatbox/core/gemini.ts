@@ -68,11 +68,6 @@ export function buildPrompt(data: any[]): string {
 
 const diagramPrompt = buildPrompt(diagramData);
 
-console.log(JSON.stringify(diagramData).length, buildPrompt(diagramData).length)
-console.log(JSON.stringify(diagramData))
-console.log(diagramPrompt)
-
-
 class Gemini {
   #URL: string;
   history: MessageContent[];

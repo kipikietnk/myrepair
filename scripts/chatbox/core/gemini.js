@@ -14,9 +14,6 @@ export function buildPrompt(data) {
         .join(" | ");
 }
 const diagramPrompt = buildPrompt(diagramData);
-console.log(JSON.stringify(diagramData).length, buildPrompt(diagramData).length);
-console.log(JSON.stringify(diagramData));
-console.log(diagramPrompt);
 class Gemini {
     #URL;
     history;
