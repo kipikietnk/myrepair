@@ -4,57 +4,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="google-site-verification" content="nyyPJ2L99ju-znfY9NyFc7TPiczQlpHWjGJIYBqViMU" />
   <title>My Repair</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./styles/global.css">
-  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./assets/css/variables.css">
+  <link rel="stylesheet" href="./assets/css/index.css">
+  <link rel="stylesheet" href="./assets/css/chatbox.css">
 </head>
 
 <body>
   <!-- Top Navigation Bar -->
-  <img class="logo draggable" id="logoBtn" src="./images/logo.webp" alt="">
+  <img class="logo draggable" id="logoBtn" src="../../assets/images/logo.webp" alt="">
 
+  <button id="chatbox-toggle">Chat Box</button>
   <div class="topbar">
-    <div class="controls-section">
-      <div class="select-group">
         <!-- Chọn loại thiết bị -->
-        <div class="select-wrapper" id="deviceSelectWrapper">
-          <select id="deviceSelect" class="modern-select" aria-label="Chọn loại máy">
-            <option value="">Chọn loại máy</option>
-          </select>
-        </div>
+        <div class="select-wrapper" id="deviceSelectWrapper"></div>
 
         <!-- Chọn Model -->
-        <div class="select-wrapper hidden" id="modelSelectWrapper">
-          <select id="modelSelect" class="modern-select" aria-label="Chọn Model">
-            <option value="">Chọn Model</option>
-          </select>
-        </div>
+        <div class="select-wrapper hidden" id="modelSelectWrapper"></div>
 
         <!-- Chọn Linh kiện -->
-        <div class="select-wrapper hidden" id="partSelectWrapper">
-          <select id="partSelect" class="modern-select" disabled aria-label="Chọn Linh kiện">
-            <option value="">Chọn Linh kiện</option>
-          </select>
-        </div>
-      </div>
+        <div class="select-wrapper hidden" id="partSelectWrapper"></div>
 
-      <div class="control-buttons" id="controlButtons" title="">
-        <button id="rotateLeft" class="control-btn" title="Xoay trái" aria-label="Xoay ảnh sang trái">
-          <span>↺</span>
-        </button>
-        <button id="rotateRight" class="control-btn" title="Xoay phải" aria-label="Xoay ảnh sang phải">
-          <span>↻</span>
-        </button>
-        <button id="resetView" class="control-btn" title="Đặt lại view" aria-label="Đặt lại góc nhìn">
-          <span>⌂</span>
-        </button>
-        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình" aria-label="Toàn màn hình">
-          <span>⛶</span>
+      <div class="control-buttons" id="controlButtons">
+        <button id="rotateLeft" class="control-btn" title="Xoay trái"><span>↺</span></button>
+        <button id="rotateRight" class="control-btn" title="Xoay phải"><span>↻</span></button>
+        <button id="resetView" class="control-btn" title="Đặt lại view"><span>⌂</span></button>
+        <button id="full-screen-toggle" class="control-btn" title="Toàn màn hình"><span>⛶</span></button>
+    </div>
+  </div>
+
+  <div id="ai-chat-container">
+    <button id="chatbox-close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 42 42">
+        <path fill="currentColor" fill-rule="evenodd"
+          d="M27.066 1L7 21.068l19.568 19.569l4.934-4.933l-14.637-14.636L32 5.933z" />
+      </svg>
+    </button>
+    <div id="new">
+      <!-- <img src="../../assets/images/logo.webp" class="logo no-select"> -->
+      <h1>Repair Phone AI</h1>
+      <p>Hỗ trợ bạn sửa chữa các thiết bị của Apple</p>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <!-- Messages will be appended here -->
+    </div>
+
+    <div class="input-area">
+      <div id="filePreview"></div>
+      <div class="input-container">
+        <label for="fileInput" class="file-input-label" title="Đính kèm file">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 597 717">
+            <path fill="currentColor"
+              d="m430 28l141 148c14 15 26 43 26 65v438c0 20-16 38-38 38H38c-20 0-38-18-38-38V38C0 18 18 0 38 0h328c22 0 50 13 64 28zM79 651h439c7 0 13-6 13-13V272c0-7-6-13-13-13H361c-7 0-13-6-13-13V79c0-7-5-12-12-12H79c-7 0-12 5-12 12v559c0 7 5 13 12 13zm408-467l-63-68c-5-5-9-3-9 4v61c0 6 6 12 12 12h56c7 0 9-4 4-9zm-331-58h124c13 0 25 12 25 26v15c0 13-12 25-25 25H156c-14 0-26-12-26-25v-15c0-14 12-26 26-26zm0 134h124c13 0 25 12 25 26v15c0 13-12 25-25 25H156c-14 0-26-12-26-25v-15c0-14 12-26 26-26zm283 200H156c-14 0-26-11-26-25v-15c0-14 12-25 26-25h283c13 0 26 11 26 25v15c0 14-13 25-26 25zm0 137H156c-14 0-26-11-26-24v-16c0-14 12-25 26-25h283c13 0 26 11 26 25v16c0 13-13 24-26 24z" />
+          </svg>
+        </label>
+        <input type="file" id="fileInput" accept=".ips,.txt" multiple>
+        <input type="text" id="messageInput" placeholder="Nhập tin nhắn của bạn...">
+        <button id="sendButton" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 20 20">
+            <path fill="currentColor" d="m0 0l20 10L0 20V0zm0 8v4l10-2L0 8z" />
+          </svg>
         </button>
       </div>
     </div>
@@ -83,10 +97,9 @@
       </div>
     </div>
   </main>
-
   <!-- Libraries -->
   <script src="https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"></script>
-  <script type="module" src="./scripts/main.js" defer></script>
+  <script type="module" src="./scripts/main.js"></script>
 </body>
 
 </html>
