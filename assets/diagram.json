@@ -68,5 +68,16 @@
         "picture": "taildock.png"
       }
     ]
+  },
+  {
+    "product": "watch",
+    "platform": "Series 5 44mm",
+    "folder": "images/watch/sr5_44",
+    "components": [
+      {
+        "name": "Home Touch",
+        "picture": "sr5.png"
+      }
+    ]
   }
 ]
