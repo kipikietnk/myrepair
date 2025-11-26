@@ -107,7 +107,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 5s ease;
+  transition: all 0.2 ease;
   box-shadow: 0 2px 8px var(--shadow);
   border: 2px solid var(--border);
 }
