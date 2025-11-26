@@ -1,17 +1,16 @@
 import utils from "../../utils.js";
 import ui from "../../ui.js"
 
+type CallbackMap<T extends Record<string, { args: any[]; return: any }>> = {
+  [K in keyof T]: (...args: T[K]['args']) => T[K]['return'];
+};
+
 type CallbackDefinitions = {
   showImage: {
     args: [args: any];
     return: void;
   };
 };
-
-type CallbackMap<T extends Record<string, { args: any[]; return: any }>> = {
-  [K in keyof T]: (...args: T[K]['args']) => T[K]['return'];
-};
-
 
 const callbacks: CallbackMap<CallbackDefinitions> = {
   showImage: (args) => {

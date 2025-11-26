@@ -257,12 +257,12 @@ function formatMessage(markdown) {
     return html.trim();
 }
 // Handle API requests
-async function sendRequest(contents, saveHistory = true) {
+async function sendRequest(contents, model = settings.model, saveHistory = true) {
     try {
         const response = await fetch(settings.API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify({ contents, model })
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

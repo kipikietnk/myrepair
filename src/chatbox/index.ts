@@ -99,10 +99,10 @@ const scrollToBottom = (): void => {
 function addMessage(text: string, isUser = false, format = true): void {
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-  
+
   const formattedText = (isUser || !format) ? text : formatMessage(text);
   messageDiv.innerHTML = `<div class="message-content">${formattedText}</div>`;
-  
+
   elements.chatArea.appendChild(messageDiv);
   scrollToBottom();
 }
@@ -229,9 +229,9 @@ function formatMessage(markdown: string): string {
   // Lists
   html = html.replace(REGEX_PATTERNS.unorderedList, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-  
+
   html = html.replace(REGEX_PATTERNS.orderedList, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>)/s, (match) => 
+  html = html.replace(/(<li>.*<\/li>)/s, (match) =>
     match.includes('<ul>') ? match : `<ol>${match}</ol>`
   );
 
@@ -273,13 +273,13 @@ function formatMessage(markdown: string): string {
   const processed: string[] = [];
   let paragraphContent = '';
 
-  const isBlockElement = (line: string) => 
+  const isBlockElement = (line: string) =>
     /^<(h[1-6]|hr|pre|blockquote|ul|ol|table|thead|tbody|tr|li)/.test(line) ||
     /^<\/(ul|ol|blockquote|table|thead|tbody)>/.test(line);
 
   for (const line of lines) {
     const trimmed = line.trim();
-    
+
     if (!trimmed) {
       if (paragraphContent) {
         processed.push(`<p>${paragraphContent.trim()}</p>`);
@@ -313,12 +313,12 @@ function formatMessage(markdown: string): string {
 }
 
 // Handle API requests
-async function sendRequest(contents: MessageContent[], saveHistory = true): Promise<GeminiResponse> {
+async function sendRequest(contents: MessageContent[], model: string = settings.model, saveHistory = true): Promise<GeminiResponse> {
   try {
     const response = await fetch(settings.API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents })
+      body: JSON.stringify({ contents, model })
     });
 
     if (!response.ok) {
@@ -326,7 +326,7 @@ async function sendRequest(contents: MessageContent[], saveHistory = true): Prom
     }
 
     const resObj: GeminiResponse = await response.json();
-    
+
     if (saveHistory) {
       const content = resObj?.candidates?.[0]?.content;
       if (content) {
@@ -334,7 +334,7 @@ async function sendRequest(contents: MessageContent[], saveHistory = true): Prom
         addToHistory(content);
       }
     }
-    
+
     return resObj;
   } catch (error) {
     return error instanceof Error
@@ -352,14 +352,14 @@ function addToHistory(content: MessageContent): void {
 
 const handleResponse = async (content?: MessageContent): Promise<void> => {
   if (!content) return;
-  
+
   for (const part of content.parts) {
     if (part.text) {
       addMessage(part.text, content.role === 'user');
     } else if (part.functionCall) {
       const { name, args } = part.functionCall;
       const callback = functionDeclarations[name as keyof typeof functionDeclarations];
-      
+
       if (typeof callback === 'function') {
         callback(args);
       } else {

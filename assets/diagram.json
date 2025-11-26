@@ -75,8 +75,8 @@
     "folder": "images/watch/sr5_44",
     "components": [
       {
-        "name": "Home Touch",
-        "picture": "sr5.png"
+        "name": "All",
+        "picture": "all.png"
       }
     ]
   }

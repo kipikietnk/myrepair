@@ -3,7 +3,7 @@
 }
 
 :root {
-  --gold: #FFD700;
+  --gold: #dcbc08;
   --gold-light: #FFED4E;
   --gold-dark: #B8860B;
   --accent: #FFD700;
@@ -39,10 +39,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --gold: #FFD700;
     --bg: #0A0A0A;
     --surface: rgba(18, 18, 18, 0.95);
-    --surface-secondary: rgba(28, 28, 28, 0.9);
-    --surface-glass: rgba(18, 18, 18, 0.4);
+    --surface-secondary: rgba(28, 28, 28, 0.4);
+    --surface-glass: rgba(18, 18, 18, 0.2);
     --control-surface-glass: rgba(28, 28, 28, 0.85);
     --text: #F5F5F5;
     --text-secondary: #B8B8B8;
@@ -106,7 +107,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 5s ease;
   box-shadow: 0 2px 8px var(--shadow);
   border: 2px solid var(--border);
 }
@@ -182,7 +183,7 @@ body {
 .dropdown-item:hover {
   background: rgba(255, 215, 0, 0.1);
   color: var(--text);
-  padding-left: 25px;
+  padding-left: 20px;
 }
 
 .dropdown-item.selected {
@@ -274,7 +275,7 @@ body {
   top: 90px;
   right: 10px;
   z-index: 999;
-  background: var(--surface-glass);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 50%;
   width: 60px;
@@ -285,7 +286,6 @@ body {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
-  color: var(--gold);
   font-size: 28px;
   overflow: hidden;
 }
