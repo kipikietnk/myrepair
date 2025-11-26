@@ -13,7 +13,7 @@
     --msg-bg: #2B2B2B;
     --text: #ffffff;
     --input-bg: rgba(65, 65, 65, 0.6);
-    --btn-bg: rgba(255, 255, 255, 0.7);
+    --btn-bg: rgba(255, 255, 255, 0.9);
     --btn-text: #0D0D0D;
 }
 
@@ -22,7 +22,7 @@
         --msg-bg: #F4F4F4;
         --text: #0D0D0D;
         --input-bg: rgba(243, 243, 243, 0.6);
-        --btn-bg: rgba(13, 13, 13, 0.7);
+        --btn-bg: rgba(13, 13, 13, 0.9);
         --btn-text: #FFFFFF;
     }
 }
@@ -334,29 +334,8 @@
     padding: 8px 15px;
     transition: all 0.3s ease;
     overflow: hidden;
-}
-
-.file-input-label {
-    cursor: pointer;
-    background: var(--btn-bg);
-    color: var(--btn-text);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    font-size: 24px;
-    padding: 8px;
-    transition: transform 0.2s;
     display: flex;
     align-items: center;
-    justify-content: center;
-}
-
-.file-input-label:hover {
-    transform: scale(1.1);
-}
-
-#fileInput {
-    display: none;
 }
 
 #messageInput {
@@ -366,7 +345,7 @@
     width: 78%;
     font-size: 15px;
     outline: none;
-    padding: 8px 10px;
+    padding: 12px 10px;
 }
 
 #messageInput::placeholder {

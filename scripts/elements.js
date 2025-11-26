@@ -26,7 +26,7 @@ export default {
     chatArea: document.getElementById('chatArea'),
     messageInput: document.getElementById('messageInput'),
     sendButton: document.getElementById('sendButton'),
-    fileInput: document.getElementById('fileInput'),
-    filePreview: document.getElementById('filePreview'),
+    // fileInput: document.getElementById('fileInput') as HTMLInputElement,
+    // filePreview: document.getElementById('filePreview') as HTMLDivElement,
     newPage: document.getElementById('new'),
 };

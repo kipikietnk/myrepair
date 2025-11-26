@@ -1,5 +1,6 @@
 import { initPanzoom, fullScreenChange, FollowCursorDrag } from "./action.js";
 import { rotateImage, handleLogoClick, resetTransforms, fitToContainer, canUseFullscreen } from "./handle.js";
+import state from "./state.js";
 import CONFIG from "./config/diagram.js";
 import elements from "./elements.js";
 import ui from "./ui.js";
@@ -13,20 +14,6 @@ let deviceDropdown: any = null;
 let modelDropdown: any = null;
 let partDropdown: any = null;
 let allDropdowns: any[] = [];
-
-export const state = {
-  currentRotation: 0,
-  panzoomInstance: null,
-  resetClickCount: 0,
-  resetClickTimer: null,
-  isImageLoaded: false,
-  lastSelectedDevice: '',
-  lastSelectedModel: '',
-  lastSelectedPart: '',
-  controlsVisible: true,
-  chatBoxVisible: true,
-  isMobile: window.innerWidth <= 768
-};
 
 // ========== Data loading ==========
 async function loadData() {
@@ -262,8 +249,5 @@ document.addEventListener('touchend', e => {
 
 elements.chatBoxClose.addEventListener('click', () => ui.ChatBoxToggle());
 elements.chatBoxToggle.addEventListener('click', () => ui.ChatBoxToggle());
-
-const loadAI = async () => import('./chatbox/index.js').catch(console.error);
-loadAI();
 
 export { data };

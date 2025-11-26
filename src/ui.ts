@@ -1,6 +1,5 @@
-import { state } from "./main.js";
+import state from "./state.js";
 import elements from "./elements.js";
-import utils from "./utils.js";
 
 export default {
   ChatBoxToggle(state?: boolean) {

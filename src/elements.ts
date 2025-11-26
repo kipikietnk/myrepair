@@ -30,7 +30,7 @@ export default {
   chatArea: document.getElementById('chatArea') as HTMLDivElement,
   messageInput: document.getElementById('messageInput') as HTMLInputElement,
   sendButton: document.getElementById('sendButton') as HTMLButtonElement,
-  fileInput: document.getElementById('fileInput') as HTMLInputElement,
-  filePreview: document.getElementById('filePreview') as HTMLDivElement,
+  // fileInput: document.getElementById('fileInput') as HTMLInputElement,
+  // filePreview: document.getElementById('filePreview') as HTMLDivElement,
   newPage: document.getElementById('new') as HTMLDivElement,
 };

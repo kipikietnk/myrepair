@@ -1,4 +1,4 @@
-import { state } from "./main.js";
+import state from "./state.js";
 import CONFIG from "./config/diagram.js";
 import elements from "./elements.js";
 import ui from "./ui.js";

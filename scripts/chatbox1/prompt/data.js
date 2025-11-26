@@ -25,4 +25,4 @@ export default `
 - Tình trạng: Kẹp nguồn dòng nhúng rất nhanh. Dòng cứ nhảy từ 0A lên 0.020A liên tục.
 - Kiểm tra: Đo các đường xung quanh ổ cứng.
 - Sữa chữa: Nếu chạm tụ thì gỡ bỏ tụ và thử lại. Nếu không chạm thì thử gỡ U2 (U9300).
-`
+`;
