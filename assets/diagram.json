@@ -70,6 +70,28 @@
     ]
   },
   {
+     "product": "iPad",
+    "platform": "Air 4",
+    "folder": "images/iPad/air",
+    "components": [
+      {
+        "name": "Taildock",
+        "picture": "air4_taildock.png"
+      }
+    ]
+  },
+  {
+     "product": "iPad",
+    "platform": "iPad 9.7",
+    "folder": "images/iPad/gen",
+    "components": [
+      {
+        "name": "Screen",
+        "picture": "ipad9,7.png"
+      }
+    ]
+  },
+  {
     "product": "Watch",
     "platform": "Series 5 44mm",
     "folder": "images/watch/sr5_44",
