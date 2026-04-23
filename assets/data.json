@@ -169,5 +169,23 @@
     ],
     "imageOnly": true,
     "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 14 Pro Max - Camera 0.5x",
+    "desc": "Sơ đồ camera 0.5 của iphone 14 pro max",
+    "devices": [],
+    "tags": [
+      "14promax",
+      "camera"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "/assets/img_1776941302726_wotd65ozn7o.jpeg"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false,
+    "id": "drsieo3n"
   }
 ]
