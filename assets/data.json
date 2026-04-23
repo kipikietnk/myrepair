@@ -187,5 +187,27 @@
     "imageOnly": true,
     "fixesOnly": false,
     "id": "drsieo3n"
+  },
+  {
+    "severity": "diagram",
+    "title": "13 faceid",
+    "desc": "",
+    "devices": [
+      "13",
+      "iphone 13",
+      "faceid",
+      "face"
+    ],
+    "tags": [
+      "iphone 13"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "img_1776943620901_8r2gsntfyzk.jpeg"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false,
+    "id": "hh15prtu"
   }
 ]
