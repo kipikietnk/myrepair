@@ -1,0 +1,173 @@
+[
+  {
+    "severity": "panic",
+    "title": "iPhone 11 Reset Counter",
+    "desc": "Reset báo watchdog timeout",
+    "devices": [
+      "iPhone 11"
+    ],
+    "tags": [
+      "reset counter"
+    ],
+    "fixType": "software",
+    "logSample": "panic(cpu 2 caller 0xfffffff01da72818): <span style='color:#ff3838'>userspace watchdog timeout: no successful checkins from logd in 180 seconds</span>\n<span style='background-color:cyan; color:black'><b>service returned not alive with context: unresponsive dispatch queue(s): com.apple.firehose.io-wl\nlogd appears to not exist in launchd</b></span>\nservice: backboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: SpringBoard, total successful checkins in 1093 seconds: 109, last successful checkin: 0 seconds ago\nservice: mediaserverd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nservice: logd, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: thermalmonitord, total successful checkins in 1126 seconds: 92, last successful checkin: 180 seconds ago\nservice: runningboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: wifid, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: configd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nDebugger message: panic\nMemory ID: 0x1\nOS release type: User\nOS version: 20F75\nKernel version: Darwin Kernel Version 22.5.0...",
+    "fixes": [
+      {
+        "title": "Chạy chương trình, xóa toàn bộ dữ liệu",
+        "code": "Có thể sao lưu ảnh, danh bạ trước khi chạy. Không sao lưu cài đặt, ứng dụng"
+      }
+    ],
+    "images": [
+      "iPhone/11/panic/wd_timeout_001.png"
+    ],
+    "imageOnly": false,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 14 Pro Max Tail Dock",
+    "desc": "Hình ảnh cụm tail dock của iPhone 14 Pro Max.",
+    "devices": [
+      "iPhone 14 Pro Max"
+    ],
+    "tags": [
+      "Cáp sạc"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPhone/14PM/taildock.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 13 Pro Max Tail Dock",
+    "desc": "Ảnh tham chiếu tail dock cho iPhone 13 Pro Max.",
+    "devices": [
+      "iPhone 13 Pro Max"
+    ],
+    "tags": [
+      "Cáp sạc"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPhone/13PM/taildock.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 12 Pro Max Tail Dock",
+    "desc": "Ảnh tham chiếu tail dock cho iPhone 12 Pro Max.",
+    "devices": [
+      "iPhone 12 Pro Max"
+    ],
+    "tags": [
+      "Cáp sạc"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPhone/12PM/taildock.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 12 Pro Max Back Camera",
+    "desc": "Ảnh tham chiếu cụm camera sau iPhone 12 Pro Max.",
+    "devices": [
+      "iPhone 12 Pro Max"
+    ],
+    "tags": [
+      "back camera"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPhone/12PM/backcam.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPhone 13 Pro Back Camera",
+    "desc": "Ảnh tham chiếu cụm camera sau iPhone 13 Pro.",
+    "devices": [
+      "iPhone 13 Pro"
+    ],
+    "tags": [
+      "back camera"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPhone/13P/backcam.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPad Air 4 Tail Dock",
+    "desc": "Ảnh tham chiếu tail dock cho iPad Air 4.",
+    "devices": [
+      "iPad Air 4"
+    ],
+    "tags": [
+      "Cáp sạc"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPad/air/air4_taildock.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "iPad Gen 9",
+    "desc": "Ảnh tham chiếu cho iPad thế hệ 9.",
+    "devices": [
+      "iPad Gen 9"
+    ],
+    "tags": [
+      "iPad",
+      "gen 9"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "iPad/gen/ipad9,7.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  },
+  {
+    "severity": "diagram",
+    "title": "Apple Watch Series 5 44mm",
+    "desc": "Bộ ảnh tham chiếu cho Apple Watch Series 5 44mm.",
+    "devices": [
+      "Apple Watch Series 5 44mm"
+    ],
+    "tags": [
+      "watch",
+      "series 5",
+      "44mm"
+    ],
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "watch/sr5_44/all.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
+  }
+]
