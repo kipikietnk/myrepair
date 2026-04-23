@@ -169,20 +169,5 @@
     ],
     "imageOnly": true,
     "fixesOnly": false
-  },
-  {
-    "severity": "diagram",
-    "title": "iPhone 14 Pro Max - Camera 0.5x",
-    "desc": "",
-    "devices": [],
-    "tags": [],
-    "fixType": "hardware",
-    "fixes": [],
-    "images": [
-      "/assets/img_1776939466970_qwn3nozt0vd.jpeg"
-    ],
-    "imageOnly": true,
-    "fixesOnly": false,
-    "id": "yxyk2mcd"
   }
 ]
