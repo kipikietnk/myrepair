@@ -10,7 +10,7 @@
       "reset counter"
     ],
     "fixType": "software",
-    "logSample": "panic(cpu 2 caller 0xfffffff01da72818): <span style='color:#ff3838'>userspace watchdog timeout: no successful checkins from logd in 180 seconds</span>\n<span style='background-color:cyan; color:black'><b>service returned not alive with context: unresponsive dispatch queue(s): com.apple.firehose.io-wl\nlogd appears to not exist in launchd</b></span>\nservice: backboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: SpringBoard, total successful checkins in 1093 seconds: 109, last successful checkin: 0 seconds ago\nservice: mediaserverd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nservice: logd, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: thermalmonitord, total successful checkins in 1126 seconds: 92, last successful checkin: 180 seconds ago\nservice: runningboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: wifid, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: configd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nDebugger message: panic\nMemory ID: 0x1\nOS release type: User\nOS version: 20F75\nKernel version: Darwin Kernel Version 22.5.0...",
+    "logSample": "panic(cpu 2 caller 0xfffffff01da72818): <span style='color:#ff3838'>userspace watchdog timeout: no successful checkins from logd in 180 seconds</span>\n<span style='color:cyan'><b>service returned not alive with context: unresponsive dispatch queue(s): com.apple.firehose.io-wl\nlogd appears to not exist in launchd</b></span>\nservice: backboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: SpringBoard, total successful checkins in 1093 seconds: 109, last successful checkin: 0 seconds ago\nservice: mediaserverd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nservice: logd, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: thermalmonitord, total successful checkins in 1126 seconds: 92, last successful checkin: 180 seconds ago\nservice: runningboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: wifid, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: configd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nDebugger message: panic\nMemory ID: 0x1\nOS release type: User\nOS version: 20F75\nKernel version: Darwin Kernel Version 22.5.0...",
     "fixes": [
       {
         "title": "Chạy chương trình, xóa toàn bộ dữ liệu",
@@ -21,7 +21,8 @@
       "iPhone/11/panic/wd_timeout_001.png"
     ],
     "imageOnly": false,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "jzl58lxd"
   },
   {
     "severity": "diagram",
@@ -187,30 +188,5 @@
     "imageOnly": true,
     "fixesOnly": false,
     "id": "drsieo3n"
-  },
-  {
-    "severity": "panic",
-    "title": "iPhone 11 Reset Counter",
-    "desc": "Reset báo watchdog timeout",
-    "devices": [
-      "iPhone 11"
-    ],
-    "tags": [
-      "reset counter"
-    ],
-    "fixType": "software",
-    "logSample": "panic(cpu 2 caller 0xfffffff01da72818): <span style='color:#ff3838'>userspace watchdog timeout: no successful checkins from logd in 180 seconds</span>\n<span style='color:cyan'><b>service returned not alive with context: unresponsive dispatch queue(s): com.apple.firehose.io-wl\nlogd appears to not exist in launchd</b></span>\nservice: backboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: SpringBoard, total successful checkins in 1093 seconds: 109, last successful checkin: 0 seconds ago\nservice: mediaserverd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nservice: logd, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: thermalmonitord, total successful checkins in 1126 seconds: 92, last successful checkin: 180 seconds ago\nservice: runningboardd, total successful checkins in 1126 seconds: 111, last successful checkin: 0 seconds ago\nservice: wifid, total successful checkins in 1126 seconds: 93, last successful checkin: 180 seconds ago\nservice: configd, total successful checkins in 1126 seconds: 110, last successful checkin: 0 seconds ago\nDebugger message: panic\nMemory ID: 0x1\nOS release type: User\nOS version: 20F75\nKernel version: Darwin Kernel Version 22.5.0...",
-    "fixes": [
-      {
-        "title": "Chạy chương trình, xóa toàn bộ dữ liệu",
-        "code": "Có thể sao lưu ảnh, danh bạ trước khi chạy. Không sao lưu cài đặt, ứng dụng"
-      }
-    ],
-    "images": [
-      "iPhone/11/panic/wd_timeout_001.png"
-    ],
-    "imageOnly": false,
-    "fixesOnly": false,
-    "id": "jzl58lxd"
   }
 ]
