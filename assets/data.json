@@ -21,7 +21,8 @@
       "iPhone/11/panic/wd_timeout_001.png"
     ],
     "imageOnly": false,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "eryzera7"
   },
   {
     "severity": "diagram",
@@ -39,7 +40,8 @@
       "iPhone/14PM/taildock.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "rqvq1w8y"
   },
   {
     "severity": "diagram",
@@ -57,7 +59,8 @@
       "iPhone/13PM/taildock.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "8bg1mpnl"
   },
   {
     "severity": "diagram",
@@ -75,7 +78,8 @@
       "iPhone/12PM/taildock.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "t2g5guq5"
   },
   {
     "severity": "diagram",
@@ -93,7 +97,8 @@
       "iPhone/12PM/backcam.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "bln98th4"
   },
   {
     "severity": "diagram",
@@ -111,7 +116,8 @@
       "iPhone/13P/backcam.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "2v8yu249"
   },
   {
     "severity": "diagram",
@@ -129,7 +135,8 @@
       "iPad/air/air4_taildock.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "vf7s5hf5"
   },
   {
     "severity": "diagram",
@@ -148,7 +155,8 @@
       "iPad/gen/ipad9,7.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "y91d19z9"
   },
   {
     "severity": "diagram",
@@ -168,7 +176,8 @@
       "watch/sr5_44/all.png"
     ],
     "imageOnly": true,
-    "fixesOnly": false
+    "fixesOnly": false,
+    "id": "ni57bmyd"
   },
   {
     "severity": "diagram",
@@ -233,5 +242,52 @@
     "fixesOnly": false,
     "logSample": "  \"panicString\" : \"panic(cpu 5 caller 0xfffffff0196717b8): \"i2c1::_checkBusStatus Bus is still in a bad state; last read status 00010110 int shadow 00010100 xfer 00000000 fifo 00000000 for device mic-temp-sens2\" @AppleS5L8940XI2C.cpp:503\\nDebugger message: panic\\nMemory ID: 0x6\\nOS release type: Not set yet\\nOS version: Not set yet\\nKernel version: Darwin Kernel Version 24.6.0: Wed Mar  4 22:11:45 PST 2026; root:xnu-11417.140.69.706.9~1\\/RELEASE_ARM64_T8020\\nFileset Kernelcache UUID: 137FF469188FE7D2F87163A0C1373AC7\\nKernel UUID: F5910B7F-4DD1-3B13-BD28-F980FAD5BECE\\nBoot session UUID: 72BCDEDC-4D39-4B7D-8E0E-56CB21CF6934\\niBoot version: iBoot-11881.140.96.700.1\\niBoot Stage 2 version: \\nsecure boot?: YES\\nroots installed: 0\\nPaniclog version: 14\\nKernelCache slide: 0x0000000010384000\\nKernelCache base:  0xfffffff017388000\\nKernel slide:",
     "id": "pu6m93kb"
+  },
+  {
+    "severity": "panic",
+    "title": "14 PM - Reset Counter - SMC PANIC",
+    "desc": "",
+    "devices": [
+      "14",
+      "14 Pro",
+      "14 Pro Max",
+      "iPhone 14",
+      "iPhone 14 Pro Max"
+    ],
+    "tags": [
+      "reset",
+      "rs",
+      "reset counter",
+      "taildock",
+      "cap sac",
+      "cáp sạc"
+    ],
+    "fixType": "hardware",
+    "fixes": [
+      {
+        "title": "Thay cáp sạc khác",
+        "desc": "Đảm bảo vấn đề ở cáp sạc",
+        "code": null
+      },
+      {
+        "title": "Kiểm tra mic áp suất",
+        "desc": "Kiểm tra mic áp suất trên cáp sạc có dấu hiệu vào nước hay rơi vỡ không",
+        "code": null
+      },
+      {
+        "title": "Kiểm tra tụ phía sau mic áp suất có bị cháy không",
+        "desc": "",
+        "code": null
+      }
+    ],
+    "images": [
+      "img_1779195878588_lcsgmh8jdxl.jpg",
+      "img_1779195878613_g165ak7cag9.PNG",
+      "img_1779195878626_7q8e9l8p1vy.jpg"
+    ],
+    "imageOnly": false,
+    "fixesOnly": false,
+    "logSample": "panic(cpu 0 caller 0xfffffff036e42c88): SMC PANIC - ASSERT: target\\/d74\\/target.cpp:321: 0, SMC BSC failure, TAOP TAOJ\\nspreadsheet ver(*10) 150\\nS.sensor array 0 - 5 is 0, 1310720, 0, 0, 0\\nF.sensor array 0 - 1 is 0\\n\\n - Misc(2) OUTBOX1 not ready\\nASSERT: target\\/d74\\/target.cpp:321: 0, SMC BSC failure, TAOP TAOJ\\nspreadsheet ver(*10) 150\\nS.sensor array 0 - 5 is 0, 1310720, 0, 0, 0\\nF.sensor array 0 - 1 is 0\\n\\n\\nRTKit: RTKit-3255.120.11.release - Client: AppleSMCFirmware_H15-6164.120.29.d74.REL\\n!UUID: a3a3c2b7-af14-32a6-b8fe-bbd2960f3099\\nASLR slide: 0x0000000000000000\\nTime: 0x00000001123702e8\\n\\nFaulting task   2 Call Stack: 0x0000000000044954 0x0000000000044320 0x000000000004414c 0x0000000000042c18 0x0000000000032284 0x0000000000038a94 0x0000000000040524\\n\\nChinook ASC Async error info: \\nl2c_err_sts 0x5000fbfc00000000, l2c_err_adr 000000000000000000, l2c_err_inf 000000000000000000\\nlsu_err_sts 000000000000000000, fed_err_sts 000000000000000000, mmu_err_sts 000000000000000000\\ndpc_err_sts 000000000000000000\\n\\nMailbox (0): (0)\\n  Inbox  AKF_KIC_INBOX_CTRL = 0x00020001, AKF_KIC_MAILBOX_SET = 0x11111101",
+    "id": "3dh6su32"
   }
 ]
