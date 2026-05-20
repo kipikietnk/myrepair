@@ -26,13 +26,19 @@
   },
   {
     "severity": "diagram",
-    "title": "iPhone 14 Pro Max Tail Dock",
+    "title": "14 PM - Cáp sạc",
     "desc": "Hình ảnh cụm tail dock của iPhone 14 Pro Max.",
     "devices": [
-      "iPhone 14 Pro Max"
+      "iPhone 14 Pro Max",
+      "14PRM",
+      "14PM",
+      "14 PRM",
+      "14 PM"
     ],
     "tags": [
-      "Cáp sạc"
+      "Cáp sạc",
+      "taildock",
+      "cap sac"
     ],
     "fixType": "hardware",
     "fixes": [],
@@ -41,7 +47,8 @@
     ],
     "imageOnly": true,
     "fixesOnly": false,
-    "id": "rqvq1w8y"
+    "id": "rqvq1w8y",
+    "logSample": ""
   },
   {
     "severity": "diagram",
