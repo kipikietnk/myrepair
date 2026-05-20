@@ -228,7 +228,7 @@
   },
   {
     "severity": "panic",
-    "title": "XSMax panic nút nguồn",
+    "title": "XS Max - Reset Counter",
     "desc": "XSMax panic nút nguồn",
     "devices": [
       "XSM",
@@ -252,8 +252,8 @@
   },
   {
     "severity": "panic",
-    "title": "14 PM - Reset Counter - SMC PANIC",
-    "desc": "",
+    "title": "14 PM - Reset Counter",
+    "desc": "SMC PANIC",
     "devices": [
       "14",
       "14 Pro",
