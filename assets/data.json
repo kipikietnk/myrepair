@@ -207,7 +207,7 @@
   },
   {
     "severity": "diagram",
-    "title": "13 faceid",
+    "title": "13 - Faceid",
     "desc": "",
     "devices": [
       "13",
@@ -225,7 +225,8 @@
     ],
     "imageOnly": true,
     "fixesOnly": false,
-    "id": "hh15prtu"
+    "id": "hh15prtu",
+    "logSample": ""
   },
   {
     "severity": "panic",
