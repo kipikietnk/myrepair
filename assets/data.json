@@ -1,6 +1,6 @@
 [
   {
-    "id": "2wxth8sp",
+    "id": "rknsi7sy",
     "severity": "panic",
     "product": "iphone",
     "title": "11 - Reset Counter",
@@ -27,7 +27,7 @@
     "fixesOnly": false
   },
   {
-    "id": "m9isu0pr",
+    "id": "lhd1znb6",
     "severity": "diagram",
     "product": "iphone",
     "title": "14 PM - Cáp sạc",
@@ -49,7 +49,7 @@
     "fixesOnly": false
   },
   {
-    "id": "ozl1za5p",
+    "id": "lutxc9aj",
     "severity": "diagram",
     "product": "iphone",
     "title": "13 Pro Max - Cáp sạc",
@@ -70,7 +70,7 @@
     "fixesOnly": false
   },
   {
-    "id": "cyhnxdb2",
+    "id": "972oy5yy",
     "severity": "diagram",
     "product": "iphone",
     "title": "12 Pro Max - Cáp sạc",
@@ -90,7 +90,7 @@
     "fixesOnly": false
   },
   {
-    "id": "zb9ixi3w",
+    "id": "muykqwry",
     "severity": "diagram",
     "product": "iphone",
     "title": "iPhone 12 Pro Max Back Camera",
@@ -110,7 +110,7 @@
     "fixesOnly": false
   },
   {
-    "id": "2lj0m6lp",
+    "id": "s0vcm9uh",
     "severity": "diagram",
     "product": "iphone",
     "title": "iPhone 13 Pro Back Camera",
@@ -130,7 +130,7 @@
     "fixesOnly": false
   },
   {
-    "id": "eot90s01",
+    "id": "yxwma62w",
     "severity": "diagram",
     "product": "ipad",
     "title": "iPad Air 4 Tail Dock",
@@ -152,7 +152,7 @@
     "fixesOnly": false
   },
   {
-    "id": "p2dni7kn",
+    "id": "05z8z6ph",
     "severity": "diagram",
     "product": "ipad",
     "title": "iPad Gen 9",
@@ -171,7 +171,7 @@
     "fixesOnly": false
   },
   {
-    "id": "qlk3dou4",
+    "id": "6rustgax",
     "severity": "diagram",
     "product": "watch",
     "title": "Apple Watch Series 5 44mm",
@@ -190,7 +190,7 @@
     "fixesOnly": false
   },
   {
-    "id": "ewaluc9h",
+    "id": "lp3owg3v",
     "severity": "diagram",
     "product": "iphone",
     "title": "iPhone 14 Pro Max - Camera 0.5x",
@@ -211,7 +211,7 @@
     "fixesOnly": false
   },
   {
-    "id": "tlkqroqe",
+    "id": "6p6y43eq",
     "severity": "panic",
     "product": "iphone",
     "title": "XS Max - Reset Counter",
@@ -233,7 +233,7 @@
     "fixesOnly": false
   },
   {
-    "id": "29z69su5",
+    "id": "sh6n76u7",
     "severity": "panic",
     "product": "iphone",
     "title": "14 PM - Reset Counter",

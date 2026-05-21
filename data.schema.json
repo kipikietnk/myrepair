@@ -20,10 +20,6 @@
       "fixesOnly"
     ],
     "properties": {
-      "id": {
-        "type": "string",
-        "minLength": 1
-      },
       "severity": {
         "type": "string",
         "enum": ["panic", "info", "diagram"]
