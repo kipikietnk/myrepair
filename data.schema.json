@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ilog.local/schema/data.schema.json",
+  "title": "Issue Data",
+  "description": "Issue list used by iLog.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "severity",
+      "product",
+      "title",
+      "desc",
+      "devices",
+      "tags",
+      "fixType",
+      "fixes",
+      "imageOnly",
+      "fixesOnly"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "severity": {
+        "type": "string",
+        "enum": ["panic", "info", "diagram"]
+      },
+      "product": {
+        "type": "string",
+        "enum": ["iphone", "ipad", "watch", "mac", "realitydevice", "tv", "homepod", "ipod"]
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1
+      },
+      "desc": {
+        "type": "string"
+      },
+      "devices": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "logSample": {
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "fixType": {
+        "type": "string",
+        "enum": ["software", "hardware", "mixed"]
+      },
+      "fixes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["title", "desc", "code"],
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "code": {
+              "type": ["string", "null"]
+            }
+          }
+        }
+      },
+      "images": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "imageOnly": {
+        "type": "boolean"
+      },
+      "fixesOnly": {
+        "type": "boolean"
+      },
+      "isDraft": {
+        "type": "boolean"
+      },
+      "priority": {
+        "type": "string",
+        "enum": ["low", "medium", "high"]
+      }
+    }
+  }
+}

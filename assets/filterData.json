@@ -1,0 +1,112 @@
+[
+  {
+    "name": "iPhone",
+    "tags": [
+      "iphone"
+    ],
+    "groupData": [
+      {
+        "name": "iPhone XS Max",
+        "tags": [
+          "xsm"
+        ]
+      },
+      {
+        "name": "iPhone 11",
+        "tags": [
+          "iphone11"
+        ]
+      },
+      {
+        "name": "iPhone 12 Pro Max",
+        "tags": [
+          "iphone12promax"
+        ]
+      },
+      {
+        "name": "iPhone 13 Pro",
+        "tags": [
+          "iphone13pro"
+        ]
+      },
+      {
+        "name": "iPhone 13 Pro Max",
+        "tags": [
+          "iphone13promax"
+        ]
+      },
+      {
+        "name": "iPhone 14 Pro Max",
+        "tags": [
+          "iphone14promax"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "iPad",
+    "tags": [
+      "ipad"
+    ],
+    "groupData": [
+      {
+        "name": "Air",
+        "tags": [
+          "ipadair"
+        ],
+        "groupData": [
+          {
+            "name": "Air 4",
+            "tags": [
+              "ipadair4"
+            ],
+            "groupData": [
+              {
+                "name": "Cáp sạc",
+                "tags": [
+                  "taildock"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Gen",
+        "tags": [
+          "ipadgen"
+        ],
+        "groupData": [
+          {
+            "name": "Gen 9th",
+            "tags": [
+              "ipadgen9"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Apple Watch",
+    "tags": [
+      "watch"
+    ],
+    "groupData": [
+      {
+        "name": "Series 5",
+        "tags": [
+          "watchseries5"
+        ],
+        "groupData": [
+          {
+            "name": "44mm",
+            "tags": [
+              "watchseries544mm"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
