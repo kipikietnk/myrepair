@@ -9,12 +9,21 @@
         "name": "iPhone XS Max",
         "tags": [
           "xsm"
-        ]
+        ],
+        "groupData": []
       },
       {
         "name": "iPhone 11",
         "tags": [
           "iphone11"
+        ],
+        "groupData": [
+          {
+            "name": "Cáp sạc",
+            "tags": [
+              "taildock"
+            ]
+          }
         ]
       },
       {

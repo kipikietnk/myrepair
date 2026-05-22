@@ -275,5 +275,26 @@
     ],
     "imageOnly": false,
     "fixesOnly": false
+  },
+  {
+    "id": "o8a3dx5w",
+    "severity": "diagram",
+    "product": "iphone",
+    "title": "11 Cáp sạc ",
+    "desc": "",
+    "devices": [
+      "iphone11"
+    ],
+    "tags": [
+      "taildock"
+    ],
+    "logSample": "",
+    "fixType": "hardware",
+    "fixes": [],
+    "images": [
+      "img_1779425422521_gbgxmbcf13q.png"
+    ],
+    "imageOnly": true,
+    "fixesOnly": false
   }
 ]
